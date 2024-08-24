@@ -1,0 +1,9 @@
+{
+	"scripts": {
+	"start": "retype watch --verbose",
+	"build": "retype build"
+	},
+	"dependencies": {
+	"retypeapp-win-x64": "^2.4.0"
+	}
+}
