@@ -1,0 +1,16 @@
+﻿@page "{handler?}"
+@model htmx_examples.Pages.ClickToLoad.IndexModel
+@{
+    var currentPage = ViewData["Page"];
+}
+
+@{
+ViewData["Title"] = "Index";
+}
+
+<table>
+    <thead><tr><th>Name</th><th>Email</th><th>ID</th></tr></thead>
+    <tbody>
+        <partial name="_ClickToLoadButton" model="@Model.Contacts"  />
+    </tbody>
+</table>

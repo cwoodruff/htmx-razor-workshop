@@ -1,0 +1,13 @@
+﻿@model Contact
+
+
+<tr>
+    <td>@Model.Name</td>
+    <td>@Model.Email</td>
+    <td>@Model.Status </td>
+    <td>
+        <button class="btn btn-danger" hx-delete="DeleteRow/Index/contact?Id=@Model.Id">
+            Delete
+        </button>
+    </td>
+</tr>

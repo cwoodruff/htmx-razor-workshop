@@ -1,0 +1,13 @@
+﻿@page "{handler?}"
+@model htmx_examples.Pages.InfiniteScroll.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<table>
+    <thead><tr><th>Name</th><th>Email</th><th>ID</th></tr></thead>
+    <tbody>
+        <partial name="_PageResult" model="@Model.Contacts"  />
+    </tbody>
+</table>

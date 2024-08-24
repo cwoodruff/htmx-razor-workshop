@@ -1,0 +1,21 @@
+﻿@model Contact
+
+<form hx-put="/ClickToEdit/ClickExampleModel?handler=ReplaceContact" hx-target="this" hx-swap="outerHTML">
+    <div>
+        <label asp-for="@Model.FirstName">First Name</label>
+        <input asp-for="@Model.FirstName">
+
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.LastName">Last Name</label>
+        <input asp-for="@Model.LastName">
+
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Email">Email Address</label>
+        <input asp-for="@Model.Email" >
+    </div>
+    @Html.AntiForgeryToken()
+    <button class="btn">Submit</button>
+    <button class="btn" hx-get="/ClickToEdit/ClickExampleModel?handler=DisplayContact">Cancel</button>
+</form>

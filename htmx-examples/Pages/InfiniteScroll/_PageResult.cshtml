@@ -1,0 +1,31 @@
+﻿@model List<Contact>
+@{
+    int currentPage = (int)ViewData["PageNumber"];
+}
+
+@{
+    if (Model.Count > 0)
+    {
+        int totalCount = Model.Count;
+        for (int count = 0; count < totalCount; count++)
+        {
+            if ((count + 1) == totalCount)
+            {
+                <tr hx-get="/InfiniteScroll/Index?handler=NextPage&Page=@(currentPage+1)" hx-trigger="revealed" hx-swap="afterend">
+                
+                    <td>@Model[count].Name</td>
+                    <td>@Model[count].Email</td>
+                    <td>@Model[count].UniqueIdentifier</td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td>@Model[count].Name</td>
+                    <td>@Model[count].Email</td>
+                    <td>@Model[count].UniqueIdentifier</td>
+                </tr>
+            }
+        }
+    }
+}

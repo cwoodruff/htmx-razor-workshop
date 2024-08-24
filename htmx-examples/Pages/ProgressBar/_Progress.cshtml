@@ -1,0 +1,22 @@
+﻿@{
+    string Status = ViewData["Status"].ToString();
+}
+
+<div hx-trigger="done" hx-get="/ProgressBar/FinalizeJob" hx-swap="outerHTML" hx-target="this">
+    <h3 role="status" id="pblabel" tabindex="-1" autofocus>@Status</h3>
+
+    <div hx-get="/ProgressBar/JobStatus"
+         hx-trigger="@(Status == "Running" ? "every 600ms" : "none")"
+    hx-target="this"
+    hx-swap="innerHTML">
+        <partial name="_ProgressBar" />
+    </div>
+
+    @if(Status == "Complete")
+    {
+        <button id="restart-btn" class="btn" hx-post="/ProgressBar/StartJob" classes="add show:600ms">
+            Restart Job
+        </button>
+
+    }
+</div>

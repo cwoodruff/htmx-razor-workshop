@@ -1,0 +1,17 @@
+﻿@model Contact
+
+<tr hx-trigger='cancel' class='editing' hx-get="/EditRow/view/@Model.Id">
+    <td>
+        <input type="hidden" asp-for="@Model.Id"/> 
+        <input name='name' asp-for="@Model.Name">
+    </td>
+    <td><input name='email' asp-for="@Model.Email"></td>
+    <td>
+        <button class="btn btn-danger" hx-get="/EditRow/view/@Model.Id">
+            Cancel
+        </button>
+        <button class="btn btn-danger" hx-put="/EditRow/@Model.Id" hx-include="closest tr">
+            Save
+        </button>
+    </td>
+</tr>

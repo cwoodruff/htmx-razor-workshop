@@ -1,0 +1,8 @@
+﻿@page "{handler?}"
+@model htmx_examples.Pages.Tabs.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div id="tabs" hx-get="/Tabs/tab1" hx-trigger="load delay:100ms" hx-target="#tabs" hx-swap="innerHTML"></div>

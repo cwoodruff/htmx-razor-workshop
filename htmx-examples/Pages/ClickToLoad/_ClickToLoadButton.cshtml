@@ -1,0 +1,22 @@
+﻿@model List<Contact>
+@{
+    int currentPage = (int)ViewData["PageNumber"];
+}
+
+@if (Model.Count > 0)
+{
+    foreach (var c in Model)
+    {
+            <tr><td>@c.Name</td><td>@c.Email</td><td>c.UniqueIdentifier</td></tr>
+        }
+    }
+
+<tr id="replaceMe">
+    <td colspan="3">
+        <button class='btn' hx-get="/Clicktoload/Index/NextPage?page=@(currentPage+1)"
+                hx-target="#replaceMe"
+                hx-swap="outerHTML">
+            Load More Agents... <img class="htmx-indicator" src="/img/bars.svg">
+        </button>
+    </td>
+</tr>

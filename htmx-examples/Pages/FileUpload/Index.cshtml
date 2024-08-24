@@ -1,0 +1,14 @@
+﻿@page
+@model htmx_examples.Pages.FileUpload.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<partial name="_hyperscript" model="@Model.UploadedFile" />
+<br />
+<br />
+<br />
+<br />
+<partial name="_javascript" model="@Model.UploadedFile" />
+

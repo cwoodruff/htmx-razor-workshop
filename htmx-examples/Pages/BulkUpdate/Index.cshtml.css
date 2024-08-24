@@ -1,0 +1,11 @@
+﻿::deep .htmx-settling tr.deactivate td {
+    background: lightcoral;
+}
+
+::deep .htmx-settling tr.activate td {
+    background: darkseagreen;
+}
+
+::deep tr td {
+    transition: all 1.2s;
+}

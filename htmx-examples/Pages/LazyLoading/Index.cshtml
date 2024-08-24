@@ -1,0 +1,10 @@
+﻿@page
+@model htmx_examples.Pages.LazyLoading.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div hx-get="/LazyLoading/Index?handler=graph" hx-trigger="load">
+    <img alt="Result loading..." class="htmx-indicator" width="150" src="https://htmx.org/img/bars.svg" />
+</div>

@@ -1,0 +1,25 @@
+﻿@page "{handler?}"
+@model htmx_examples.Pages.Selects.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4>Pick A Make/Model</h4>
+
+<div>
+    <label>Make</label>
+    <select name="make" hx-get="/Selects/models" hx-target="#models" hx-indicator=".htmx-indicator">
+        @foreach(var make in Model.ManufacturerMake)
+        {
+            <option value="@make">@make</option>
+        }
+    </select>
+</div>
+<div>
+    <label>Model</label>
+
+    <select id="models" name="model">
+    <partial name="_modelSelector" model="@Model.ManufacturerModels" />
+    </select>
+</div>

@@ -1,0 +1,10 @@
+﻿@model Contact
+
+<div hx-target="this" hx-swap="outerHTML">
+    <div><label asp-for="@Model.FirstName"></label>: @Model.FirstName</div>
+    <div><label asp-for="@Model.LastName"></label>:  @Model.LastName</div>
+    <div><label asp-for="@Model.Email"></label>:  @Model.Email</div>
+    <button hx-get="/ClickToEdit/ClickExampleModel?handler=EditContact" class="btn btn-primary">
+        Click To Edit
+    </button>
+</div>

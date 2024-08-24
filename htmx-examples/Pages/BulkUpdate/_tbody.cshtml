@@ -1,0 +1,17 @@
+﻿@model List<Contact>
+
+    @foreach (var c in @Model)
+    {
+    string statusValue = c.Status ? "Active" : "Inactive";
+    string statusClass = c.Status ? "activate" : "deactivate";
+
+        <tr class="@(c.Updated? statusClass : "")">
+            <td>
+                <input id="@c.Id" type='checkbox' name='ids' value='@c.Id' unchecked>
+                <input type="hidden" asp-for="@c.Id" />
+            </td>
+            <td>@c.Name</td>
+            <td>@c.Email</td>
+        <td>@statusValue</td>
+        </tr>
+    }

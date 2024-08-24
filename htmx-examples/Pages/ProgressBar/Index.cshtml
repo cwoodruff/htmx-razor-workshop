@@ -1,0 +1,11 @@
+﻿@page "{handler?}"
+@model htmx_examples.Pages.ProgressBar.IndexModel
+@{
+}
+
+<div hx-target="this" hx-swap="outerHTML">
+    <h3>Start Progress</h3>
+    <button class="btn" hx-headers='{"RequestVerificationToken": "@Model.RequestToken"}' hx-post="/ProgressBar/StartJob">
+        Start Job
+    </button>
+</div>

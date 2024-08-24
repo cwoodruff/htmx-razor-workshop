@@ -1,0 +1,23 @@
+﻿@page "{handler?}/{Id:int?}"
+@model htmx_examples.Pages.EditRow.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@if (Model?.Contacts?.Count() > 0){
+<table class="table delete-row-example">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+    </thead>
+        <tbody hx-target="closest tr" hx-swap="outerHTML" hx-headers='{"RequestVerificationToken": "@Model.RequestToken"}'>
+        @foreach(var contact in Model.Contacts){
+            <partial name="_TableRow" model="@contact" />
+        }
+    </tbody>
+</table>
+}
