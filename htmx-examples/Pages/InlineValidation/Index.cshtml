@@ -5,19 +5,36 @@
     ViewData["Title"] = "Index";
 }
 
-<h3>Signup Form</h3>
-<form method="post">
-    @Html.AntiForgeryToken()
-    <partial name="_EmailField" model="@Model.Contact?.Email" />
-    <div class="form-group">
-        <label asp-for="@Model.Contact.FirstName">First Name</label>
-        <input type="text" class="form-control" asp-for="@Model.Contact.FirstName">
-    </div>
-    <div class="form-group">
-        <label asp-for="@Model.Contact.LastName">Last Name</label>
-        <input type="text" class="form-control" asp-for="@Model.Contact.LastName">
-    </div>
-    <button class="btn btn-default">Submit</button>
-</form>
+<!-- Main Content -->
+<div id="content">
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Inline Validation</h4>
+            </div>
+            <div class="card-body">
 
+                <h3>Signup Form</h3>
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <partial name="_EmailField" model="@Model.Contact?.Email"/>
+                    <div class="form-group">
+                        <label asp-for="@Model.Contact.FirstName" class="control-label">First Name</label>
+                        <input type="text" class="form-control" asp-for="@Model.Contact.FirstName">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.Contact.LastName" class="control-label">Last Name</label>
+                        <input type="text" class="form-control" asp-for="@Model.Contact.LastName">
+                    </div>
+                    <button class="btn btn-primary">Submit</button>
+                </form>
 
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- End of Main Content -->

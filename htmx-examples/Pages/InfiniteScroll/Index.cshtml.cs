@@ -21,7 +21,7 @@ namespace htmx_examples.Pages.InfiniteScroll
             var start = 10 + (page * take);
             for (int i = start; i < start + take; i++)
             {
-                yield return new Contact("Agent Smith", $"void{i}@null.org", Guid.NewGuid());
+                yield return new Contact("Woody", $"me{i}@woodruff.dev", Guid.NewGuid());
             }
         }
 

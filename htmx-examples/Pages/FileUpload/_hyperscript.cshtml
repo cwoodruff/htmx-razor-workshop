@@ -4,10 +4,10 @@
       _='on htmx:xhr:progress(loaded, total) set #progress.value to (loaded/total)*100'>
     @Html.AntiForgeryToken()
 
-    <input name="UploadedFile2" asp-for="@Model ">
+    <input name="UploadedFile2" asp-for="@Model">
 
-    <button>
+    <button class="btn btn-primary">
         Upload
     </button>
-    <progress id='progress' value='0' max='100'></progress>
+    <progress id="progress" value='0' max='100'></progress>
 </form>

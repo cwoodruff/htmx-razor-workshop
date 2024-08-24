@@ -7,7 +7,7 @@
 {
     foreach (var c in Model)
     {
-            <tr><td>@c.Name</td><td>@c.Email</td><td>c.UniqueIdentifier</td></tr>
+            <tr><td>@c.Name</td><td>@c.Email</td></tr>
         }
     }
 
@@ -16,7 +16,7 @@
         <button class='btn' hx-get="/Clicktoload/Index/NextPage?page=@(currentPage+1)"
                 hx-target="#replaceMe"
                 hx-swap="outerHTML">
-            Load More Agents... <img class="htmx-indicator" src="/img/bars.svg">
+            Load More Woodys... <img class="htmx-indicator" src="/img/bars.svg">
         </button>
     </td>
 </tr>

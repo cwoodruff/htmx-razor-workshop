@@ -2,14 +2,14 @@
 
 <form id='form' hx-encoding='multipart/form-data' hx-post='/FileUpload/index?handler=upload'>
     @Html.AntiForgeryToken()
-    <input name="UploadedFile" asp-for="@Model ">
-    <button>
+    <input name="UploadedFile" asp-for="@Model">
+    <button class="btn btn-primary">
         Upload
     </button>
-    <progress id='progress' value='0' max='100'></progress>
+    <progress id="js_progress" value='0' max='100'></progress>
 </form>
 <script>
-    htmx.on('#form', 'htmx:xhr:progress', function (evt) {
+    htmx.on('#form', 'htmx:xhr:js_progress', function (evt) {
         htmx.find('#progress').setAttribute('value', evt.detail.loaded / evt.detail.total * 100)
     });
 </script>

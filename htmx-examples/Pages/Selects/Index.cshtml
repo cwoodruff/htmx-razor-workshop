@@ -5,21 +5,40 @@
     ViewData["Title"] = "Index";
 }
 
-<h4>Pick A Make/Model</h4>
+<!-- Main Content -->
+<div id="content">
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Select</h4>
+            </div>
+            <div class="card-body">
 
-<div>
-    <label>Make</label>
-    <select name="make" hx-get="/Selects/models" hx-target="#models" hx-indicator=".htmx-indicator">
-        @foreach(var make in Model.ManufacturerMake)
-        {
-            <option value="@make">@make</option>
-        }
-    </select>
-</div>
-<div>
-    <label>Model</label>
+                <h4>Pick A Make/Model</h4>
 
-    <select id="models" name="model">
-    <partial name="_modelSelector" model="@Model.ManufacturerModels" />
-    </select>
+                <div>
+                    <label class="control-label">Make</label>
+                    <select name="make" hx-get="/Selects/models" hx-target="#models" hx-indicator=".htmx-indicator">
+                        @foreach (var make in Model.ManufacturerMake)
+                        {
+                            <option value="@make">@make</option>
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label class="control-label">Model</label>
+
+                    <select id="models" name="model">
+                        <partial name="_modelSelector" model="@Model.ManufacturerModels"/>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
 </div>
+<!-- End of Main Content -->

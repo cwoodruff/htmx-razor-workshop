@@ -5,12 +5,35 @@
 }
 
 @{
-ViewData["Title"] = "Index";
+    ViewData["Title"] = "Index";
 }
 
-<table>
-    <thead><tr><th>Name</th><th>Email</th><th>ID</th></tr></thead>
-    <tbody>
-        <partial name="_ClickToLoadButton" model="@Model.Contacts"  />
-    </tbody>
-</table>
+<!-- Main Content -->
+<div id="content">
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Click To Load</h4>
+            </div>
+            <div class="card-body">
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th><th>Email</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <partial name="_ClickToLoadButton" model="@Model.Contacts"/>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- End of Main Content -->

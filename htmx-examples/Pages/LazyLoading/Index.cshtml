@@ -5,6 +5,25 @@
     ViewData["Title"] = "Index";
 }
 
-<div hx-get="/LazyLoading/Index?handler=graph" hx-trigger="load">
-    <img alt="Result loading..." class="htmx-indicator" width="150" src="https://htmx.org/img/bars.svg" />
+<!-- Main Content -->
+<div id="content">
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Lazy Loading</h4>
+            </div>
+            <div class="card-body">
+
+                <div hx-get="/LazyLoading/Index?handler=graph" hx-trigger="load">
+                    <img alt="Result loading..." class="htmx-indicator" width="150" src="https://htmx.org/img/bars.svg"/>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
 </div>
+<!-- End of Main Content -->

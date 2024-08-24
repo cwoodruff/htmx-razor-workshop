@@ -21,7 +21,7 @@ namespace htmx_examples.Pages.ClickToLoad
             var start = 10 + (page * take);
             for (int i = start; i < start + take; i++)
             {
-                yield return new Contact("Chris Woodruff", $"me{i}@woodruff.dev", Guid.NewGuid());
+                yield return new Contact("Woody", $"me{i}@woody.dev", Guid.NewGuid());
             }
         }
 

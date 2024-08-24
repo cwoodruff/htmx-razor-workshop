@@ -9,7 +9,7 @@
         {
             // Initialize the static contact member.
             contacts = new();
-            contacts.Add(1, new ("Joe", "Blow", "joe@blow.com")); ;
+            contacts.Add(1, new ("Darth", "Vader", "darth@mustafar.com")); ;
         }
 
         public Contact Get(int Id)
