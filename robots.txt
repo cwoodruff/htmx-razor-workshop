@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://github.com/cwoodruff/htmx-razor-workshop/sitemap.xml.gz
