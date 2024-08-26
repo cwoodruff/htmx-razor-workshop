@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 /htmx-examples/.idea
 /docs/.idea
+htmx-examples/.DS_Store
