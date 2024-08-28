@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Exercises", "Exercises", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exercises.End", "Exercises\Exercises.End\Exercises.End.csproj", "{9F221DED-210C-4907-BE8A-7D0D489F9F70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exercises.Start", "Exercises\Exercises.Start\Exercises.Start.csproj", "{17DCDDA7-058F-4FD8-BE87-45BD77B255F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exercises.Begin", "Exercises\Exercises.Begin\Exercises.Begin.csproj", "{17DCDDA7-058F-4FD8-BE87-45BD77B255F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
