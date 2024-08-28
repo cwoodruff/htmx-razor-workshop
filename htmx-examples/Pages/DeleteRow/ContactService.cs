@@ -1,4 +1,4 @@
-﻿namespace htmx_examples.Pages.DeleteRow
+namespace htmx_examples.Pages.DeleteRow
 {
 
     public class ContactService : IContactService
@@ -10,10 +10,10 @@
             int key = 0;
             // Initialize the static contact member.
             contacts = new();
-            contacts.Add(new(++key, "Joe Smith", "joe@smith.org"));
-            contacts.Add(new(++key, "Fuqua Tarkenton", "fuqua@tarkenton.org"));
-            contacts.Add(new(++key, "Angie MacDowell", "angie@macdowell.org"));
-            contacts.Add(new(++key, "Kim Yee", "kim@yee.org") { Status = false });
+            contacts.Add(++key, new(key, "Bobby Jones", "bobby@jones.org"));
+            contacts.Add(++key, new(key, "Sally Ride", "sally@apace.org"));
+            contacts.Add(++key, new(key, "Brian Woodruff", "dr.brian@doctor.org"));
+            contacts.Add(++key, new(key, "Spencer Woodruff", "spencer@woodruff.org") { Status = false });
         }
 
         public void Delete(int Id)
