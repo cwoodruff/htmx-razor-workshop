@@ -10,10 +10,10 @@ namespace htmx_examples.Pages.DeleteRow
             int key = 0;
             // Initialize the static contact member.
             contacts = new();
-            contacts.Add(++key, new(key, "Bobby Jones", "bobby@jones.org"));
-            contacts.Add(++key, new(key, "Sally Ride", "sally@apace.org"));
-            contacts.Add(++key, new(key, "Brian Woodruff", "dr.brian@doctor.org"));
-            contacts.Add(++key, new(key, "Spencer Woodruff", "spencer@woodruff.org") { Status = false });
+            contacts.Add(new(++key, "Scarlett Nolan", "scarlett.nolan@example.com"));
+            contacts.Add(new(++key, "Leonardo Evans", "leonardo.evans@example.com"));
+            contacts.Add(new(++key, "Natalie Damon", "natalie.damon@example.com"));
+            contacts.Add(new(++key, "Chris Johansson", "chris.johansson@example.com") { Status = false });
         }
 
         public void Delete(int Id)
