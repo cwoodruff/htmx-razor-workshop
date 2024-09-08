@@ -1,0 +1,105 @@
+@page
+@model ChinookHTMX.Pages.InvoiceLines.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<!-- Main Content -->
+<div id="content">
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Invoice Lines</h4>
+            </div>
+            <div class="card-body">
+                <p>
+                    <button hx-get="@Url.PageLink("Create")"
+                            hx-target="#modal"
+                            hx-swap="innerHTML"
+                            class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-flag"></i>
+                        </span>
+                        <span class="text">Create New Invoice Line</span>
+                    </button>
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable">
+                        <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.InvoiceLine[0].UnitPrice)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.InvoiceLine[0].Quantity)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.InvoiceLine[0].Invoice)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.InvoiceLine[0].Track)
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model.InvoiceLine)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UnitPrice)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Quantity)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Invoice.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Track.Id)
+                                </td>
+                                <td>
+                                    <button hx-get="@Url.PageLink("Edit", values: new { item.Id })"
+                                            hx-target="#modal"
+                                            hx-swap="innerHTML"
+                                            class="btn btn-primary btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-flag"></i>
+                                        </span>
+                                        <span class="text">Edit</span>
+                                    </button>
+                                    <button hx-get="@Url.PageLink("Details", values: new { item.Id })"
+                                            hx-target="#modal"
+                                            hx-swap="innerHTML"
+                                            class="btn btn-primary btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-flag"></i>
+                                        </span>
+                                        <span class="text">Details</span>
+                                    </button>
+                                    <button hx-get="@Url.PageLink("Delete", values: new { item.Id })"
+                                            hx-target="#modal"
+                                            hx-swap="innerHTML"
+                                            class="btn btn-primary btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-flag"></i>
+                                        </span>
+                                        <span class="text">Delete</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- End of Main Content -->
+
+<div id="modal"></div>

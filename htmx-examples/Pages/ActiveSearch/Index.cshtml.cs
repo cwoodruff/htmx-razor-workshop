@@ -33,7 +33,7 @@ namespace htmx_examples.Pages.ActiveSearch
             Countries = new();
             var result = await _httpClient.GetStringAsync($"https://restcountries.com/v3.1/name/{SearchText}");
             //var jsonstr = await result.Content.ReadAsStringAsync();
-            var json=            JsonArray.Parse(result);
+            var json = JsonArray.Parse(result);
             foreach(var country in json.AsArray())
             {
                 

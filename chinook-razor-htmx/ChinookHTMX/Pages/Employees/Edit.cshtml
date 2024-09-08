@@ -1,0 +1,96 @@
+@page
+@model ChinookHTMX.Pages.Employees.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Employee</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Employee.Id"/>
+            <div class="form-group">
+                <label asp-for="Employee.LastName" class="control-label"></label>
+                <input asp-for="Employee.LastName" class="form-control"/>
+                <span asp-validation-for="Employee.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.FirstName" class="control-label"></label>
+                <input asp-for="Employee.FirstName" class="form-control"/>
+                <span asp-validation-for="Employee.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.Title" class="control-label"></label>
+                <input asp-for="Employee.Title" class="form-control"/>
+                <span asp-validation-for="Employee.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.ReportsTo" class="control-label"></label>
+                <select asp-for="Employee.ReportsTo" class="form-control" asp-items="ViewBag.ReportsTo"></select>
+                <span asp-validation-for="Employee.ReportsTo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.BirthDate" class="control-label"></label>
+                <input asp-for="Employee.BirthDate" class="form-control"/>
+                <span asp-validation-for="Employee.BirthDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.HireDate" class="control-label"></label>
+                <input asp-for="Employee.HireDate" class="form-control"/>
+                <span asp-validation-for="Employee.HireDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.Address" class="control-label"></label>
+                <input asp-for="Employee.Address" class="form-control"/>
+                <span asp-validation-for="Employee.Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.City" class="control-label"></label>
+                <input asp-for="Employee.City" class="form-control"/>
+                <span asp-validation-for="Employee.City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.State" class="control-label"></label>
+                <input asp-for="Employee.State" class="form-control"/>
+                <span asp-validation-for="Employee.State" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.Country" class="control-label"></label>
+                <input asp-for="Employee.Country" class="form-control"/>
+                <span asp-validation-for="Employee.Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.PostalCode" class="control-label"></label>
+                <input asp-for="Employee.PostalCode" class="form-control"/>
+                <span asp-validation-for="Employee.PostalCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.Phone" class="control-label"></label>
+                <input asp-for="Employee.Phone" class="form-control"/>
+                <span asp-validation-for="Employee.Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.Fax" class="control-label"></label>
+                <input asp-for="Employee.Fax" class="form-control"/>
+                <span asp-validation-for="Employee.Fax" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.Email" class="control-label"></label>
+                <input asp-for="Employee.Email" class="form-control"/>
+                <span asp-validation-for="Employee.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
