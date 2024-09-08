@@ -1,5 +1,5 @@
 ---
-order: 3
+order: 6
 icon: shield-check
 ---
-# Click to Edit
+# Delete Row

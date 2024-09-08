@@ -1,5 +1,5 @@
 ---
-order: 3
+order: 7
 icon: shield-check
 ---
-# Click to Edit
+# Lazy Loading
