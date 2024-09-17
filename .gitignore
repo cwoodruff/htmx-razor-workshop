@@ -400,3 +400,5 @@ FodyWeavers.xsd
 /docs/.idea
 htmx-examples/.DS_Store
 docs/.DS_Store
+htmx-examples/wwwroot/.DS_Store
+htmx-examples/wwwroot/.DS_Store
