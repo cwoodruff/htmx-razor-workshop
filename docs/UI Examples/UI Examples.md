@@ -21,7 +21,7 @@ icon: shield-check
 | [Tabs](tabs.md) --	                        | Demonstrates how to display and select tabs using HATEOAS principles                           |
 | [Value Select](value-selects.md)	          | Demonstrates making the values of a select dependent on another select                         |
 | [Animations](animations.md)	               | Demonstrates various animation techniques                                                      |
-| [File Upload](file-uploads.md)	            | Demonstrates how to upload a file via ajax with a progress bar                                 |
+| [File Upload](file-upload.md)	             | Demonstrates how to upload a file via ajax with a progress bar                                 |
 | Dialogs - Browser	                         | Demonstrates the prompt and confirm dialogs                                                    |
 | Dialogs - UIKit	                           | Demonstrates modal dialogs using UIKit                                                         |
 | Dialogs - Bootstrap	                       | Demonstrates modal dialogs using Bootstrap                                                     |
