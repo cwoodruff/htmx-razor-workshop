@@ -1,4 +1,4 @@
-(function(){
+(function () {
 
     function mergeObjects(obj1, obj2) {
         for (var key in obj2) {

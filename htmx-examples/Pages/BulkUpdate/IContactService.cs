@@ -4,7 +4,5 @@
     {
         IEnumerable<Contact> Get();
         void Update(int Id, bool Status);
-
     }
-
 }

@@ -1,4 +1,4 @@
-(function(){
+(function () {
     function maybeRemoveMe(elt) {
         var timing = elt.getAttribute("remove-me") || elt.getAttribute("data-remove-me");
         if (timing) {

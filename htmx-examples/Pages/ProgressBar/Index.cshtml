@@ -12,16 +12,16 @@
             <div class="card-header py-3">
                 <h4 class="m-0 font-weight-bold text-primary">Progress Bar</h4>
             </div>
-        <div class="card-body">
-        
-        <div hx-target="this" hx-swap="outerHTML">
-            <h3>Start Progress</h3>
-            <button class="btn btn-primary" hx-headers='{"RequestVerificationToken": "@Model.RequestToken"}' hx-post="/ProgressBar/StartJob">
-                Start Job
-            </button>
-        </div>
-        
-        </div>
+            <div class="card-body">
+
+                <div hx-target="this" hx-swap="outerHTML">
+                    <h3>Start Progress</h3>
+                    <button class="btn btn-primary" hx-headers='{"RequestVerificationToken": "@Model.RequestToken"}' hx-post="/ProgressBar/StartJob">
+                        Start Job
+                    </button>
+                </div>
+
+            </div>
         </div>
 
     </div>

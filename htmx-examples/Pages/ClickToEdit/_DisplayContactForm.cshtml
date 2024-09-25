@@ -2,8 +2,8 @@
 
 <div hx-target="this" hx-swap="outerHTML">
     <div><label asp-for="@Model.FirstName" class="control-label"></label>: @Model.FirstName</div>
-    <div><label asp-for="@Model.LastName" class="control-label"></label>:  @Model.LastName</div>
-    <div><label asp-for="@Model.Email" class="control-label"></label>:  @Model.Email</div>
+    <div><label asp-for="@Model.LastName" class="control-label"></label>: @Model.LastName</div>
+    <div><label asp-for="@Model.Email" class="control-label"></label>: @Model.Email</div>
     <button hx-get="/ClickToEdit/Index?handler=EditContact" class="btn btn-primary">
         Click To Edit
     </button>

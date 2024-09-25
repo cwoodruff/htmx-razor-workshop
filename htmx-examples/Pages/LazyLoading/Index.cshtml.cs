@@ -5,7 +5,6 @@ namespace htmx_examples.Pages.LazyLoading
 {
     public class IndexModel : PageModel
     {
-        
         public IndexModel()
         {
         }

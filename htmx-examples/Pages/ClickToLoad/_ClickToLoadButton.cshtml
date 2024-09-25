@@ -7,13 +7,15 @@
 {
     foreach (var c in Model)
     {
-            <tr><td>@c.Name</td><td>@c.Email</td></tr>
-        }
+        <tr>
+            <td>@c.Name</td><td>@c.Email</td>
+        </tr>
     }
+}
 
 <tr id="replaceMe">
     <td colspan="3">
-        <button class='btn' hx-get="/Clicktoload/Index/NextPage?page=@(currentPage+1)"
+        <button class='btn' hx-get="/Clicktoload/Index/NextPage?page=@(currentPage + 1)"
                 hx-target="#replaceMe"
                 hx-swap="outerHTML">
             Load More Woodys... <img class="htmx-indicator" src="/img/bars.svg">

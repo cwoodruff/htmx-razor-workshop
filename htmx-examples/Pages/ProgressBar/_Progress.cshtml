@@ -7,16 +7,15 @@
 
     <div hx-get="/ProgressBar/JobStatus"
          hx-trigger="@(Status == "Running" ? "every 600ms" : "none")"
-    hx-target="this"
-    hx-swap="innerHTML">
-        <partial name="_ProgressBar" />
+         hx-target="this"
+         hx-swap="innerHTML">
+        <partial name="_ProgressBar"/>
     </div>
 
-    @if(Status == "Complete")
+    @if (Status == "Complete")
     {
         <button id="restart-btn" class="btn btn-primary" hx-post="/ProgressBar/StartJob" classes="add show:600ms">
             Restart Job
         </button>
-
     }
 </div>

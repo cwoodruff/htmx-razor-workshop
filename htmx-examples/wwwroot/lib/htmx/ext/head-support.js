@@ -3,7 +3,7 @@
 //
 // An extension to htmx 1.0 to add head tag merging.
 //==========================================================
-(function(){
+(function () {
 
     var api = null;
 
@@ -41,7 +41,6 @@
                         srcToNewHeadNodes.set(newHeadChild.outerHTML, newHeadChild);
                     }
                 }
-
 
 
                 // determine merge strategy
@@ -104,24 +103,28 @@
                     }
                 }
 
-                api.triggerEvent(document.body, "htmx:afterHeadMerge", {added: added, kept: preserved, removed: removed});
+                api.triggerEvent(document.body, "htmx:afterHeadMerge", {
+                    added: added,
+                    kept: preserved,
+                    removed: removed
+                });
             }
         }
     }
 
     htmx.defineExtension("head-support", {
-        init: function(apiRef) {
+        init: function (apiRef) {
             // store a reference to the internal API.
             api = apiRef;
 
-            htmx.on('htmx:afterSwap', function(evt){
+            htmx.on('htmx:afterSwap', function (evt) {
                 var serverResponse = evt.detail.xhr.response;
                 if (api.triggerEvent(document.body, "htmx:beforeHeadMerge", evt.detail)) {
                     mergeHead(serverResponse, evt.detail.boosted ? "merge" : "append");
                 }
             })
 
-            htmx.on('htmx:historyRestore', function(evt){
+            htmx.on('htmx:historyRestore', function (evt) {
                 if (api.triggerEvent(document.body, "htmx:beforeHeadMerge", evt.detail)) {
                     if (evt.detail.cacheMiss) {
                         mergeHead(evt.detail.serverResponse, "merge");
@@ -131,7 +134,7 @@
                 }
             })
 
-            htmx.on('htmx:historyItemCreated', function(evt){
+            htmx.on('htmx:historyItemCreated', function (evt) {
                 var historyItem = evt.detail.item;
                 historyItem.head = document.head.outerHTML;
             })

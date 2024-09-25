@@ -7,11 +7,13 @@ namespace htmx_examples.Pages.ClickToEdit
     {
         private IContactService contactService;
         public Contact Contact { get; private set; }
+
         public Index(IContactService service)
         {
             contactService = service;
             Contact = contactService.Get(1);
         }
+
         public void OnGet()
         {
         }
@@ -30,12 +32,12 @@ namespace htmx_examples.Pages.ClickToEdit
 
             return Partial("_DisplayContactForm", model);
         }
+
         public PartialViewResult OnGetEditContact()
         {
             Contact = contactService.Get(1);
 
             return Partial("_EditContactForm", Contact);
-
         }
 
         public PartialViewResult OnGetDisplayContact()
@@ -43,7 +45,6 @@ namespace htmx_examples.Pages.ClickToEdit
             var contact = contactService.Get(1);
 
             return Partial("_DisplayContactForm", contact);
-
         }
     }
 }

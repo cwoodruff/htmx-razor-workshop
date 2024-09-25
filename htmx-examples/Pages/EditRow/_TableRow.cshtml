@@ -8,10 +8,10 @@
                 hx-get="/EditRow/edit/@Model.Id"
                 hx-trigger="edit" _="on click
                      if .editing is not empty
-                       Swal.fire({title: 'Already Editing',
+                       Swal.fire({title: 'You are editing another row',
                                   showCancelButton: true,
-                                  confirmButtonText: 'Yep, Edit This Row!',
-                                  text:'Hey!  You are already editing a row!  Do you want to cancel that edit and continue?'})
+                                  confirmButtonText: 'Edit this row',
+                                  text:'You are already editing a row.  Cancel and continue with @Model.Name?'})
                        if the result's isConfirmed is false
                          halt
                        end

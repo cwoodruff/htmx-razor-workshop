@@ -1,6 +1,5 @@
 ﻿namespace htmx_examples.Pages.EditRow
 {
-
     public class ContactService : IContactService
     {
         private List<Contact> contacts;
@@ -26,9 +25,10 @@
         {
             return contacts;
         }
+
         public Contact Get(int Id)
         {
-            return contacts.Single(c =>c.Id == Id);
+            return contacts.Single(c => c.Id == Id);
         }
     }
 }

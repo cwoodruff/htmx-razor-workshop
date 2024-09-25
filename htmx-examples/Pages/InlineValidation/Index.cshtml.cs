@@ -5,15 +5,14 @@ namespace htmx_examples.Pages.InlineValidation
 {
     public class IndexModel : PageModel
     {
-        [BindProperty]
-        public Contact? Contact { get; private set; }
+        [BindProperty] public Contact? Contact { get; private set; }
 
-        public string ExistingEmail { get; private set; } = "firstname.lastname@example.ca";
+        public string ExistingEmail { get; private set; } = "firstname.lastname@example.com";
         [ViewData] public string InvalidEmailMessage { get; set; }
 
         public void OnGet()
         {
-            Contact = new Contact("First", "Last", "test@example.ca");
+            Contact = new Contact("First", "Last", "name@example.com");
         }
 
         public IActionResult OnPost(Contact contact)
@@ -24,6 +23,7 @@ namespace htmx_examples.Pages.InlineValidation
                 Contact = contact;
                 return Page();
             }
+
             if (String.IsNullOrEmpty(contact.Email) || !contact.Email.Contains('@'))
             {
                 InvalidEmailMessage = "Please enter a valid email address";
@@ -32,6 +32,7 @@ namespace htmx_examples.Pages.InlineValidation
             {
                 InvalidEmailMessage = "That email is already taken. Please enter another email.";
             }
+
             return Page();
         }
 
@@ -47,7 +48,6 @@ namespace htmx_examples.Pages.InlineValidation
             }
 
             return Partial("_EmailField", email);
-
         }
     }
 }

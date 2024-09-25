@@ -4,7 +4,5 @@
     {
         IEnumerable<Contact> Get();
         void Delete(int Id);
-
     }
-
 }

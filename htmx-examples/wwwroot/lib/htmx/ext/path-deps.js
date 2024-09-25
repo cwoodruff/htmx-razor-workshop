@@ -1,9 +1,9 @@
-(function(undefined){
+(function (undefined) {
     'use strict';
 
     // Save a reference to the global object (window in the browser)
     var _root = this;
-  
+
     function dependsOn(pathSpec, url) {
         if (pathSpec === "ignore") {
             return false;
@@ -30,8 +30,8 @@
             if (dependsOn(elt.getAttribute('path-deps'), path)) {
                 htmx.trigger(elt, "path-deps");
             }
-        }      
-    }    
+        }
+    }
 
     htmx.defineExtension('path-deps', {
         onEvent: function (name, evt) {
@@ -41,7 +41,7 @@
                 if (config.verb !== "get" && evt.target.getAttribute('path-deps') !== 'ignore') {
                     refreshPath(config.path);
                 }
-            } 
+            }
         }
     });
 
@@ -49,12 +49,12 @@
      *  ********************
      *  Expose functionality
      *  ********************
-     */    
+     */
 
     _root.PathDeps = {
-        refresh: function(path) {
+        refresh: function (path) {
             refreshPath(path);
         }
     };
-            
+
 }).call(this);

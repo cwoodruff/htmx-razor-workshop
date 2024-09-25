@@ -9,9 +9,9 @@
 
     <ItemGroup>
         <PackageReference Include="Lib.AspNetCore.ServerSentEvents" Version="9.0.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.8" />
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.4" />
-        <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.21.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.8"/>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+        <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.21.0"/>
     </ItemGroup>
 
 </Project>

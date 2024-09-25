@@ -2,10 +2,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpClient();
-builder.Services.AddSingleton<htmx_examples.Pages.ClickToEdit.IContactService, htmx_examples.Pages.ClickToEdit.ContactService>();
-builder.Services.AddSingleton<htmx_examples.Pages.BulkUpdate.IContactService, htmx_examples.Pages.BulkUpdate.ContactService>();
-builder.Services.AddSingleton<htmx_examples.Pages.DeleteRow.IContactService, htmx_examples.Pages.DeleteRow.ContactService>();
-builder.Services.AddSingleton<htmx_examples.Pages.EditRow.IContactService, htmx_examples.Pages.EditRow.ContactService>();
+builder.Services
+    .AddSingleton<htmx_examples.Pages.ClickToEdit.IContactService, htmx_examples.Pages.ClickToEdit.ContactService>();
+builder.Services
+    .AddSingleton<htmx_examples.Pages.BulkUpdate.IContactService, htmx_examples.Pages.BulkUpdate.ContactService>();
+builder.Services
+    .AddSingleton<htmx_examples.Pages.DeleteRow.IContactService, htmx_examples.Pages.DeleteRow.ContactService>();
+builder.Services
+    .AddSingleton<htmx_examples.Pages.EditRow.IContactService, htmx_examples.Pages.EditRow.ContactService>();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();

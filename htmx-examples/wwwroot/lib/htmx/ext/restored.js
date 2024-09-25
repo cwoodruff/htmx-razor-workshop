@@ -1,6 +1,6 @@
 htmx.defineExtension('restored', {
-    onEvent : function(name, evt) {
-        if (name === 'htmx:restored'){
+    onEvent: function (name, evt) {
+        if (name === 'htmx:restored') {
             var restoredElts = evt.detail.document.querySelectorAll(
                 "[hx-trigger='restored'],[data-hx-trigger='restored']"
             );

@@ -12,7 +12,7 @@ namespace htmx_examples.Pages.DeleteRow
         public string? RequestToken { get; set; }
         public IList<Contact>? Contacts { get; set; }
 
-        [FromQuery(Name="Id")] public int Id { get; set; }
+        [FromQuery(Name = "Id")] public int Id { get; set; }
 
         public IndexModel(IContactService contactService, IAntiforgery antiforgery)
         {

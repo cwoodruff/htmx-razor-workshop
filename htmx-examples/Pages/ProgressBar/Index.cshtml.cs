@@ -10,6 +10,7 @@ namespace htmx_examples.Pages.ProgressBar
         readonly IAntiforgery _antiforgery;
 
         public string? RequestToken { get; set; }
+
         public IndexModel(IAntiforgery antiforgery)
         {
             _antiforgery = antiforgery;
@@ -21,10 +22,13 @@ namespace htmx_examples.Pages.ProgressBar
             RequestToken = tokenSet.RequestToken;
         }
 
-        public void OnPost() { }
+        public void OnPost()
+        {
+        }
 
-        [ViewData]public string PercentDone { get; set; }
-        [ViewData]public string Status { get; set; }
+        [ViewData] public string PercentDone { get; set; }
+        [ViewData] public string Status { get; set; }
+
         public PartialViewResult OnGetJobStatus()
         {
             percent = percent switch
@@ -38,7 +42,7 @@ namespace htmx_examples.Pages.ProgressBar
                 98 => 100,
                 _ => 0
             };
-            if(percent >= 100)
+            if (percent >= 100)
                 HttpContext.Response.Headers["HX-Trigger"] = "done";
             PercentDone = percent.ToString();
             return Partial("_ProgressBar");
@@ -53,13 +57,13 @@ namespace htmx_examples.Pages.ProgressBar
         }
 
 
-        public PartialViewResult OnPostStartJob() {
+        public PartialViewResult OnPostStartJob()
+        {
             if (percent == 0)
                 percent = 2;
             Status = "Running";
             PercentDone = percent.ToString();
             return Partial("_Progress");
         }
-
     }
 }

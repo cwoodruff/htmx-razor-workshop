@@ -5,12 +5,11 @@ namespace htmx_examples.Pages.InfiniteScroll
 {
     public class IndexModel : PageModel
     {
-        [ViewData]
-        public int PageCount { get; set; } = 25;
-        [ViewData]
-        public int PageNumber { get; set; } = 0;
+        [ViewData] public int PageCount { get; set; } = 25;
+        [ViewData] public int PageNumber { get; set; } = 0;
         [FromQuery(Name = "page")] public int NextPage { get; set; }
         public List<Contact>? Contacts { get; set; }
+
         public void OnGet()
         {
             this.Contacts = GetPagedResults(PageNumber, PageCount).ToList();
@@ -30,6 +29,5 @@ namespace htmx_examples.Pages.InfiniteScroll
             PageNumber = NextPage;
             return Partial("_PageResult", GetPagedResults(NextPage, PageCount).ToList());
         }
-            
     }
 }

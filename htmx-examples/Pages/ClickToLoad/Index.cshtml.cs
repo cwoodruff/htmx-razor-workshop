@@ -5,12 +5,11 @@ namespace htmx_examples.Pages.ClickToLoad
 {
     public class IndexModel : PageModel
     {
-        [ViewData]
-        public int PageCount { get; set; } = 5;
-        [ViewData]
-        public int PageNumber { get; set; } = 0;
+        [ViewData] public int PageCount { get; set; } = 5;
+        [ViewData] public int PageNumber { get; set; } = 0;
         [FromQuery(Name = "page")] public int NextPage { get; set; }
         public List<Contact>? Contacts { get; set; }
+
         public void OnGet()
         {
             this.Contacts = GetPagedResults(PageNumber, PageCount).ToList();
@@ -30,6 +29,5 @@ namespace htmx_examples.Pages.ClickToLoad
             PageNumber = NextPage;
             return Partial("_ClickToLoadButton", GetPagedResults(NextPage, PageCount).ToList());
         }
-            
     }
 }

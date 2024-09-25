@@ -1,6 +1,5 @@
 namespace htmx_examples.Pages.DeleteRow
 {
-
     public class ContactService : IContactService
     {
         private List<Contact> contacts;

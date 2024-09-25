@@ -14,18 +14,22 @@
             <div class="card-header py-3">
                 <h4 class="m-0 font-weight-bold text-primary">Infinite Scroll</h4>
             </div>
-        <div class="card-body">
+            <div class="card-body">
 
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead><tr><th>Name</th><th>Email</th><th>ID</th></tr></thead>
-                    <tbody>
-                    <partial name="_PageResult" model="@Model.Contacts"  />
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Name</th><th>Email</th><th>ID</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <partial name="_PageResult" model="@Model.Contacts"/>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
-        
-        </div>
         </div>
 
     </div>

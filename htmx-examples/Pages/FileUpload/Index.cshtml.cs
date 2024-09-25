@@ -8,16 +8,15 @@ namespace htmx_examples.Pages.FileUpload
     {
         public void OnGet()
         {
-
         }
 
-        [BindProperty, Display(Name = "File")]
-        public IFormFile UploadedFile { get; set; }
-        public PartialViewResult OnPostUpload() {
+        [BindProperty, Display(Name = "File")] public IFormFile UploadedFile { get; set; }
+
+        public PartialViewResult OnPostUpload()
+        {
             Task.Delay(1200);
 
             return Partial("_javascript", UploadedFile);
-
         }
 
         public PartialViewResult OnPostUpload2()

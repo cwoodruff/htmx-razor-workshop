@@ -1,5 +1,5 @@
 htmx.defineExtension('morphdom-swap', {
-    isInlineSwap: function(swapStyle) {
+    isInlineSwap: function (swapStyle) {
         return swapStyle === 'morphdom';
     },
     handleSwap: function (swapStyle, target, fragment) {

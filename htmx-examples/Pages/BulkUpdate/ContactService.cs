@@ -1,6 +1,5 @@
 namespace htmx_examples.Pages.BulkUpdate
 {
-
     public class ContactService : IContactService
     {
         private Dictionary<int, Contact> contacts;

@@ -12,7 +12,7 @@ namespace htmx_examples.Pages.EditRow
         public string? RequestToken { get; set; }
         public IList<Contact>? Contacts { get; set; }
 
-        [FromQuery(Name="Id")] public int Id { get; set; }
+        [FromQuery(Name = "Id")] public int Id { get; set; }
 
         public IndexModel(IContactService contactService, IAntiforgery antiforgery)
         {
@@ -26,18 +26,21 @@ namespace htmx_examples.Pages.EditRow
             var tokenSet = _antiforgery.GetAndStoreTokens(HttpContext);
             RequestToken = tokenSet.RequestToken;
         }
+
         public PartialViewResult OnGetEdit(int Id)
         {
             var contact = contactService.Get(Id);
 
             return Partial("_EditRow", contact);
         }
+
         public PartialViewResult OnGetView(int Id)
         {
             var contact = contactService.Get(Id);
 
             return Partial("_TableRow", contact);
         }
+
         public PartialViewResult OnPut(Contact contact)
         {
             contactService.Update(contact);

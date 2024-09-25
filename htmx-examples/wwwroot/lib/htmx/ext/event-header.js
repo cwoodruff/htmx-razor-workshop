@@ -1,18 +1,18 @@
-(function(){
+(function () {
     function stringifyEvent(event) {
         var obj = {};
         for (var key in event) {
             obj[key] = event[key];
         }
-        return JSON.stringify(obj, function(key, value){
-            if(value instanceof Node){
+        return JSON.stringify(obj, function (key, value) {
+            if (value instanceof Node) {
                 var nodeRep = value.tagName;
                 if (nodeRep) {
                     nodeRep = nodeRep.toLowerCase();
-                    if(value.id){
+                    if (value.id) {
                         nodeRep += "#" + value.id;
                     }
-                    if(value.classList && value.classList.length){
+                    if (value.classList && value.classList.length) {
                         nodeRep += "." + value.classList.toString().replace(" ", ".")
                     }
                     return nodeRep;

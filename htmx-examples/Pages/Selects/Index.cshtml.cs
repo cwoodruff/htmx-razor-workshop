@@ -5,7 +5,6 @@ namespace htmx_examples.Pages.Selects
 {
     public class IndexModel : PageModel
     {
-
         private static readonly Dictionary<string, List<string>> MakeModel;
 
         static IndexModel()
@@ -26,6 +25,7 @@ namespace htmx_examples.Pages.Selects
         public List<String> ManufacturerMake { get; set; }
         public List<String> ManufacturerModels { get; set; }
         [FromQuery(Name = "make")] public string Make { get; set; }
+
         public PartialViewResult OnGetModels()
         {
             ManufacturerModels = MakeModel[Make];

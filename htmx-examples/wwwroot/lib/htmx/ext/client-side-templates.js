@@ -1,5 +1,5 @@
 htmx.defineExtension('client-side-templates', {
-    transformResponse : function(text, xhr, elt) {
+    transformResponse: function (text, xhr, elt) {
 
         var mustacheTemplate = htmx.closest(elt, "[mustache-template]");
         if (mustacheTemplate) {
@@ -19,7 +19,7 @@ htmx.defineExtension('client-side-templates', {
             var templateId = mustacheArrayTemplate.getAttribute('mustache-array-template');
             var template = htmx.find("#" + templateId);
             if (template) {
-                return Mustache.render(template.innerHTML, {"data": data });
+                return Mustache.render(template.innerHTML, {"data": data});
             } else {
                 throw "Unknown mustache template: " + templateId;
             }
@@ -68,29 +68,29 @@ htmx.defineExtension('client-side-templates', {
             var templateId = xsltTemplate.getAttribute('xslt-template');
             var template = htmx.find("#" + templateId);
             if (template) {
-              var content = template.innerHTML ? new DOMParser().parseFromString(template.innerHTML, 'application/xml')
-                                               : template.contentDocument;
-              var processor = new XSLTProcessor();
-              processor.importStylesheet(content);
-              var data = new DOMParser().parseFromString(text, "application/xml");
-              var frag = processor.transformToFragment(data, document);
-              return new XMLSerializer().serializeToString(frag);
+                var content = template.innerHTML ? new DOMParser().parseFromString(template.innerHTML, 'application/xml')
+                    : template.contentDocument;
+                var processor = new XSLTProcessor();
+                processor.importStylesheet(content);
+                var data = new DOMParser().parseFromString(text, "application/xml");
+                var frag = processor.transformToFragment(data, document);
+                return new XMLSerializer().serializeToString(frag);
             } else {
-              throw "Unknown XSLT template: " + templateId;
+                throw "Unknown XSLT template: " + templateId;
             }
         }
 
-          var nunjucksArrayTemplate = htmx.closest(elt, "[nunjucks-array-template]");
-          if (nunjucksArrayTemplate) {
-              var data = JSON.parse(text);
-              var templateName = nunjucksArrayTemplate.getAttribute('nunjucks-array-template');
-              var template = htmx.find('#' + templateName);
-              if (template) {
-                  return nunjucks.renderString(template.innerHTML, {"data": data});
-              } else {
-                  return nunjucks.render(templateName, {"data": data});
-              }
+        var nunjucksArrayTemplate = htmx.closest(elt, "[nunjucks-array-template]");
+        if (nunjucksArrayTemplate) {
+            var data = JSON.parse(text);
+            var templateName = nunjucksArrayTemplate.getAttribute('nunjucks-array-template');
+            var template = htmx.find('#' + templateName);
+            if (template) {
+                return nunjucks.renderString(template.innerHTML, {"data": data});
+            } else {
+                return nunjucks.render(templateName, {"data": data});
             }
+        }
         return text;
     }
 });

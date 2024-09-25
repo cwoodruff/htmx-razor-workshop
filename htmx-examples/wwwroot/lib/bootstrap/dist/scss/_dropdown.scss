@@ -108,6 +108,7 @@
     }
   }
 }
+
 // scss-docs-end responsive-breakpoints
 
 // Allow for dropdowns to go bottom up (aka, dropup-menu)
@@ -136,6 +137,7 @@
 
   .dropdown-toggle {
     @include caret(end);
+
     &::after {
       vertical-align: 0;
     }
@@ -153,6 +155,7 @@
 
   .dropdown-toggle {
     @include caret(start);
+
     &::before {
       vertical-align: 0;
     }

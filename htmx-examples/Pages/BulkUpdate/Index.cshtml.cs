@@ -13,6 +13,7 @@ namespace htmx_examples.Pages.BulkUpdate
         }
 
         public List<Contact>? ContactTableRows { get; set; }
+
         public void OnGet()
         {
             ContactTableRows = service.Get().ToList();
@@ -21,7 +22,7 @@ namespace htmx_examples.Pages.BulkUpdate
 
         public PartialViewResult OnPutActivate(int[] Ids)
         {
-            foreach(var Id in Ids)
+            foreach (var Id in Ids)
                 service.Update(Id, true);
             var models = service.Get();
             foreach (var m in models)
@@ -36,13 +37,12 @@ namespace htmx_examples.Pages.BulkUpdate
             foreach (var Id in Ids)
                 service.Update(Id, false);
             var models = service.Get();
-            foreach(var m in models)
-                if(Ids.Contains(m.Id))
+            foreach (var m in models)
+                if (Ids.Contains(m.Id))
                     m.Updated = true;
                 else m.Updated = false;
 
             return Partial("_tbody", models.ToList());
-
         }
     }
 }

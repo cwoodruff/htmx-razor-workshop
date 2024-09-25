@@ -6,7 +6,7 @@
 <div hx-target="this" hx-swap="outerHTML" class="@(hasError ? "val-error" : string.Empty)">
     <label class="control-label">Email Address</label>
     <input name="email" hx-post="/InlineValidation?handler=email" hx-indicator="#ind" value="@Model" invalid="@(hasError.ToString().ToLower())" class="form-control">
-    <img id="ind" src="/img/bars.svg" class="htmx-indicator" />
+    <img id="ind" src="/img/bars.svg" class="htmx-indicator"/>
     @if (hasError)
     {
         <div class='error-message'>@validationError</div>

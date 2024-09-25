@@ -4,8 +4,8 @@ htmx.defineExtension('json-enc', {
             evt.detail.headers['Content-Type'] = "application/json";
         }
     },
-    
-    encodeParameters : function(xhr, parameters, elt) {
+
+    encodeParameters: function (xhr, parameters, elt) {
         xhr.overrideMimeType('text/json');
         return (JSON.stringify(parameters));
     }
