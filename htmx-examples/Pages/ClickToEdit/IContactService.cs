@@ -1,8 +1,7 @@
-﻿namespace htmx_examples.Pages.ClickToEdit
+﻿namespace htmx_examples.Pages.ClickToEdit;
+
+public interface IContactService
 {
-    public interface IContactService
-    {
-        Contact Get(int Id);
-        void Update(int Id, Contact updatedContact);
-    }
+    Contact Get(int Id);
+    void Update(int Id, Contact updatedContact);
 }

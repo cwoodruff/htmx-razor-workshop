@@ -1,8 +1,7 @@
-﻿namespace htmx_examples.Pages.BulkUpdate
+﻿namespace htmx_examples.Pages.BulkUpdate;
+
+public interface IContactService
 {
-    public interface IContactService
-    {
-        IEnumerable<Contact> Get();
-        void Update(int Id, bool Status);
-    }
+    IEnumerable<Contact> Get();
+    void Update(int Id, bool Status);
 }
