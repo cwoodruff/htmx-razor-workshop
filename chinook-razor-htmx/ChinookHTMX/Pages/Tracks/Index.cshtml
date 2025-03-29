@@ -1,0 +1,129 @@
+@page
+@model ChinookHTMX.Pages.Tracks.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<!-- Main Content -->
+<div id="content">
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Tracks</h4>
+            </div>
+            <div class="card-body">
+                <p>
+                    <button hx-get="@Url.PageLink("Create")"
+                            hx-target="#modal"
+                            hx-swap="innerHTML"
+                            class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-flag"></i>
+                        </span>
+                        <span class="text">Create New Track</span>
+                    </button>
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable">
+                        <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Track[0].Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Track[0].Composer)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Track[0].Milliseconds)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Track[0].Bytes)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Track[0].UnitPrice)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Track[0].Album)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Track[0].Genre)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Track[0].MediaType)
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model.Track)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Composer)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Milliseconds)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Bytes)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UnitPrice)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Album.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Genre.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.MediaType.Id)
+                                </td>
+                                <td>
+                                    <button hx-get="@Url.PageLink("Edit", values: new { item.Id })"
+                                            hx-target="#modal"
+                                            hx-swap="innerHTML"
+                                            class="btn btn-primary btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-flag"></i>
+                                        </span>
+                                        <span class="text">Edit</span>
+                                    </button>
+                                    <button hx-get="@Url.PageLink("Details", values: new { item.Id })"
+                                            hx-target="#modal"
+                                            hx-swap="innerHTML"
+                                            class="btn btn-primary btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-flag"></i>
+                                        </span>
+                                        <span class="text">Details</span>
+                                    </button>
+                                    <button hx-get="@Url.PageLink("Delete", values: new { item.Id })"
+                                            hx-target="#modal"
+                                            hx-swap="innerHTML"
+                                            class="btn btn-primary btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-flag"></i>
+                                        </span>
+                                        <span class="text">Delete</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- End of Main Content -->
+
+<div id="modal"></div>

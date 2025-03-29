@@ -1,0 +1,46 @@
+@page
+@model ChinookHTMX.Pages.InvoiceLines.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>InvoiceLine</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="InvoiceLine.Id"/>
+            <div class="form-group">
+                <label asp-for="InvoiceLine.InvoiceId" class="control-label"></label>
+                <select asp-for="InvoiceLine.InvoiceId" class="form-control" asp-items="ViewBag.InvoiceId"></select>
+                <span asp-validation-for="InvoiceLine.InvoiceId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InvoiceLine.TrackId" class="control-label"></label>
+                <select asp-for="InvoiceLine.TrackId" class="form-control" asp-items="ViewBag.TrackId"></select>
+                <span asp-validation-for="InvoiceLine.TrackId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InvoiceLine.UnitPrice" class="control-label"></label>
+                <input asp-for="InvoiceLine.UnitPrice" class="form-control"/>
+                <span asp-validation-for="InvoiceLine.UnitPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InvoiceLine.Quantity" class="control-label"></label>
+                <input asp-for="InvoiceLine.Quantity" class="form-control"/>
+                <span asp-validation-for="InvoiceLine.Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>

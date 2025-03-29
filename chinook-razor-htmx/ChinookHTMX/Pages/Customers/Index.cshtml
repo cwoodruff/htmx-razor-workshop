@@ -1,0 +1,153 @@
+@page
+@model ChinookHTMX.Pages.Customers.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<!-- Main Content -->
+<div id="content">
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Customers</h4>
+            </div>
+            <div class="card-body">
+                <p>
+                    <button hx-get="@Url.PageLink("Create")"
+                            hx-target="#modal"
+                            hx-swap="innerHTML"
+                            class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-flag"></i>
+                        </span>
+                        <span class="text">Create New Customer</span>
+                    </button>
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable">
+                        <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].FirstName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].LastName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].Company)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].Address)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].City)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].State)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].Country)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].PostalCode)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].Phone)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].Fax)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].Email)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Customer[0].SupportRep)
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model.Customer)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FirstName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LastName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Company)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Address)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.City)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.State)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Country)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PostalCode)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Phone)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Fax)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SupportRep.Id)
+                                </td>
+                                <td>
+                                    <button hx-get="@Url.PageLink("Edit", values: new { item.Id })"
+                                            hx-target="#modal"
+                                            hx-swap="innerHTML"
+                                            class="btn btn-primary btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-flag"></i>
+                                        </span>
+                                        <span class="text">Edit</span>
+                                    </button>
+                                    <button hx-get="@Url.PageLink("Details", values: new { item.Id })"
+                                            hx-target="#modal"
+                                            hx-swap="innerHTML"
+                                            class="btn btn-primary btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-flag"></i>
+                                        </span>
+                                        <span class="text">Details</span>
+                                    </button>
+                                    <button hx-get="@Url.PageLink("Delete", values: new { item.Id })"
+                                            hx-target="#modal"
+                                            hx-swap="innerHTML"
+                                            class="btn btn-primary btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-flag"></i>
+                                        </span>
+                                        <span class="text">Delete</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- End of Main Content -->
+
+<div id="modal"></div>
