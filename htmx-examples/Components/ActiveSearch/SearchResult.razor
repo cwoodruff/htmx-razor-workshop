@@ -1,0 +1,10 @@
+@foreach (var c in Model!)
+{
+    <tr>
+        <td>@c.Name</td>
+    </tr>
+}
+
+@code {
+    [Parameter] public IEnumerable<Country>? Model { get; set; }
+}

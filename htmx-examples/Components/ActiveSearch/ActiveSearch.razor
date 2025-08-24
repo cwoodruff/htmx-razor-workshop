@@ -1,9 +1,7 @@
-﻿  @page "{handler?}"
-@model htmx_examples.Pages.ActiveSearch.IndexModel
+﻿@page "/ActiveSearch/Index"
+@inject AntiforgeryStateProvider Antiforgery
 
-@{
-    ViewData["Title"] = "Active Search";
-}
+<PageTitle>Active Search</PageTitle>
 
 <!-- Main Content -->
 <div id="content">
@@ -27,7 +25,7 @@
                        hx-post="/ActiveSearch/search"
                        hx-trigger="keyup changed delay:500ms, search"
                        hx-target="#search-results"
-                       hx-indicator=".htmx-indicator" hx-headers='{"RequestVerificationToken": "@Model.RequestToken"}'>
+                       hx-indicator=".htmx-indicator" hx-headers='{"RequestVerificationToken": "@_token"}'>
 
                 <table class="table">
                     <thead>
@@ -49,3 +47,13 @@
 <!-- End of Main Content -->
 
 <div id="modal"></div>
+
+@code {
+    private string _token = "";
+
+    protected override void OnInitialized()
+    {
+        _token = Antiforgery.GetAntiforgeryToken()?.Value;
+    }
+
+}
