@@ -11,6 +11,9 @@ builder.Services
 builder.Services
     .AddSingleton<htmx_examples.Pages.EditRow.IContactService, htmx_examples.Pages.EditRow.ContactService>();
 builder.Services.AddRazorPages();
+builder.Services.AddRazorComponents();
+builder.Services.AddControllers();
+builder.Services.AddAntiforgery();
 
 var app = builder.Build();
 
@@ -28,7 +31,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAntiforgery();
 
+app.MapControllers();
 app.MapRazorPages();
 
 app.Run();

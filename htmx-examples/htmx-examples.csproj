@@ -14,4 +14,14 @@
         <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.21.0"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Components\ActiveSearch\Index.cshtml" />
+      <AdditionalFiles Include="Components\ActiveSearch\_searchResult.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\ActiveSearch\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\ActiveSearch\_searchResult.cshtml" />
+    </ItemGroup>
+
 </Project>
