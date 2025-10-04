@@ -1,5 +1,3 @@
-using htmx_examples.Components;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -37,6 +35,5 @@ app.UseAntiforgery();
 
 app.MapControllers();
 app.MapRazorPages();
-app.MapRazorComponents<App>();
 
 app.Run();
