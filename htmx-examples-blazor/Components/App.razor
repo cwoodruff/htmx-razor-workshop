@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <PageTitle>HTMX Examples</PageTitle>
+    <link rel="stylesheet" href="/css/sb-admin-2.min.css">
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="/lib/simple-sidebar/css/styles.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="/lib/datatables/dist/css/dataTables.bootstrap4.min.css" asp-append-version="true"/>
+    <HeadOutlet />
+
+    <!-- Custom fonts for this template-->
+    <link href="/lib/font-awesome/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <NavBar/>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <TopBar/>
+            <Routes/>
+            <Footer></Footer>
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+</div>
+
+<!-- Custom scripts for all pages-->
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script src="/js/sweetalert2/sweetalert2.all.min.js"></script>
+<script src="/js/sb-admin-2.min.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/lib/simple-sidebar/js/scripts.js" asp-append-version="true"></script>
+<script src="https://unpkg.com/htmx.org@2.0.6" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/hyperscript.org@0.9.12" defer></script>
+<script src="/lib/jquery-easing/jquery.easing.min.js"></script>
+<script src="/lib/datatables/dist/js/jquery.dataTables.min.js"></script>
+<script src="/lib/datatables/dist/js/dataTables.bootstrap4.min.js"></script>
+<script src="/js/site.js" asp-append-version="true"></script>
+<SectionOutlet SectionName="Scripts"></SectionOutlet>
+</body>
+</html>
+
+@code {
+    public string? PageTitle { get; set; }
+}
