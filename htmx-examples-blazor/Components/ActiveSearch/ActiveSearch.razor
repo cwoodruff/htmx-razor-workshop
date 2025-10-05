@@ -3,53 +3,32 @@
 
 <PageTitle>Active Search</PageTitle>
 
-<!-- Main Content -->
-<div id="content">
-    <!-- Begin Page Content -->
-    <div class="container-fluid">
-        <!-- Page Heading -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h4 class="m-0 font-weight-bold text-primary">Active Search</h4>
-            </div>
-            <div class="card-body">
+<h3>
+    Search Countries
+    <span class="htmx-indicator">
+        <img src="/img/bars.svg"/> Searching...
+    </span>
+</h3>
+<input class="form-control" type="search"
+        name="searchText" placeholder="Begin Typing To Search Users..."
+        hx-post="/ActiveSearch/search"
+        hx-trigger="keyup changed delay:500ms, search"
+        hx-target="#search-results"
+        hx-indicator=".htmx-indicator" hx-headers='{"RequestVerificationToken": "@_token"}'>
 
-                <h3>
-                    Search Countries
-                    <span class="htmx-indicator">
-                        <img src="/img/bars.svg"/> Searching...
-                    </span>
-                </h3>
-                <input class="form-control" type="search"
-                       name="searchText" placeholder="Begin Typing To Search Users..."
-                       hx-post="/ActiveSearch/search"
-                       hx-trigger="keyup changed delay:500ms, search"
-                       hx-target="#search-results"
-                       hx-indicator=".htmx-indicator" hx-headers='{"RequestVerificationToken": "@_token"}'>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Country</th>
 
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Country</th>
-
-                    </tr>
-                    </thead>
-                    <tbody id="search-results">
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-
-    </div>
-    <!-- /.container-fluid -->
-</div>
-<!-- End of Main Content -->
-
-<div id="modal"></div>
+    </tr>
+    </thead>
+    <tbody id="search-results">
+    </tbody>
+</table>
 
 @code {
-    private string _token = "";
+    private string? _token = "";
 
     protected override void OnInitialized()
     {
