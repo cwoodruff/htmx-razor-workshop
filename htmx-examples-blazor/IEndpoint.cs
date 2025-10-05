@@ -2,7 +2,7 @@ using System;
 
 namespace htmx_examples_blazor;
 
-public interface IEndpoint
+public interface IEndpoints
 {
-    void MapEndpoint(IEndpointRouteBuilder app);
+    void MapEndpoints(IEndpointRouteBuilder app);
 }

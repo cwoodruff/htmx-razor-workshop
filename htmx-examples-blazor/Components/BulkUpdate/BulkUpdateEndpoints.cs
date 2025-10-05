@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace htmx_examples_blazor.Components.BulkUpdate;
 
-public class BulkUpdateEndpoints : IEndpoint
+public class BulkUpdateEndpoints : IEndpoints
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoints(IEndpointRouteBuilder app)
     {
         app.MapPut("/BulkUpdate/Activate", (IContactService service, [FromForm] int[] Ids) =>
         {
