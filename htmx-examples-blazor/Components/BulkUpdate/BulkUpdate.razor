@@ -31,8 +31,7 @@
 }
 
 @code {
-    [Parameter]
-    public List<Contact>? ContactTableRows { get; set; }
+    private List<Contact>? ContactTableRows = [];
 
     protected override void OnInitialized()
     {
