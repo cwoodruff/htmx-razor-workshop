@@ -8,6 +8,8 @@ builder.Services.AddControllers();
 builder.Services.AddAntiforgery();
 builder.Services.AddHttpClient();
 
+builder.Services.AddSingleton<htmx_examples_blazor.Pages.BulkUpdate.IContactService, htmx_examples_blazor.Pages.BulkUpdate.ContactService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
