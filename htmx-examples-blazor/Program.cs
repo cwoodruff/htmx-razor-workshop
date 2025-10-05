@@ -1,3 +1,4 @@
+using htmx_examples_blazor;
 using htmx_examples_blazor.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents();
 builder.Services.AddControllers();
+builder.Services.AddEndpoints(typeof(Program).Assembly);
 builder.Services.AddAntiforgery();
 builder.Services.AddHttpClient();
 
@@ -25,6 +27,7 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+app.MapEndpoints();
 app.MapControllers();
 app.MapRazorComponents<App>();
 

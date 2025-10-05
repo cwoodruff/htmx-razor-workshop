@@ -1,23 +1,14 @@
 using htmx_examples_blazor.Pages.BulkUpdate;
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace htmx_examples_blazor.Components.BulkUpdate
+namespace htmx_examples_blazor.Components.BulkUpdate;
+
+public class BulkUpdateEndpoints : IEndpoint
 {
-    [ApiController]
-    [RequireAntiforgeryToken]
-    public class BulkUpdateController : ControllerBase
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        private readonly IContactService service;
-
-        public BulkUpdateController(IContactService service)
-        {
-            this.service = service;
-        }
-
-        [HttpPut("/BulkUpdate/Activate")]
-        public RazorComponentResult OnPutActivate([FromForm]int[] Ids)
+        app.MapPut("/BulkUpdate/Activate", (IContactService service, [FromForm] int[] Ids) =>
         {
             foreach (var Id in Ids)
                 service.Update(Id, true);
@@ -31,10 +22,9 @@ namespace htmx_examples_blazor.Components.BulkUpdate
             {
                 Model = models.ToList()
             });
-        }
+        });
 
-        [HttpPut("/BulkUpdate/Deactivate")]
-        public RazorComponentResult OnPutDeactivate([FromForm]int[] Ids)
+        app.MapPut("/BulkUpdate/Deactivate", (IContactService service, [FromForm] int[] Ids) =>
         {
             foreach (var Id in Ids)
                 service.Update(Id, false);
@@ -44,11 +34,10 @@ namespace htmx_examples_blazor.Components.BulkUpdate
                     m.Updated = true;
                 else m.Updated = false;
 
-
             return new RazorComponentResult<TableBody>(new
             {
                 Model = models.ToList()
             });
-        }
-    }
+        });
+   }
 }
