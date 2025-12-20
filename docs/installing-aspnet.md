@@ -2,26 +2,26 @@
 order: 4
 icon: desktop-download
 ---
-# Installing .NET 8 and ASP.NET 8
+# Installing .NET 10 and ASP.NET 10
 
-This page will instruct you how to download and install the .NET 7 SDK, including ASP.NET 8 Web API.
+This page will instruct you how to download and install the .NET 7 SDK, including ASP.NET 10 Web API.
 
 First, download the [.NET SDK](https://dotnet.microsoft.com/download/dotnet) on your computer.
 
-## Installing the SDK for .NET 8
+## Installing the SDK for .NET 10
 
 Next, install the .NET SDK on your computer.
 
-Next, open a terminal such as **PowerShell**, **Command Prompt**, or **bash**. Enter the following `dotnet` commands to verify that .NET 8 has been installed:
+Next, open a terminal such as **PowerShell**, **Command Prompt**, or **bash**. Enter the following `dotnet` commands to verify that .NET 10 has been installed:
 
 ```dotnetcli
 dotnet --list-sdks
 ```
 
-You see the .NET 8 SDK version as one of the outputs:
+You see the .NET 10 SDK version as one of the outputs:
 
 ```output
-8.0.XXX
+10.0.XXX
 ```
 
 Congratulations! You're ready to create your first ASP.NET Web API.
