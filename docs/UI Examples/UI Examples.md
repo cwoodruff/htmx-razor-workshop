@@ -24,11 +24,8 @@ You can find all exaples running in Azure to test and explore.
 | [Value Select](value-selects.md)	          | Demonstrates making the values of a select dependent on another select                         |
 | [Animations](animations.md)	               | Demonstrates various animation techniques                                                      |
 | [File Upload](file-upload.md)	             | Demonstrates how to upload a file via ajax with a progress bar                                 |
-| Dialogs - Browser	                         | Demonstrates the prompt and confirm dialogs                                                    |
-| Dialogs - UIKit	                           | Demonstrates modal dialogs using UIKit                                                         |
-| Dialogs - Bootstrap	                       | Demonstrates modal dialogs using Bootstrap                                                     |
-| Dialogs - Custom	                          | Demonstrates modal dialogs from scratch                                                        |
-| Keyboard Shortcuts	                        | Demonstrates how to create keyboard shortcuts for htmx enabled elements                        |
-| Drag & Drop / Sortable	                    | Demonstrates how to use htmx with the Sortable.js plugin to implement drag-and-drop reordering |
-| Updating Other Content	                    | Demonstrates how to update content beyond just the target elements                             |
-| Confirm	                                   | Demonstrates how to implement a custom confirmation dialog with htmx                           |
+| [Dialogs - Bootstrap](dialog-browser.md)	  | Demonstrates the prompt and confirm dialogs using Bootstrap                                                   |
+| [Dialogs - UIKit](dialog-uikit.md)        | Demonstrates modal dialogs using UIKit                                                         |
+| [Dialogs - Custom](dialog-custom.md)	  | Demonstrates modal dialogs from scratch                                                        |
+| [Keyboard Shortcuts](keyboard-shortcuts.md)	  | Demonstrates how to create keyboard shortcuts for htmx enabled elements                        |
+| [Drag & Drop with Sorting](drag-drop.md)	  | Demonstrates how to use htmx with the Sortable.js plugin to implement drag-and-drop reordering |
