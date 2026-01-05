@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820153425225">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Tabs</title>
     <meta name="title" content="Tabs">
+    <meta name="description" content="The Tabs pattern is a classic UI element for organizing content.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/tabs/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/tabs/">
     <meta property="og:title" content="Tabs">
+    <meta property="og:description" content="The Tabs pattern is a classic UI element for organizing content.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/tabs/">
     <meta property="twitter:title" content="Tabs">
+    <meta property="twitter:description" content="The Tabs pattern is a classic UI element for organizing content.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820153425225" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,103 @@
         <span>Tabs</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="implementing-tabs-with-htmx-and-aspnet-core">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#implementing-tabs-with-htmx-and-aspnet-core">#</doc-anchor-trigger>
+        <span>Implementing Tabs with htmx and ASP.NET Core</span>
+    </h3>
+</doc-anchor-target>
+<p>The Tabs pattern is a classic UI element for organizing content. With htmx, you can create a dynamic tabbing system that loads content asynchronously, reducing the initial page weight and making the interface feel snappy and modern.</p>
+<doc-anchor-target id="1-the-container-and-initial-load">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#1-the-container-and-initial-load">#</doc-anchor-trigger>
+        <span>1. The Container and Initial Load</span>
+    </h4>
+</doc-anchor-target>
+<p>In <code v-pre>Index.cshtml</code>, we define a container for our tabs. We use htmx to automatically load the first tab when the page is ready.</p>
+<p><strong><code v-pre>Index.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;div class=&quot;card-body&quot;&gt;
+    &lt;div id=&quot;tabs&quot;
+         hx-get=&quot;/Tabs/tab1&quot;
+         hx-trigger=&quot;load delay:100ms&quot;
+         hx-target=&quot;#tabs&quot;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<ul>
+<li><code v-pre>hx-get=&quot;/Tabs/tab1&quot;</code>: Requests the content for the first tab from the server.</li>
+<li><code v-pre>hx-trigger=&quot;load delay:100ms&quot;</code>: Automatically fires the request 100ms after the page loads.</li>
+<li><code v-pre>hx-target=&quot;#tabs&quot;</code>: Replaces the content of the <code v-pre>div</code> with the returned HTML.</li>
+</ul>
+<doc-anchor-target id="2-the-tab-partial-view">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#2-the-tab-partial-view">#</doc-anchor-trigger>
+        <span>2. The Tab Partial View</span>
+    </h4>
+</doc-anchor-target>
+<p>Each tab is represented by a partial view that includes the tab navigation and the specific content for that tab. When a user clicks a different tab, htmx fetches the corresponding partial view and replaces the entire tab structure.</p>
+<p><strong><code v-pre>_tab1.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;div class=&quot;tab-list&quot; role=&quot;tablist&quot;&gt;
+    &lt;button hx-get=&quot;/Tabs/tab1&quot; class=&quot;selected&quot; role=&quot;tab&quot;&gt;Tab 1&lt;/button&gt;
+    &lt;button hx-get=&quot;/Tabs/tab2&quot; role=&quot;tab&quot;&gt;Tab 2&lt;/button&gt;
+    &lt;button hx-get=&quot;/Tabs/tab3&quot; role=&quot;tab&quot;&gt;Tab 3&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div id=&quot;tab-content&quot; role=&quot;tabpanel&quot; class=&quot;tab-content&quot;&gt;
+    &lt;p&gt;Content for Tab 1...&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<ul>
+<li><code v-pre>hx-get</code>: Each button is wired to fetch its respective tab content.</li>
+<li><code v-pre>class=&quot;selected&quot;</code>: The active tab is styled differently to provide visual feedback.</li>
+<li>Because the <code v-pre>hx-target=&quot;#tabs&quot;</code> was defined on the parent container in <code v-pre>Index.cshtml</code>, and htmx attributes are inherited, clicking any button in the partial will replace the content of the <code v-pre>#tabs</code> div.</li>
+</ul>
+<doc-anchor-target id="3-the-backend-c-pagemodel">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#3-the-backend-c-pagemodel">#</doc-anchor-trigger>
+        <span>3. The Backend: C# PageModel</span>
+    </h4>
+</doc-anchor-target>
+<p>The server-side logic is straightforward. The <code v-pre>IndexModel</code> provides handlers for each tab, returning the appropriate partial view fragment.</p>
+<p><strong><code v-pre>Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class IndexModel : PageModel
+{
+    public void OnGet() { }
+
+    // Returns the fragment for Tab 1
+    public PartialViewResult OnGetTab1()
+    {
+        return Partial(&quot;_tab1&quot;);
+    }
+
+    // Returns the fragment for Tab 2
+    public PartialViewResult OnGetTab2()
+    {
+        return Partial(&quot;_tab2&quot;);
+    }
+
+    // Returns the fragment for Tab 3
+    public PartialViewResult OnGetTab3()
+    {
+        return Partial(&quot;_tab3&quot;);
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="why-this-works-well">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#why-this-works-well">#</doc-anchor-trigger>
+        <span>Why this works well</span>
+    </h4>
+</doc-anchor-target>
+<ol>
+<li><strong>Lazy Loading</strong>: Content for secondary tabs is only fetched when requested, speeding up the initial page load for heavy content.</li>
+<li><strong>Simplified State</strong>: You don&#x27;t need to manage &quot;active&quot; classes or &quot;hidden&quot; attributes in JavaScript. The server simply returns the HTML for the tab in its &quot;active&quot; state.</li>
+<li><strong>Encapsulation</strong>: Each tab&#x27;s logic and view are contained within its own partial view, making the code easier to maintain and extend.</li>
+<li><strong>No Client-Side Routing</strong>: You get the benefits of dynamic content switching without the complexity of a client-side router or a heavy SPA framework.</li>
+</ol>
 
                                 
                                 <!-- Required only on API pages -->
@@ -292,7 +393,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2025. All rights reserved.</p></div>
+                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2026. All rights reserved.</p></div>
                             </footer>
                         </div>
                     </div>
@@ -321,6 +422,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Tabs", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Tabs", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820153425225">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Infinite Scroll</title>
     <meta name="title" content="Infinite Scroll">
+    <meta name="description" content="The Infinite Scroll pattern provides a seamless browsing experience where new content is automatically loaded as the user reaches the bottom of the...">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/infinite-scroll/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/infinite-scroll/">
     <meta property="og:title" content="Infinite Scroll">
+    <meta property="og:description" content="The Infinite Scroll pattern provides a seamless browsing experience where new content is automatically loaded as the user reaches the bottom of the...">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/infinite-scroll/">
     <meta property="twitter:title" content="Infinite Scroll">
+    <meta property="twitter:description" content="The Infinite Scroll pattern provides a seamless browsing experience where new content is automatically loaded as the user reaches the bottom of the...">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820153425225" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,124 @@
         <span>Infinite Scroll</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="implementing-infinite-scroll-with-htmx-and-aspnet-core">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#implementing-infinite-scroll-with-htmx-and-aspnet-core">#</doc-anchor-trigger>
+        <span>Implementing Infinite Scroll with htmx and ASP.NET Core</span>
+    </h3>
+</doc-anchor-target>
+<p>The Infinite Scroll pattern provides a seamless browsing experience where new content is automatically loaded as the user reaches the bottom of the list. This is a popular alternative to traditional pagination, often seen in social media feeds and product listings.</p>
+<doc-anchor-target id="the-frontend-razor--htmx">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-frontend-razor--htmx">#</doc-anchor-trigger>
+        <span>The Frontend: Razor &amp; htmx</span>
+    </h4>
+</doc-anchor-target>
+<p>In <code v-pre>Index.cshtml</code>, we start with a standard table. The initial set of rows is rendered via a partial view.</p>
+<p><strong><code v-pre>Index.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;table class=&quot;table table-bordered&quot;&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;&lt;th&gt;ID&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;partial name=&quot;_PageResult&quot; model=&quot;@Model.Contacts&quot;/&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+</doc-codeblock></div>
+<p>The key logic resides in the <code v-pre>_PageResult.cshtml</code> partial. It iterates through the contacts and specifically marks the <strong>last row</strong> of the current set with htmx attributes to trigger the next load.</p>
+<p><strong><code v-pre>_PageResult.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model List&lt;Contact&gt;
+@{
+    int currentPage = (int)ViewData[&quot;PageNumber&quot;];
+}
+
+@if (Model.Count &gt; 0)
+{
+    int totalCount = Model.Count;
+    for (int count = 0; count &lt; totalCount; count++)
+    {
+        if ((count + 1) == totalCount)
+        {
+            @* The last row triggers the next page load when it is revealed *@
+            &lt;tr hx-get=&quot;/InfiniteScroll/Index?handler=NextPage&amp;Page=@(currentPage + 1)&quot;
+                hx-trigger=&quot;revealed&quot;
+                hx-swap=&quot;afterend&quot;&gt;
+                &lt;td&gt;@Model[count].Name&lt;/td&gt;
+                &lt;td&gt;@Model[count].Email&lt;/td&gt;
+                &lt;td&gt;@Model[count].UniqueIdentifier&lt;/td&gt;
+            &lt;/tr&gt;
+        }
+        else
+        {
+            &lt;tr&gt;
+                &lt;td&gt;@Model[count].Name&lt;/td&gt;
+                &lt;td&gt;@Model[count].Email&lt;/td&gt;
+                &lt;td&gt;@Model[count].UniqueIdentifier&lt;/td&gt;
+            &lt;/tr&gt;
+        }
+    }
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>Key htmx attributes used:</strong></p>
+<ul>
+<li><code v-pre>hx-get</code>: Requests the next page of data from the server.</li>
+<li><code v-pre>hx-trigger=&quot;revealed&quot;</code>: This is the &quot;magic&quot; attribute. It tells htmx to fire the request as soon as the element becomes visible in the viewport (i.e., when the user scrolls to it).</li>
+<li><code v-pre>hx-swap=&quot;afterend&quot;</code>: Instead of replacing the target, this appends the returned HTML <em>after</em> the current element, effectively extending the table rows.</li>
+</ul>
+<doc-anchor-target id="the-backend-c-pagemodel">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-backend-c-pagemodel">#</doc-anchor-trigger>
+        <span>The Backend: C# PageModel</span>
+    </h4>
+</doc-anchor-target>
+<p>The server-side code handles the request for the next page. It tracks the current page number and returns a partial view containing the next batch of contacts.</p>
+<p><strong><code v-pre>Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class IndexModel : PageModel
+{
+    [ViewData] public int PageCount { get; set; } = 25;
+    [ViewData] public int PageNumber { get; set; } = 0;
+    [FromQuery(Name = &quot;page&quot;)] public int NextPage { get; set; }
+    public List&lt;Contact&gt;? Contacts { get; set; }
+
+    public void OnGet()
+    {
+        this.Contacts = GetPagedResults(PageNumber, PageCount).ToList();
+    }
+
+    public PartialViewResult OnGetNextPage()
+    {
+        PageNumber = NextPage;
+        var results = GetPagedResults(NextPage, PageCount).ToList();
+        return Partial(&quot;_PageResult&quot;, results);
+    }
+
+    private IEnumerable&lt;Contact&gt; GetPagedResults(int page, int take)
+    {
+        var start = 10 + (page * take);
+        for (int i = start; i &lt; start + take; i++)
+        {
+            yield return new Contact(&quot;User Name&quot;, $&quot;user{i}@example.com&quot;, Guid.NewGuid());
+        }
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="why-this-works-well">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#why-this-works-well">#</doc-anchor-trigger>
+        <span>Why this works well</span>
+    </h4>
+</doc-anchor-target>
+<ol>
+<li><strong>Superior UX</strong>: Users can continue reading without having to stop and click a &quot;Next&quot; button.</li>
+<li><strong>Efficient Loading</strong>: Data is only fetched when the user actually scrolls to it, saving bandwidth and server resources for users who only view the top of the list.</li>
+<li><strong>Simple Implementation</strong>: Unlike complex JavaScript solutions that require monitoring scroll events and calculating offsets, htmx handles the intersection observation automatically via the <code v-pre>revealed</code> trigger.</li>
+<li><strong>Natural Extension</strong>: Using <code v-pre>hx-swap=&quot;afterend&quot;</code> on the last row naturally appends the next set of rows to the existing table structure.</li>
+</ol>
 
                                 
                                 <!-- Required only on API pages -->
@@ -254,10 +376,10 @@
                                     </div>
                             
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/inline-validation/">
+                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/keyboard-shortcuts/">
                                             <span>
                                                 <span class="block text-xs font-normal text-right text-base-text-muted">Next</span>
-                                                <span class="block mt-1">Inline Validation</span>
+                                                <span class="block mt-1">Keyboard Shortcuts</span>
                                             </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         </a>
@@ -292,7 +414,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2025. All rights reserved.</p></div>
+                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2026. All rights reserved.</p></div>
                             </footer>
                         </div>
                     </div>
@@ -321,6 +443,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Infinite Scroll", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Infinite Scroll", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

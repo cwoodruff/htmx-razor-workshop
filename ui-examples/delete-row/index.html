@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820153425225">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Delete Row</title>
     <meta name="title" content="Delete Row">
+    <meta name="description" content="The Delete Row pattern is a common requirement in data-driven applications.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/delete-row/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/delete-row/">
     <meta property="og:title" content="Delete Row">
+    <meta property="og:description" content="The Delete Row pattern is a common requirement in data-driven applications.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/delete-row/">
     <meta property="twitter:title" content="Delete Row">
+    <meta property="twitter:description" content="The Delete Row pattern is a common requirement in data-driven applications.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820153425225" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,98 @@
         <span>Delete Row</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="implementing-row-deletion-with-htmx-and-aspnet-core">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#implementing-row-deletion-with-htmx-and-aspnet-core">#</doc-anchor-trigger>
+        <span>Implementing Row Deletion with htmx and ASP.NET Core</span>
+    </h3>
+</doc-anchor-target>
+<p>The Delete Row pattern is a common requirement in data-driven applications. Using htmx, you can remove a record from the database and concurrently update the UI by removing the corresponding row from a table—all without a full page reload.</p>
+<doc-anchor-target id="the-frontend-razor--htmx">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-frontend-razor--htmx">#</doc-anchor-trigger>
+        <span>The Frontend: Razor &amp; htmx</span>
+    </h4>
+</doc-anchor-target>
+<p>In <code v-pre>Index.cshtml</code>, we set up a table where the <code v-pre>&lt;tbody&gt;</code> is configured to handle the deletion logic for all its child rows.</p>
+<p><strong><code v-pre>Index.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;tbody hx-confirm=&quot;Are you sure?&quot; hx-target=&quot;closest tr&quot; hx-swap=&quot;outerHTML swap:1s&quot;&gt;
+    @foreach (var contact in Model.Contacts)
+    {
+        &lt;partial name=&quot;_TableRow&quot; model=&quot;@contact&quot;/&gt;
+    }
+&lt;/tbody&gt;</code></pre>
+</doc-codeblock></div>
+<p>The individual rows are rendered via a partial view. Each row contains a &quot;Delete&quot; button that triggers the htmx request.</p>
+<p><strong><code v-pre>_TableRow.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model Contact
+
+&lt;tr&gt;
+    &lt;td&gt;@Model.Name&lt;/td&gt;
+    &lt;td&gt;@Model.Email&lt;/td&gt;
+    &lt;td&gt;@Model.Status&lt;/td&gt;
+    &lt;td&gt;
+        &lt;button class=&quot;btn btn-danger&quot;
+                hx-post=&quot;@Url.Page(&quot;Index&quot;, &quot;Contact&quot;, new { Id = Model.Id })&quot;
+                hx-include=&quot;closest form&quot;&gt;
+            Delete
+        &lt;/button&gt;
+    &lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Key htmx attributes used:</strong></p>
+<ul>
+<li><code v-pre>hx-confirm</code>: Automatically triggers a browser confirmation dialog before the request is sent.</li>
+<li><code v-pre>hx-post</code>: Sends a POST request to the <code v-pre>Contact</code> handler with the specific contact&#x27;s ID.</li>
+<li><code v-pre>hx-target=&quot;closest tr&quot;</code>: (Defined on the parent <code v-pre>tbody</code>) Tells htmx to target the table row containing the clicked button.</li>
+<li><code v-pre>hx-swap=&quot;outerHTML swap:1s&quot;</code>: Replaces the entire row with the server response (which is empty in this case). The <code v-pre>swap:1s</code> allows for a CSS transition effect (like a fade-out) before the element is finally removed from the DOM.</li>
+<li><code v-pre>hx-include=&quot;closest form&quot;</code>: Ensures the Anti-Forgery Token from the form is included in the POST request.</li>
+</ul>
+<doc-anchor-target id="the-backend-c-pagemodel">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-backend-c-pagemodel">#</doc-anchor-trigger>
+        <span>The Backend: C# PageModel</span>
+    </h4>
+</doc-anchor-target>
+<p>The <code v-pre>IndexModel</code> handles the deletion request. When the record is successfully deleted from the service, it returns an <code v-pre>OkResult</code>. Since the response body is empty, htmx simply removes the target element (the row) from the page.</p>
+<p><strong><code v-pre>Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">[ValidateAntiForgeryToken]
+public class IndexModel(IContactService contactService) : PageModel
+{
+    public IList&lt;Contact&gt;? Contacts { get; set; }
+    [FromQuery(Name = &quot;Id&quot;)] public int Id { get; set; }
+
+    public void OnGet()
+    {
+        this.Contacts = contactService.Get().ToArray();
+    }
+
+    public IActionResult OnPostContact()
+    {
+        // Delete the contact from the data store
+        contactService.Delete(this.Id);
+
+        // Returning an empty OkResult tells htmx to
+        // remove the target element from the DOM.
+        return new OkResult();
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="why-this-works-well">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#why-this-works-well">#</doc-anchor-trigger>
+        <span>Why this works well</span>
+    </h4>
+</doc-anchor-target>
+<ol>
+<li><strong>Declarative UI</strong>: You define the confirmation and targeting logic once on the container (<code v-pre>&lt;tbody&gt;</code>), making the individual row templates cleaner.</li>
+<li><strong>Visual Feedback</strong>: By using <code v-pre>swap:1s</code>, you can use CSS transitions to provide a smooth removal animation, making the UI feel more polished.</li>
+<li><strong>Low Overhead</strong>: The server only needs to return a simple <code v-pre>200 OK</code> status, minimizing bandwidth and processing time.</li>
+<li><strong>Security</strong>: The use of <code v-pre>[ValidateAntiForgeryToken]</code> and <code v-pre>hx-include=&quot;closest form&quot;</code> ensures that the deletion requests are protected against CSRF attacks.</li>
+</ol>
 
                                 
                                 <!-- Required only on API pages -->
@@ -292,7 +388,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2025. All rights reserved.</p></div>
+                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2026. All rights reserved.</p></div>
                             </footer>
                         </div>
                     </div>
@@ -321,6 +417,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Delete Row", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Delete Row", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820153425225">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Inline Validation</title>
     <meta name="title" content="Inline Validation">
+    <meta name="description" content="The Inline Validation pattern allows you to provide immediate feedback to users as they fill out a form, without waiting for a full form submission.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/inline-validation/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/inline-validation/">
     <meta property="og:title" content="Inline Validation">
+    <meta property="og:description" content="The Inline Validation pattern allows you to provide immediate feedback to users as they fill out a form, without waiting for a full form submission.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/inline-validation/">
     <meta property="twitter:title" content="Inline Validation">
+    <meta property="twitter:description" content="The Inline Validation pattern allows you to provide immediate feedback to users as they fill out a form, without waiting for a full form submission.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820153425225" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,118 @@
         <span>Inline Validation</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="implementing-inline-validation-with-htmx-and-aspnet-core">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#implementing-inline-validation-with-htmx-and-aspnet-core">#</doc-anchor-trigger>
+        <span>Implementing Inline Validation with htmx and ASP.NET Core</span>
+    </h3>
+</doc-anchor-target>
+<p>The Inline Validation pattern allows you to provide immediate feedback to users as they fill out a form, without waiting for a full form submission. This is particularly useful for tasks like checking if an email address is already in use or validating complex input requirements.</p>
+<doc-anchor-target id="the-frontend-razor--htmx">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-frontend-razor--htmx">#</doc-anchor-trigger>
+        <span>The Frontend: Razor &amp; htmx</span>
+    </h4>
+</doc-anchor-target>
+<p>In the <code v-pre>InlineValidation</code> demo, the main form includes a partial view for the email field. This field is configured to validate itself independently.</p>
+<p><strong><code v-pre>Index.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;form method=&quot;post&quot;&gt;
+    &lt;partial name=&quot;_EmailField&quot; model=&quot;@Model.Contact?.Email&quot;/&gt;
+    &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label asp-for=&quot;@Model.Contact.FirstName&quot;&gt;First Name&lt;/label&gt;
+        &lt;input type=&quot;text&quot; class=&quot;form-control&quot; asp-for=&quot;@Model.Contact.FirstName&quot;&gt;
+    &lt;/div&gt;
+    &lt;!-- ... other fields ... --&gt;
+    &lt;button class=&quot;btn btn-primary&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+</doc-codeblock></div>
+<p>The validation logic is defined within the <code v-pre>_EmailField.cshtml</code> partial. It uses htmx to trigger a validation check whenever the input changes.</p>
+<p><strong><code v-pre>_EmailField.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model string
+@{
+    string? validationError = ViewData[&quot;InvalidEmailMessage&quot;]?.ToString();
+    bool hasError = !String.IsNullOrEmpty(validationError);
+}
+&lt;div hx-target=&quot;this&quot; hx-swap=&quot;outerHTML&quot; class=&quot;@(hasError ? &quot;val-error&quot; : string.Empty)&quot;&gt;
+    &lt;label class=&quot;control-label&quot;&gt;Email Address&lt;/label&gt;
+    &lt;input name=&quot;email&quot;
+           hx-post=&quot;/InlineValidation?handler=email&quot;
+           hx-indicator=&quot;#ind&quot;
+           value=&quot;@Model&quot;
+           class=&quot;form-control&quot;&gt;
+    &lt;img id=&quot;ind&quot; src=&quot;/img/bars.svg&quot; class=&quot;htmx-indicator&quot;/&gt;
+    @if (hasError)
+    {
+        &lt;div class='error-message'&gt;@validationError&lt;/div&gt;
+    }
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Key htmx attributes used:</strong></p>
+<ul>
+<li><code v-pre>hx-post</code>: Sends the current value of the email field to the <code v-pre>OnPostEmail</code> handler. By default, for inputs, this is triggered by the <code v-pre>change</code> event.</li>
+<li><code v-pre>hx-target=&quot;this&quot;</code>: Ensures the server&#x27;s response replaces the entire validation container (the wrapping <code v-pre>div</code>).</li>
+<li><code v-pre>hx-swap=&quot;outerHTML&quot;</code>: Replaces the entire container so that the error classes and messages can be updated.</li>
+<li><code v-pre>hx-indicator=&quot;#ind&quot;</code>: Shows a loading spinner while the server is validating the input.</li>
+</ul>
+<doc-anchor-target id="the-backend-c-pagemodel">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-backend-c-pagemodel">#</doc-anchor-trigger>
+        <span>The Backend: C# PageModel</span>
+    </h4>
+</doc-anchor-target>
+<p>On the server, the <code v-pre>IndexModel</code> handles both the individual field validation and the final form submission. The <code v-pre>OnPostEmail</code> handler performs the inline check and returns the partial view.</p>
+<p><strong><code v-pre>Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class IndexModel : PageModel
+{
+    public string ExistingEmail { get; private set; } = &quot;firstname.lastname@example.com&quot;;
+    [ViewData] public string InvalidEmailMessage { get; set; }
+
+    // This handler handles the inline htmx validation request
+    public PartialViewResult OnPostEmail(string email)
+    {
+        if (String.IsNullOrEmpty(email) || !email.Contains('@'))
+        {
+            InvalidEmailMessage = &quot;Please enter a valid email address&quot;;
+        }
+        else if (email == ExistingEmail)
+        {
+            InvalidEmailMessage = &quot;That email is already taken. Please enter another email.&quot;;
+        }
+
+        // Return the same partial view with the validation message set in ViewData
+        return Partial(&quot;_EmailField&quot;, email);
+    }
+
+    // Standard POST handler for the full form submission
+    public IActionResult OnPost(Contact contact)
+    {
+        // Perform final validation check before processing
+        if (contact.Email == ExistingEmail)
+        {
+            InvalidEmailMessage = &quot;That email is already taken.&quot;;
+            return Page();
+        }
+
+        // Process valid form submission...
+        return Page();
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="why-this-works-well">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#why-this-works-well">#</doc-anchor-trigger>
+        <span>Why this works well</span>
+    </h4>
+</doc-anchor-target>
+<ol>
+<li><strong>Immediate Feedback</strong>: Users know instantly if their input is invalid or if a username/email is taken, reducing frustration at the end of a long form.</li>
+<li><strong>Logic Reuse</strong>: The same validation logic can be used for both the inline htmx check and the final server-side form processing.</li>
+<li><strong>Clean Separation</strong>: The validation UI (errors, styles) is encapsulated within a partial view, making the main form template easier to read.</li>
+<li><strong>No Custom JavaScript</strong>: You get rich, asynchronous validation behavior using only standard ASP.NET Core tools and declarative htmx attributes.</li>
+</ol>
 
                                 
                                 <!-- Required only on API pages -->
@@ -244,20 +360,20 @@
                             
                                 <nav id="retype-nextprev" class="print:hidden flex mt-14">
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/infinite-scroll/">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/dialog-custom/">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                             <span>
                                                 <span class="block text-xs font-normal text-base-text-muted">Previous</span>
-                                                <span class="block mt-1">Infinite Scroll</span>
+                                                <span class="block mt-1">Dialogs with Custom htmx</span>
                                             </span>
                                         </a>
                                     </div>
                             
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/lazy-loading/">
+                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/dialog-uikit/">
                                             <span>
                                                 <span class="block text-xs font-normal text-right text-base-text-muted">Next</span>
-                                                <span class="block mt-1">Lazy Loading</span>
+                                                <span class="block mt-1">Dialogs with UI​Kit</span>
                                             </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         </a>
@@ -292,7 +408,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2025. All rights reserved.</p></div>
+                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2026. All rights reserved.</p></div>
                             </footer>
                         </div>
                     </div>
@@ -321,6 +437,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Inline Validation", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Inline Validation", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

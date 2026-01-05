@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820153425225">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Edit Row</title>
     <meta name="title" content="Edit Row">
+    <meta name="description" content="The Edit Row pattern allows users to edit individual rows in a table without leaving the page or opening a modal.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/edit-row/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/edit-row/">
     <meta property="og:title" content="Edit Row">
+    <meta property="og:description" content="The Edit Row pattern allows users to edit individual rows in a table without leaving the page or opening a modal.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/edit-row/">
     <meta property="twitter:title" content="Edit Row">
+    <meta property="twitter:description" content="The Edit Row pattern allows users to edit individual rows in a table without leaving the page or opening a modal.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820153425225" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,138 @@
         <span>Edit Row</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="implementing-row-editing-with-htmx-and-aspnet-core">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#implementing-row-editing-with-htmx-and-aspnet-core">#</doc-anchor-trigger>
+        <span>Implementing Row Editing with htmx and ASP.NET Core</span>
+    </h3>
+</doc-anchor-target>
+<p>The Edit Row pattern allows users to edit individual rows in a table without leaving the page or opening a modal. By leveraging htmx, we can swap a static table row for an editable version and then swap it back once the update is complete.</p>
+<doc-anchor-target id="1-the-table-structure">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#1-the-table-structure">#</doc-anchor-trigger>
+        <span>1. The Table Structure</span>
+    </h4>
+</doc-anchor-target>
+<p>In <code v-pre>Index.cshtml</code>, we define a table where the <code v-pre>&lt;tbody&gt;</code> is configured to handle the swap target for any htmx request originating from its children.</p>
+<p><strong><code v-pre>Index.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;tbody hx-target=&quot;closest tr&quot; hx-swap=&quot;outerHTML&quot;&gt;
+    @foreach (var contact in Model.Contacts)
+    {
+        &lt;partial name=&quot;_TableRow&quot; model=&quot;@contact&quot;/&gt;
+    }
+&lt;/tbody&gt;</code></pre>
+</doc-codeblock></div>
+<ul>
+<li><code v-pre>hx-target=&quot;closest tr&quot;</code>: This tells htmx that the result of any request within this body should target the nearest table row.</li>
+<li><code v-pre>hx-swap=&quot;outerHTML&quot;</code>: Replaces the entire <code v-pre>&lt;tr&gt;</code> element with the response from the server.</li>
+</ul>
+<doc-anchor-target id="2-the-read-only-row">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#2-the-read-only-row">#</doc-anchor-trigger>
+        <span>2. The Read-Only Row</span>
+    </h4>
+</doc-anchor-target>
+<p>Initially, each contact is rendered using a read-only partial view. The &quot;Edit&quot; button triggers a GET request to fetch the editable version of that specific row.</p>
+<p><strong><code v-pre>_TableRow.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model Contact
+
+&lt;tr&gt;
+    &lt;td&gt;@Model.Name&lt;/td&gt;
+    &lt;td&gt;@Model.Email&lt;/td&gt;
+    &lt;td&gt;
+        &lt;button class=&quot;btn btn-primary&quot;
+                hx-get=&quot;@Url.Page(&quot;Index&quot;, &quot;Edit&quot;, new { Id = Model.Id })&quot;&gt;
+            Edit
+        &lt;/button&gt;
+    &lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="3-the-editable-row">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#3-the-editable-row">#</doc-anchor-trigger>
+        <span>3. The Editable Row</span>
+    </h4>
+</doc-anchor-target>
+<p>When the &quot;Edit&quot; button is clicked, the server returns the <code v-pre>_EditRow.cshtml</code> partial. This row contains input fields and action buttons.</p>
+<p><strong><code v-pre>_EditRow.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model Contact
+
+&lt;tr&gt;
+    &lt;td&gt;
+        &lt;input type=&quot;hidden&quot; asp-for=&quot;@Model.Id&quot;/&gt;
+        &lt;input asp-for=&quot;@Model.Name&quot; class=&quot;form-control&quot;&gt;
+        @Html.AntiForgeryToken()
+    &lt;/td&gt;
+    &lt;td&gt;
+        &lt;input asp-for=&quot;@Model.Email&quot; class=&quot;form-control&quot;&gt;
+    &lt;/td&gt;
+    &lt;td&gt;
+        &lt;button class=&quot;btn btn-secondary&quot; hx-get=&quot;@Url.Page(&quot;Index&quot;, &quot;View&quot;, new { Id = Model.Id })&quot;&gt;
+            Cancel
+        &lt;/button&gt;
+        &lt;button class=&quot;btn btn-success&quot;
+                hx-put=&quot;@Url.Page(&quot;Index&quot;, &quot;Update&quot;, new { Id = Model.Id })&quot;
+                hx-include=&quot;closest tr&quot;&gt;
+            Save
+        &lt;/button&gt;
+    &lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+</doc-codeblock></div>
+<ul>
+<li><code v-pre>hx-include=&quot;closest tr&quot;</code>: Ensures that the values of the input fields in the current row are included in the PUT request.</li>
+<li>The &quot;Cancel&quot; button simply fetches the read-only row again, discarding any unsaved changes.</li>
+</ul>
+<doc-anchor-target id="4-the-backend-c-pagemodel">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#4-the-backend-c-pagemodel">#</doc-anchor-trigger>
+        <span>4. The Backend: C# PageModel</span>
+    </h4>
+</doc-anchor-target>
+<p>The <code v-pre>IndexModel</code> handles the transitions between states. It provides handlers for entering edit mode, canceling/viewing, and performing the update.</p>
+<p><strong><code v-pre>Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class IndexModel(IContactService contactService) : PageModel
+{
+    public IList&lt;Contact&gt;? Contacts { get; set; }
+
+    public void OnGet()
+    {
+        this.Contacts = contactService.Get().ToArray();
+    }
+
+    // Returns the editable row fragment
+    public PartialViewResult OnGetEdit(int Id)
+    {
+        var contact = contactService.Get(Id);
+        return Partial(&quot;_EditRow&quot;, contact);
+    }
+
+    // Returns the read-only row fragment (used for Cancel)
+    public PartialViewResult OnGetView(int Id)
+    {
+        var contact = contactService.Get(Id);
+        return Partial(&quot;_TableRow&quot;, contact);
+    }
+
+    // Handles the update and returns the updated read-only row
+    public PartialViewResult OnPutUpdate([FromForm] Contact contact)
+    {
+        contactService.Update(contact);
+        return Partial(&quot;_TableRow&quot;, contact);
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="summary">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#summary">#</doc-anchor-trigger>
+        <span>Summary</span>
+    </h4>
+</doc-anchor-target>
+<p>This pattern keeps the user in the flow of their data. By targeting only the &quot;closest tr&quot;, htmx makes it easy to manage row-level state without complex JavaScript selectors or managing a global state object. The transition between &quot;view&quot; and &quot;edit&quot; modes is seamless and extremely responsive.</p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -254,10 +390,10 @@
                                     </div>
                             
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/file-upload/">
+                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/drag-drop/">
                                             <span>
                                                 <span class="block text-xs font-normal text-right text-base-text-muted">Next</span>
-                                                <span class="block mt-1">File Upload</span>
+                                                <span class="block mt-1">Drag & Drop with Sorting</span>
                                             </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         </a>
@@ -292,7 +428,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2025. All rights reserved.</p></div>
+                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2026. All rights reserved.</p></div>
                             </footer>
                         </div>
                     </div>
@@ -321,6 +457,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Edit Row", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Edit Row", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

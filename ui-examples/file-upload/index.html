@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820153425225">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>File Upload</title>
     <meta name="title" content="File Upload">
+    <meta name="description" content="The File Upload pattern demonstrates how to handle multi-part form data using htmx while providing real-time progress tracking.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/file-upload/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/file-upload/">
     <meta property="og:title" content="File Upload">
+    <meta property="og:description" content="The File Upload pattern demonstrates how to handle multi-part form data using htmx while providing real-time progress tracking.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/file-upload/">
     <meta property="twitter:title" content="File Upload">
+    <meta property="twitter:description" content="The File Upload pattern demonstrates how to handle multi-part form data using htmx while providing real-time progress tracking.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820153425225" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,104 @@
         <span>File Upload</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="implementing-file-uploads-with-htmx-and-aspnet-core">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#implementing-file-uploads-with-htmx-and-aspnet-core">#</doc-anchor-trigger>
+        <span>Implementing File Uploads with htmx and ASP.NET Core</span>
+    </h3>
+</doc-anchor-target>
+<p>The File Upload pattern demonstrates how to handle multi-part form data using htmx while providing real-time progress tracking. This allows for a smoother user experience compared to traditional form submissions, as the page doesn&#x27;t need to refresh, and the user can see exactly how much of their file has been uploaded.</p>
+<doc-anchor-target id="the-frontend-razor--htmx">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-frontend-razor--htmx">#</doc-anchor-trigger>
+        <span>The Frontend: Razor &amp; htmx</span>
+    </h4>
+</doc-anchor-target>
+<p>In our <code v-pre>FileUpload</code> demo, we use <code v-pre>hx-encoding='multipart/form-data'</code> to ensure the browser sends the file correctly. We also include a <code v-pre>&lt;progress&gt;</code> element that htmx will update during the upload process.</p>
+<p><strong><code v-pre>_javascript.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model IFormFile
+&lt;form id='form' hx-encoding='multipart/form-data' hx-post='@Url.Page(&quot;Index&quot;, &quot;Upload&quot;)'&gt;
+    @Html.AntiForgeryToken()
+    &lt;div class=&quot;mb-3&quot;&gt;
+        &lt;label asp-for=&quot;@Model&quot; class=&quot;form-label&quot;&gt;File Upload&lt;/label&gt;
+        &lt;input name=&quot;UploadedFile&quot; class=&quot;form-control&quot; type=&quot;file&quot;&gt;
+    &lt;/div&gt;
+    &lt;button class=&quot;btn btn-primary&quot;&gt;Upload&lt;/button&gt;
+    &lt;progress id=&quot;js_progress&quot; value='0' max='100' class=&quot;mt-2&quot;&gt;&lt;/progress&gt;
+
+    @if (Model != null)
+    {
+        &lt;div class=&quot;alert alert-success mt-2&quot;&gt;
+            File uploaded: @Model.FileName
+        &lt;/div&gt;
+    }
+&lt;/form&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Key htmx attributes used:</strong></p>
+<ul>
+<li><code v-pre>hx-encoding='multipart/form-data'</code>: This is required for any form that includes a file input. It tells htmx to use a <code v-pre>FormData</code> object for the request.</li>
+<li><code v-pre>hx-post</code>: Sends the file data to the <code v-pre>Upload</code> handler on the server.</li>
+</ul>
+<doc-anchor-target id="progress-tracking-with-javascript">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#progress-tracking-with-javascript">#</doc-anchor-trigger>
+        <span>Progress Tracking with JavaScript</span>
+    </h4>
+</doc-anchor-target>
+<p>While htmx handles the upload, we use a small snippet of JavaScript to listen for the <code v-pre>htmx:xhr:progress</code> event and update our progress bar.</p>
+<p><strong><code v-pre>file-upload.js</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-javascript"><code v-pre class="language-javascript">htmx.on('#form', 'htmx:xhr:progress', function(evt) {
+    var progress = document.getElementById('js_progress');
+    if (progress) {
+        progress.setAttribute('value', evt.detail.loaded / evt.detail.total * 100);
+    }
+});</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="the-backend-c-pagemodel">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-backend-c-pagemodel">#</doc-anchor-trigger>
+        <span>The Backend: C# PageModel</span>
+    </h4>
+</doc-anchor-target>
+<p>On the server, the <code v-pre>IndexModel</code> receives the file as an <code v-pre>IFormFile</code>. It performs validation on the file size and extension before processing it.</p>
+<p><strong><code v-pre>Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class IndexModel : PageModel
+{
+    [BindProperty]
+    public IFormFile? UploadedFile { get; set; }
+
+    public async Task&lt;IActionResult&gt; OnPostUpload()
+    {
+        if (UploadedFile == null || UploadedFile.Length == 0)
+        {
+            return BadRequest(&quot;No file uploaded.&quot;);
+        }
+
+        // Validate file size and extension
+        var extension = Path.GetExtension(UploadedFile.FileName).ToLowerInvariant();
+        if (!IsAllowedExtension(extension))
+        {
+            return BadRequest(&quot;Invalid file type.&quot;);
+        }
+
+        // Simulate some processing time
+        await Task.Delay(1200);
+
+        // Return the partial view to show the success message
+        return Partial(&quot;_javascript&quot;, UploadedFile);
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="summary">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#summary">#</doc-anchor-trigger>
+        <span>Summary</span>
+    </h4>
+</doc-anchor-target>
+<p>Integrating file uploads with htmx is straightforward. By setting the correct encoding and handling the <code v-pre>htmx:xhr:progress</code> event, you can create a modern, responsive file upload interface with minimal custom JavaScript. The server continues to handle the file logic exactly as it would in a traditional ASP.NET Core application, making it easy to implement robust validation and storage logic.</p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -244,11 +346,11 @@
                             
                                 <nav id="retype-nextprev" class="print:hidden flex mt-14">
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/edit-row/">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/drag-drop/">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                             <span>
                                                 <span class="block text-xs font-normal text-base-text-muted">Previous</span>
-                                                <span class="block mt-1">Edit Row</span>
+                                                <span class="block mt-1">Drag & Drop with Sorting</span>
                                             </span>
                                         </a>
                                     </div>
@@ -292,7 +394,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2025. All rights reserved.</p></div>
+                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2026. All rights reserved.</p></div>
                             </footer>
                         </div>
                     </div>
@@ -321,6 +423,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "File Upload", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "File Upload", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

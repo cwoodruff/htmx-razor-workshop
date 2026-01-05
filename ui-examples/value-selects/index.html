@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820153425225">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Value Select</title>
     <meta name="title" content="Value Select">
+    <meta name="description" content="The Cascading Selects pattern (also known as dependent selects) is a common UI requirement where the options in one dropdown list depend on the...">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/value-selects/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/value-selects/">
     <meta property="og:title" content="Value Select">
+    <meta property="og:description" content="The Cascading Selects pattern (also known as dependent selects) is a common UI requirement where the options in one dropdown list depend on the...">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/value-selects/">
     <meta property="twitter:title" content="Value Select">
+    <meta property="twitter:description" content="The Cascading Selects pattern (also known as dependent selects) is a common UI requirement where the options in one dropdown list depend on the...">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820153425225" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,119 @@
         <span>Value Select</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="implementing-cascading-selects-with-htmx-and-aspnet-core">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#implementing-cascading-selects-with-htmx-and-aspnet-core">#</doc-anchor-trigger>
+        <span>Implementing Cascading Selects with htmx and ASP.NET Core</span>
+    </h3>
+</doc-anchor-target>
+<p>The Cascading Selects pattern (also known as dependent selects) is a common UI requirement where the options in one dropdown list depend on the selection made in a previous dropdown. htmx makes this incredibly simple by allowing you to fetch and swap the dependent dropdown&#x27;s content asynchronously.</p>
+<doc-anchor-target id="the-frontend-razor--htmx">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-frontend-razor--htmx">#</doc-anchor-trigger>
+        <span>The Frontend: Razor &amp; htmx</span>
+    </h4>
+</doc-anchor-target>
+<p>In <code v-pre>Index.cshtml</code>, we have two select elements. The first select (Make) is configured to trigger an htmx request whenever its value changes.</p>
+<p><strong><code v-pre>Index.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;div&gt;
+    &lt;label class=&quot;control-label&quot;&gt;Make&lt;/label&gt;
+    &lt;select name=&quot;make&quot;
+            hx-get=&quot;@Url.Page(&quot;Index&quot;, &quot;Models&quot;)&quot;
+            hx-target=&quot;#models&quot;
+            hx-indicator=&quot;.htmx-indicator&quot;&gt;
+        @foreach (var make in Model.ManufacturerMake)
+        {
+            &lt;option value=&quot;@make&quot;&gt;@make&lt;/option&gt;
+        }
+    &lt;/select&gt;
+&lt;/div&gt;
+
+&lt;div&gt;
+    &lt;label class=&quot;control-label&quot;&gt;Model&lt;/label&gt;
+    &lt;select id=&quot;models&quot; name=&quot;model&quot;&gt;
+        &lt;partial name=&quot;_modelSelector&quot; model=&quot;@Model.ManufacturerModels&quot;/&gt;
+    &lt;/select&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Key htmx attributes used:</strong></p>
+<ul>
+<li><code v-pre>hx-get</code>: Initiates a GET request to the <code v-pre>Models</code> handler when the user selects a different &quot;Make&quot;.</li>
+<li><code v-pre>hx-target=&quot;#models&quot;</code>: Specifies that the HTML returned by the server (the new list of options) should be placed inside the element with the ID <code v-pre>models</code>.</li>
+<li><code v-pre>name=&quot;make&quot;</code>: htmx automatically includes the value of the select element in the request as a query parameter named <code v-pre>make</code>.</li>
+</ul>
+<doc-anchor-target id="the-backend-c-pagemodel">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-backend-c-pagemodel">#</doc-anchor-trigger>
+        <span>The Backend: C# PageModel</span>
+    </h4>
+</doc-anchor-target>
+<p>The <code v-pre>IndexModel</code> manages the data for the manufacturers and their corresponding models. It uses a <code v-pre>Dictionary</code> to store the relationships and provides a handler to return the filtered models.</p>
+<p><strong><code v-pre>Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class IndexModel : PageModel
+{
+    private static readonly Dictionary&lt;string, List&lt;string&gt;&gt; MakeModel = new()
+    {
+        { &quot;Audi&quot;, new() { &quot;A1&quot;, &quot;A4&quot;, &quot;A6&quot; } },
+        { &quot;Toyota&quot;, new() { &quot;Landcruiser&quot;, &quot;Tacoma&quot;, &quot;Yaris&quot; } },
+        { &quot;BMW&quot;, new() { &quot;325i&quot;, &quot;325ix&quot;, &quot;X5&quot; } }
+    };
+
+    public List&lt;string&gt; ManufacturerMake { get; set; } = new();
+    public List&lt;string&gt; ManufacturerModels { get; set; } = new();
+
+    [FromQuery(Name = &quot;make&quot;)]
+    public string Make { get; set; } = string.Empty;
+
+    public void OnGet()
+    {
+        ManufacturerMake = MakeModel.Keys.ToList();
+        Make = ManufacturerMake.First();
+        ManufacturerModels = MakeModel[Make];
+    }
+
+    // This handler returns the partial view for the second select
+    public PartialViewResult OnGetModels()
+    {
+        ManufacturerModels = MakeModel.ContainsKey(Make)
+            ? MakeModel[Make]
+            : new List&lt;string&gt;();
+
+        return Partial(&quot;_modelSelector&quot;, ManufacturerModels);
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="the-result-partial-view">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-result-partial-view">#</doc-anchor-trigger>
+        <span>The Result: Partial View</span>
+    </h4>
+</doc-anchor-target>
+<p>The <code v-pre>_modelSelector.cshtml</code> partial view simply renders the <code v-pre>&lt;option&gt;</code> elements for the model dropdown.</p>
+<p><strong><code v-pre>_modelSelector.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model List&lt;string&gt;
+
+&lt;option value=&quot;&quot;&gt;Select a model&lt;/option&gt;
+@foreach (var s in Model)
+{
+    &lt;option value=&quot;@s&quot;&gt;@s&lt;/option&gt;
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="why-this-works-well">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#why-this-works-well">#</doc-anchor-trigger>
+        <span>Why this works well</span>
+    </h4>
+</doc-anchor-target>
+<ol>
+<li><strong>Cleaner Logic</strong>: You don&#x27;t need to ship a massive JSON object containing every possible combination of data to the client.</li>
+<li><strong>Reduced Complexity</strong>: There is no need for custom JavaScript to clear, filter, or rebuild the second dropdown.</li>
+<li><strong>Server-Side Control</strong>: The server remains the source of truth for the available options, making it easy to integrate with a database or external API.</li>
+<li><strong>Instant Feedback</strong>: The UI updates immediately upon selection, providing a smooth and responsive experience for the user.</li>
+</ol>
 
                                 
                                 <!-- Required only on API pages -->
@@ -292,7 +409,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2025. All rights reserved.</p></div>
+                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2026. All rights reserved.</p></div>
                             </footer>
                         </div>
                     </div>
@@ -321,6 +438,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Value Select", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Value Select", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

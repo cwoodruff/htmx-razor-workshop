@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820153425225">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Click to Load</title>
     <meta name="title" content="Click to Load">
+    <meta name="description" content="The Click-to-Load pattern is a great alternative to traditional pagination or infinite scroll.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/click-to-load/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/click-to-load/">
     <meta property="og:title" content="Click to Load">
+    <meta property="og:description" content="The Click-to-Load pattern is a great alternative to traditional pagination or infinite scroll.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/click-to-load/">
     <meta property="twitter:title" content="Click to Load">
+    <meta property="twitter:description" content="The Click-to-Load pattern is a great alternative to traditional pagination or infinite scroll.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820153425225" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,115 @@
         <span>Click to Load</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="implementing-click-to-load-with-htmx-and-aspnet-core">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#implementing-click-to-load-with-htmx-and-aspnet-core">#</doc-anchor-trigger>
+        <span>Implementing Click-to-Load with htmx and ASP.NET Core</span>
+    </h3>
+</doc-anchor-target>
+<p>The Click-to-Load pattern is a great alternative to traditional pagination or infinite scroll. It allows users to load more data only when they explicitly request it, keeping the initial page load light while providing a smooth way to browse through larger datasets.</p>
+<doc-anchor-target id="the-frontend-razor--htmx">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-frontend-razor--htmx">#</doc-anchor-trigger>
+        <span>The Frontend: Razor &amp; htmx</span>
+    </h4>
+</doc-anchor-target>
+<p>In <code v-pre>Index.cshtml</code>, we start with an initial set of data and a &quot;Load More&quot; button (contained within a partial view).</p>
+<p><strong><code v-pre>Index.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;partial name=&quot;_ClickToLoadButton&quot; model=&quot;@Model.Contacts&quot;/&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+</doc-codeblock></div>
+<p>The magic happens in the partial view. When the user clicks the button, htmx fetches the next page and replaces the <em>entire</em> row containing the button with the new data and a <em>new</em> button for the subsequent page.</p>
+<p><strong><code v-pre>_ClickToLoadButton.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model List&lt;Contact&gt;
+@{
+    int currentPage = (int)ViewData[&quot;PageNumber&quot;];
+}
+
+@foreach (var c in Model)
+{
+    &lt;tr&gt;
+        &lt;td&gt;@c.Name&lt;/td&gt;&lt;td&gt;@c.Email&lt;/td&gt;
+    &lt;/tr&gt;
+}
+
+&lt;tr id=&quot;replaceMe&quot;&gt;
+    &lt;td colspan=&quot;3&quot;&gt;
+        &lt;button class='btn' hx-get=&quot;/Clicktoload/Index/NextPage?page=@(currentPage + 1)&quot;
+                hx-target=&quot;#replaceMe&quot;
+                hx-swap=&quot;outerHTML&quot;&gt;
+            Load More... &lt;img class=&quot;htmx-indicator&quot; src=&quot;/img/bars.svg&quot;&gt;
+        &lt;/button&gt;
+    &lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Key htmx attributes used:</strong></p>
+<ul>
+<li><code v-pre>hx-get</code>: Requests the next page of results from the server.</li>
+<li><code v-pre>hx-target=&quot;#replaceMe&quot;</code>: Targets the specific table row that currently holds the button.</li>
+<li><code v-pre>hx-swap=&quot;outerHTML&quot;</code>: Replaces the target row with the new rows and the next &quot;Load More&quot; button.</li>
+</ul>
+<doc-anchor-target id="the-backend-c-pagemodel">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-backend-c-pagemodel">#</doc-anchor-trigger>
+        <span>The Backend: C# PageModel</span>
+    </h4>
+</doc-anchor-target>
+<p>The <code v-pre>IndexModel</code> handles the logic for fetching paged data. It uses <code v-pre>ViewData</code> to keep track of the current page number so the partial view knows what page to request next.</p>
+<p><strong><code v-pre>Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class IndexModel : PageModel
+{
+    [ViewData] public int PageCount { get; set; } = 5;
+    [ViewData] public int PageNumber { get; set; } = 0;
+    [FromQuery(Name = &quot;page&quot;)] public int NextPage { get; set; }
+    public List&lt;Contact&gt;? Contacts { get; set; }
+
+    public void OnGet()
+    {
+        Contacts = GetPagedResults(PageNumber, PageCount).ToList();
+    }
+
+    public PartialViewResult OnGetNextPage()
+    {
+        PageNumber = NextPage;
+        var results = GetPagedResults(NextPage, PageCount).ToList();
+        return Partial(&quot;_ClickToLoadButton&quot;, results);
+    }
+
+    private IEnumerable&lt;Contact&gt; GetPagedResults(int page, int take)
+    {
+        // Simple logic to generate dummy data for the demo
+        var start = 10 + (page * take);
+        for (int i = start; i &lt; start + take; i++)
+        {
+            yield return new Contact(&quot;User Name&quot;, $&quot;user{i}@example.com&quot;, Guid.NewGuid());
+        }
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="why-this-works-well">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#why-this-works-well">#</doc-anchor-trigger>
+        <span>Why this works well</span>
+    </h4>
+</doc-anchor-target>
+<ol>
+<li><strong>Reduced Initial Payload</strong>: You only send the first few records to the browser.</li>
+<li><strong>Server-Side State</strong>: The server dictates what the next &quot;page&quot; is by providing the URL in the new &quot;Load More&quot; button.</li>
+<li><strong>Seamless Integration</strong>: New rows are appended to the table naturally, maintaining the user&#x27;s scroll position while extending the list.</li>
+<li><strong>Simplicity</strong>: No complex JavaScript state management is required to track offsets or append elements to the DOM.</li>
+</ol>
 
                                 
                                 <!-- Required only on API pages -->
@@ -292,7 +405,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2025. All rights reserved.</p></div>
+                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2026. All rights reserved.</p></div>
                             </footer>
                         </div>
                     </div>
@@ -321,6 +434,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Click to Load", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Click to Load", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

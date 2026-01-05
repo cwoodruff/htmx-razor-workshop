@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820153425225">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Lazy Loading</title>
     <meta name="title" content="Lazy Loading">
+    <meta name="description" content="In modern web development, speed is everything. A slow-loading dashboard can frustrate users and lead to higher bounce rates.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/lazy-loading/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/lazy-loading/">
     <meta property="og:title" content="Lazy Loading">
+    <meta property="og:description" content="In modern web development, speed is everything. A slow-loading dashboard can frustrate users and lead to higher bounce rates.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/lazy-loading/">
     <meta property="twitter:title" content="Lazy Loading">
+    <meta property="twitter:description" content="In modern web development, speed is everything. A slow-loading dashboard can frustrate users and lead to higher bounce rates.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820153425225" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,124 @@
         <span>Lazy Loading</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="boosting-page-performance-lazy-loading-with-htmx-and-aspnet-core-razor-pages">
+    <h1>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#boosting-page-performance-lazy-loading-with-htmx-and-aspnet-core-razor-pages">#</doc-anchor-trigger>
+        <span>Boosting Page Performance: Lazy Loading with HTMX and ASP.NET Core Razor Pages</span>
+    </h1>
+</doc-anchor-target>
+<p>In modern web development, speed is everything. A slow-loading dashboard can frustrate users and lead to higher bounce rates. One of the most effective techniques to improve perceived performance is <strong>Lazy Loading</strong>—deferring the loading of non-critical, heavy components until after the main page is ready.</p>
+<p>In this post, we’ll explore how to implement lazy loading in an ASP.NET Core Razor Pages project using <a href="https://htmx.org/">htmx</a>.</p>
+<doc-anchor-target id="the-scenario">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-scenario">#</doc-anchor-trigger>
+        <span>The Scenario</span>
+    </h2>
+</doc-anchor-target>
+<p>Imagine a &quot;Sales Performance Dashboard&quot; with two heavy components:</p>
+<ol>
+<li><strong>Sales by Region Chart</strong>: Requires complex data aggregation.</li>
+<li><strong>Recent Activity Feed</strong>: Fetches data from a slow external API.</li>
+</ol>
+<p>Instead of making the user wait for these components to load before seeing the page, we’ll load the shell immediately and pull the data in asynchronously.</p>
+<doc-anchor-target id="1-the-backend-named-page-handlers">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#1-the-backend-named-page-handlers">#</doc-anchor-trigger>
+        <span>1. The Backend: Named Page Handlers</span>
+    </h2>
+</doc-anchor-target>
+<p>In Razor Pages, we can use <strong>Named Handlers</strong> to return partial views independently. In our <code v-pre>Index.cshtml.cs</code>, we define two handlers: <code v-pre>OnGetSalesChart</code> and <code v-pre>OnGetRecentActivity</code>.</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class IndexModel : PageModel
+{
+    public void OnGet() { /* Loads initial page shell */ }
+
+    public async Task&lt;IActionResult&gt; OnGetSalesChart()
+    {
+        // Simulate a slow database or API call
+        await Task.Delay(2000);
+        return Partial(&quot;_SalesChart&quot;);
+    }
+
+    public async Task&lt;IActionResult&gt; OnGetRecentActivity()
+    {
+        // Simulate another slow call
+        await Task.Delay(1000);
+        return Partial(&quot;_RecentActivity&quot;);
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="2-the-frontend-htmx-magic">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#2-the-frontend-htmx-magic">#</doc-anchor-trigger>
+        <span>2. The Frontend: HTMX Magic</span>
+    </h2>
+</doc-anchor-target>
+<p>Using htmx, we can trigger these handlers as soon as the page loads using the <code v-pre>hx-trigger=&quot;load&quot;</code> attribute.</p>
+<p>In <code v-pre>Index.cshtml</code>, we set up containers with &quot;skeletons&quot; or loading spinners. HTMX will automatically replace these placeholders with the returned HTML once the server responds.</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-md-7&quot;&gt;
+        &lt;!-- Sales Chart Widget --&gt;
+        &lt;div hx-get=&quot;/LazyLoading/Index?handler=SalesChart&quot;
+             hx-trigger=&quot;load&quot;&gt;
+            &lt;div class=&quot;text-center p-5 border rounded bg-light&quot;&gt;
+                &lt;div class=&quot;spinner-border text-primary&quot; role=&quot;status&quot;&gt;&lt;/div&gt;
+                &lt;p&gt;Loading Sales Data...&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-md-5&quot;&gt;
+        &lt;!-- Recent Activity Widget --&gt;
+        &lt;div hx-get=&quot;/LazyLoading/Index?handler=RecentActivity&quot;
+             hx-trigger=&quot;load&quot;&gt;
+            &lt;div class=&quot;text-center p-5 border rounded bg-light&quot;&gt;
+                &lt;div class=&quot;spinner-border text-secondary&quot; role=&quot;status&quot;&gt;&lt;/div&gt;
+                &lt;p&gt;Checking for updates...&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="3-the-partial-views">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#3-the-partial-views">#</doc-anchor-trigger>
+        <span>3. The Partial Views</span>
+    </h2>
+</doc-anchor-target>
+<p>The partial views (<code v-pre>_SalesChart.cshtml</code> and <code v-pre>_RecentActivity.cshtml</code>) contain only the HTML fragment needed for those specific widgets. For example, the <code v-pre>_SalesChart.cshtml</code> might look like this:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;div class=&quot;card mb-3&quot;&gt;
+    &lt;div class=&quot;card-body text-center&quot;&gt;
+        &lt;h5 class=&quot;card-title&quot;&gt;Sales by Region&lt;/h5&gt;
+        &lt;!-- Simulated Chart --&gt;
+        &lt;div class=&quot;d-flex align-items-end justify-content-around&quot; style=&quot;height: 150px;&quot;&gt;
+            &lt;div class=&quot;bg-primary&quot; style=&quot;width: 15%; height: 40%;&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;bg-info&quot; style=&quot;width: 15%; height: 75%;&quot;&gt;&lt;/div&gt;
+            &lt;!-- ... more bars ... --&gt;
+        &lt;/div&gt;
+        &lt;p class=&quot;mt-3 text-muted small&quot;&gt;Data as of @DateTime.Now.ToLongTimeString()&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="why-this-works">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#why-this-works">#</doc-anchor-trigger>
+        <span>Why This Works</span>
+    </h2>
+</doc-anchor-target>
+<ol>
+<li><strong>Instant Feedback</strong>: The user sees the dashboard layout and navigation immediately.</li>
+<li><strong>Parallel Loading</strong>: Both widgets start loading at the same time, without blocking the main thread.</li>
+<li><strong>No Custom JavaScript</strong>: We achieved a complex asynchronous behavior using only standard ASP.NET Core patterns and a few htmx attributes.</li>
+</ol>
+<doc-anchor-target id="conclusion">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#conclusion">#</doc-anchor-trigger>
+        <span>Conclusion</span>
+    </h2>
+</doc-anchor-target>
+<p>Lazy loading with htmx and Razor Pages is a powerful combination. It allows you to keep your backend logic in C# while providing the snappy, reactive experience users expect from modern web applications.</p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -244,20 +366,20 @@
                             
                                 <nav id="retype-nextprev" class="print:hidden flex mt-14">
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/inline-validation/">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/dialog-uikit/">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                             <span>
                                                 <span class="block text-xs font-normal text-base-text-muted">Previous</span>
-                                                <span class="block mt-1">Inline Validation</span>
+                                                <span class="block mt-1">Dialogs with UI​Kit</span>
                                             </span>
                                         </a>
                                     </div>
                             
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/progress-bar/">
+                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/dialog-browser/">
                                             <span>
                                                 <span class="block text-xs font-normal text-right text-base-text-muted">Next</span>
-                                                <span class="block mt-1">Progress Bar</span>
+                                                <span class="block mt-1">Dialogs with Bootstrap</span>
                                             </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         </a>
@@ -292,7 +414,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2025. All rights reserved.</p></div>
+                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2026. All rights reserved.</p></div>
                             </footer>
                         </div>
                     </div>
@@ -321,6 +443,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Lazy Loading", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Lazy Loading", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820153425225">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Click to Edit</title>
     <meta name="title" content="Click to Edit">
+    <meta name="description" content="The Click-to-Edit pattern is a sleek way to provide inline editing capabilities.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/click-to-edit/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/click-to-edit/">
     <meta property="og:title" content="Click to Edit">
+    <meta property="og:description" content="The Click-to-Edit pattern is a sleek way to provide inline editing capabilities.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/click-to-edit/">
     <meta property="twitter:title" content="Click to Edit">
+    <meta property="twitter:description" content="The Click-to-Edit pattern is a sleek way to provide inline editing capabilities.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820153425225" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,114 @@
         <span>Click to Edit</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="implementing-click-to-edit-with-htmx-and-aspnet-core">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#implementing-click-to-edit-with-htmx-and-aspnet-core">#</doc-anchor-trigger>
+        <span>Implementing Click-to-Edit with htmx and ASP.NET Core</span>
+    </h3>
+</doc-anchor-target>
+<p>The Click-to-Edit pattern is a sleek way to provide inline editing capabilities. Instead of redirecting to a separate edit page, htmx allows you to swap the display view with an edit form in-place, and then swap back once the update is complete.</p>
+<doc-anchor-target id="1-the-display-state">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#1-the-display-state">#</doc-anchor-trigger>
+        <span>1. The Display State</span>
+    </h4>
+</doc-anchor-target>
+<p>Initially, we show the contact information. The container is configured to handle the swap when an inner element triggers an htmx request.</p>
+<p><strong><code v-pre>_DisplayContactForm.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model Contact
+
+&lt;div hx-target=&quot;this&quot; hx-swap=&quot;outerHTML&quot;&gt;
+    &lt;div&gt;&lt;label asp-for=&quot;@Model.FirstName&quot;&gt;&lt;/label&gt;: @Model.FirstName&lt;/div&gt;
+    &lt;div&gt;&lt;label asp-for=&quot;@Model.LastName&quot;&gt;&lt;/label&gt;: @Model.LastName&lt;/div&gt;
+    &lt;div&gt;&lt;label asp-for=&quot;@Model.Email&quot;&gt;&lt;/label&gt;: @Model.Email&lt;/div&gt;
+    &lt;button hx-get=&quot;@Url.Page(&quot;Index&quot;, &quot;EditContact&quot;)&quot; class=&quot;btn btn-primary&quot;&gt;
+        Click To Edit
+    &lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<ul>
+<li><code v-pre>hx-target=&quot;this&quot;</code>: Tells htmx to replace the current <code v-pre>div</code> with the response.</li>
+<li><code v-pre>hx-swap=&quot;outerHTML&quot;</code>: Ensures the entire <code v-pre>div</code> is replaced, not just its content.</li>
+<li><code v-pre>hx-get</code>: Requests the edit form from the <code v-pre>EditContact</code> handler.</li>
+</ul>
+<doc-anchor-target id="2-the-edit-state">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#2-the-edit-state">#</doc-anchor-trigger>
+        <span>2. The Edit State</span>
+    </h4>
+</doc-anchor-target>
+<p>When the &quot;Click To Edit&quot; button is pressed, the server returns a partial view containing the form.</p>
+<p><strong><code v-pre>_EditContactForm.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model Contact
+
+&lt;form hx-put=&quot;@Url.Page(&quot;Index&quot;, &quot;ReplaceContact&quot;)&quot; hx-target=&quot;this&quot; hx-swap=&quot;outerHTML&quot;&gt;
+    @Html.AntiForgeryToken()
+    &lt;div&gt;
+        &lt;label asp-for=&quot;@Model.FirstName&quot;&gt;First Name&lt;/label&gt;
+        &lt;input asp-for=&quot;@Model.FirstName&quot;&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label asp-for=&quot;@Model.LastName&quot;&gt;Last Name&lt;/label&gt;
+        &lt;input asp-for=&quot;@Model.LastName&quot;&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label asp-for=&quot;@Model.Email&quot;&gt;Email Address&lt;/label&gt;
+        &lt;input asp-for=&quot;@Model.Email&quot;&gt;
+    &lt;/div&gt;
+    &lt;button class=&quot;btn btn-primary&quot;&gt;Submit&lt;/button&gt;
+    &lt;button class=&quot;btn btn-secondary&quot; hx-get=&quot;@Url.Page(&quot;Index&quot;, &quot;DisplayContact&quot;)&quot;&gt;Cancel&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+</doc-codeblock></div>
+<ul>
+<li><code v-pre>hx-put</code>: Submits the form data to the <code v-pre>ReplaceContact</code> handler.</li>
+<li>The &quot;Cancel&quot; button uses <code v-pre>hx-get</code> to fetch the display version again, discarding changes.</li>
+</ul>
+<doc-anchor-target id="3-the-backend-c-pagemodel">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#3-the-backend-c-pagemodel">#</doc-anchor-trigger>
+        <span>3. The Backend: C# PageModel</span>
+    </h4>
+</doc-anchor-target>
+<p>The <code v-pre>Index.cshtml.cs</code> file manages the transitions between these states by returning the appropriate partial views.</p>
+<p><strong><code v-pre>Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class Index : PageModel
+{
+    private IContactService contactService;
+    // ... constructor ...
+
+    // Fetches the edit form
+    public PartialViewResult OnGetEditContact()
+    {
+        var contact = contactService.Get(1);
+        return Partial(&quot;_EditContactForm&quot;, contact);
+    }
+
+    // Handles the update and returns the display view
+    public IActionResult OnPutReplaceContact(Contact model)
+    {
+        contactService.Update(1, model);
+        return Partial(&quot;_DisplayContactForm&quot;, model);
+    }
+
+    // Handles cancellation
+    public PartialViewResult OnGetDisplayContact()
+    {
+        var contact = contactService.Get(1);
+        return Partial(&quot;_DisplayContactForm&quot;, contact);
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="summary">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#summary">#</doc-anchor-trigger>
+        <span>Summary</span>
+    </h4>
+</doc-anchor-target>
+<p>This pattern provides a very &quot;app-like&quot; feel. By swapping small fragments of HTML, you avoid full page reloads and maintain the user&#x27;s scroll position and context, all while keeping your logic cleanly separated in Razor Pages and C#.</p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -292,7 +404,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2025. All rights reserved.</p></div>
+                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2026. All rights reserved.</p></div>
                             </footer>
                         </div>
                     </div>
@@ -321,6 +433,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Click to Edit", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Click to Edit", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

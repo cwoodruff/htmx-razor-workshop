@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820153425225">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Bulk Update</title>
     <meta name="title" content="Bulk Update">
+    <meta name="description" content="The Bulk Update pattern demonstrates how to handle multiple record updates efficiently using htmx.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/bulk-update/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/bulk-update/">
     <meta property="og:title" content="Bulk Update">
+    <meta property="og:description" content="The Bulk Update pattern demonstrates how to handle multiple record updates efficiently using htmx.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/bulk-update/">
     <meta property="twitter:title" content="Bulk Update">
+    <meta property="twitter:description" content="The Bulk Update pattern demonstrates how to handle multiple record updates efficiently using htmx.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820153425225" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820153425225" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,103 @@
         <span>Bulk Update</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="implementing-bulk-updates-with-htmx-and-aspnet-core">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#implementing-bulk-updates-with-htmx-and-aspnet-core">#</doc-anchor-trigger>
+        <span>Implementing Bulk Updates with htmx and ASP.NET Core</span>
+    </h3>
+</doc-anchor-target>
+<p>The Bulk Update pattern demonstrates how to handle multiple record updates efficiently using htmx. This approach allows users to select several items from a list and perform an action on all of them at once, with the UI updating dynamically to reflect the changes.</p>
+<doc-anchor-target id="the-frontend-razor--htmx">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-frontend-razor--htmx">#</doc-anchor-trigger>
+        <span>The Frontend: Razor &amp; htmx</span>
+    </h4>
+</doc-anchor-target>
+<p>In <code v-pre>Index.cshtml</code>, we have a set of buttons and a table wrapped in a form. The buttons use <code v-pre>hx-include</code> to pull in the selected checkboxes.</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;div hx-include=&quot;#checked-contacts&quot; hx-target=&quot;#tbody&quot;&gt;
+    &lt;button class=&quot;btn btn-primary&quot; hx-put=&quot;@Url.Page(&quot;Index&quot;, &quot;Activate&quot;)&quot;&gt;Activate&lt;/button&gt;
+    &lt;button class=&quot;btn btn-primary&quot; hx-put=&quot;@Url.Page(&quot;Index&quot;, &quot;Deactivate&quot;)&quot;&gt;Deactivate&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;form id=&quot;checked-contacts&quot;&gt;
+    @Html.AntiForgeryToken()
+    &lt;table&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th&gt;&lt;/th&gt;
+                &lt;th&gt;Name&lt;/th&gt;
+                &lt;th&gt;Email&lt;/th&gt;
+                &lt;th&gt;Status&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody id=&quot;tbody&quot;&gt;
+            &lt;partial name=&quot;./_tbody&quot; model=&quot;@Model.ContactTableRows&quot;/&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+&lt;/form&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Key htmx attributes used:</strong></p>
+<ul>
+<li><code v-pre>hx-put</code>: Sends a PUT request to the specified page handler (<code v-pre>OnPutActivate</code> or <code v-pre>OnPutDeactivate</code>).</li>
+<li><code v-pre>hx-include</code>: Ensures that the values from the <code v-pre>#checked-contacts</code> form (specifically the checked checkboxes named <code v-pre>ids</code>) are included in the request, even though the buttons are outside the form.</li>
+<li><code v-pre>hx-target</code>: Specifies that the returned HTML should replace the content of the <code v-pre>&lt;tbody&gt;</code> with the ID <code v-pre>tbody</code>.</li>
+</ul>
+<doc-anchor-target id="the-backend-c-pagemodel">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-backend-c-pagemodel">#</doc-anchor-trigger>
+        <span>The Backend: C# PageModel</span>
+    </h4>
+</doc-anchor-target>
+<p>The <code v-pre>Index.cshtml.cs</code> file handles the bulk update logic. It receives an array of IDs from the checked checkboxes and updates the corresponding contacts via a service.</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public IActionResult OnPutActivate(int[] ids)
+{
+    if (ids != null &amp;&amp; ids.Length &gt; 0)
+    {
+        foreach (var id in ids)
+        {
+            service.Update(id, true); // Set status to Active
+        }
+    }
+
+    var models = service.Get();
+    // Mark updated items so the UI can highlight them
+    foreach (var m in models)
+    {
+        m.Updated = ids != null &amp;&amp; ids.Contains(m.Id);
+    }
+
+    return Partial(&quot;_tbody&quot;, models.ToList());
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="the-result-partial-view">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-result-partial-view">#</doc-anchor-trigger>
+        <span>The Result: Partial View</span>
+    </h4>
+</doc-anchor-target>
+<p>The <code v-pre>_tbody.cshtml</code> partial view renders the table rows. It also applies CSS classes to rows that were just updated to provide visual feedback.</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model List&lt;Contact&gt;
+
+@foreach (var c in Model)
+{
+    string statusValue = c.Status ? &quot;Active&quot; : &quot;Inactive&quot;;
+    string statusClass = c.Status ? &quot;activate&quot; : &quot;deactivate&quot;;
+
+    &lt;tr class=&quot;@(c.Updated ? statusClass : &quot;&quot;)&quot;&gt;
+        &lt;td&gt;
+            &lt;input id=&quot;@c.Id&quot; type='checkbox' name='ids' value='@c.Id'&gt;
+        &lt;/td&gt;
+        &lt;td&gt;@c.Name&lt;/td&gt;
+        &lt;td&gt;@c.Email&lt;/td&gt;
+        &lt;td&gt;@statusValue&lt;/td&gt;
+    &lt;/tr&gt;
+}</code></pre>
+</doc-codeblock></div>
+<p>By using <code v-pre>hx-include</code>, we decouple the action buttons from the form structure, and by returning a partial view, we update only the necessary part of the page, making the application feel much more responsive.</p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -244,11 +345,11 @@
                             
                                 <nav id="retype-nextprev" class="print:hidden flex mt-14">
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/animations/">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../ui-examples/active-search/">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                             <span>
                                                 <span class="block text-xs font-normal text-base-text-muted">Previous</span>
-                                                <span class="block mt-1">Animations</span>
+                                                <span class="block mt-1">Active Search</span>
                                             </span>
                                         </a>
                                     </div>
@@ -292,7 +393,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2025. All rights reserved.</p></div>
+                                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link-weight text-sm leading-relaxed"><p>© Copyright 2026. All rights reserved.</p></div>
                             </footer>
                         </div>
                     </div>
@@ -321,6 +422,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Bulk Update", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Bulk Update", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>
