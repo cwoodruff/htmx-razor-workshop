@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821278344862">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821278412186">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -35,11 +35,11 @@
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.821278344862" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821278412186" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821278344862" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821278412186" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821278344862" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821278412186" data-turbo-eval="false" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -241,7 +241,6 @@
 <p>Welcome to <strong>Modern UX Without JavaScript Madness: htmx + ASP.NET Core Razor Pages</strong>.</p>
 <p>This workshop is designed for ASP.NET Core developers who want to build fast, modern, interactive web applications <strong>without adopting a full SPA framework</strong> and without moving UI state management into the browser. Instead, we’ll use a server-first approach where the server continues to own the business rules, validation, and UI rendering—and the browser simply requests and swaps <strong>HTML fragments</strong>.</p>
 <p>You already know Razor Pages, C#, and how to ship server-rendered applications. The goal today is to add a small, pragmatic tool—<strong>htmx</strong>—that lets you incrementally modernize UX with minimal new surface area and a maintainable architecture.</p>
-<hr>
 <doc-anchor-target id="what-is-htmx">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#what-is-htmx">#</doc-anchor-trigger>
@@ -257,7 +256,6 @@
 <li><code v-pre>hx-swap-oob</code> for out-of-band updates to multiple regions from a single response</li>
 </ul>
 <p>The key difference from SPA frameworks is that htmx does not ask you to build a client-side application. It asks you to <strong>keep building HTML</strong>—and then makes it easy to update only the parts of the page that change.</p>
-<hr>
 <doc-anchor-target id="what-is-hypermedia-and-why-does-it-matter">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#what-is-hypermedia-and-why-does-it-matter">#</doc-anchor-trigger>
@@ -273,7 +271,6 @@
 <li>The UI evolves by swapping server-rendered HTML into known “fragment boundaries.”</li>
 </ul>
 <p>This approach keeps the system simple because it aligns your UI with the web’s native strengths: <strong>HTTP semantics, URLs, caching, progressive enhancement, and straightforward debugging</strong> (you can inspect requests and HTML responses directly).</p>
-<hr>
 <doc-anchor-target id="the-mental-model-for-today">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#the-mental-model-for-today">#</doc-anchor-trigger>
@@ -289,7 +286,6 @@
 <li><strong>Swap</strong> the response into the correct target (<code v-pre>hx-target</code> + <code v-pre>hx-swap</code>).</li>
 </ol>
 <p>If you can do those five things, you can build most “modern UX” patterns without a SPA.</p>
-<hr>
 <doc-anchor-target id="workshop-outcomes">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#workshop-outcomes">#</doc-anchor-trigger>
@@ -312,7 +308,6 @@
 <li>Implement long-running UX with polling and status fragments</li>
 <li>Apply conventions that keep an htmx Razor Pages codebase production-livable</li>
 </ul>
-<hr>
 <doc-anchor-target id="how-we-will-work-today">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#how-we-will-work-today">#</doc-anchor-trigger>
@@ -333,7 +328,6 @@
 </li>
 </ul>
 <p>If something breaks, that’s expected—debugging is part of the learning. We will use a repeatable troubleshooting checklist to unblock quickly.</p>
-<hr>
 <doc-anchor-target id="conventions-we-will-follow">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#conventions-we-will-follow">#</doc-anchor-trigger>
@@ -358,7 +352,6 @@
 </li>
 </ul>
 <p>These conventions turn the labs into a blueprint you can reuse in real applications.</p>
-<hr>
 <doc-anchor-target id="prerequisites">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#prerequisites">#</doc-anchor-trigger>
@@ -377,7 +370,6 @@
 <li>internet access (for library docs and reference)</li>
 <li>browser DevTools (Chrome/Edge/Firefox)</li>
 </ul>
-<hr>
 <doc-anchor-target id="before-we-begin">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#before-we-begin">#</doc-anchor-trigger>
@@ -391,7 +383,6 @@
 <li>Confirm htmx is loaded on the page (we will verify this early).</li>
 </ol>
 <p>Once your baseline is running, we’ll begin with <strong>Fragment First</strong>: building the page as a set of stable, swappable UI regions.</p>
-<hr>
 
                                 
                                 <!-- Required only on API pages -->
