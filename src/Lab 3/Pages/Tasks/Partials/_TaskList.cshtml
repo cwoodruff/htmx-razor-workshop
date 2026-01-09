@@ -1,0 +1,46 @@
+@using RazorPagesHtmxWorkshop.Models
+@model IReadOnlyList<TaskItem>
+
+@*
+    Task List Fragment
+    ==================
+    
+    Target ID: #task-list
+    Swap: outerHTML
+    Returned by: OnGetList, OnPostCreate (on success)
+    
+    This fragment displays the list of tasks.
+    The wrapper div with id="task-list" is essential for htmx targeting.
+    Using outerHTML swap means the entire div is replaced, not just its contents.
+*@
+
+<div id="task-list">
+    @if (Model.Count == 0)
+    {
+        <div class="text-muted">
+            No tasks yet. Add one to establish a baseline.
+        </div>
+    }
+    else
+    {
+        <ul class="list-group list-group-flush">
+            @foreach (var task in Model)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <div class="d-flex flex-column">
+                        <strong>@task.Title</strong>
+                        <span class="small text-muted">Created @task.CreatedUtc.ToLocalTime().ToString("g")</span>
+                    </div>
+                    @if (task.IsDone)
+                    {
+                        <span class="badge text-bg-success">Done</span>
+                    }
+                    else
+                    {
+                        <span class="badge text-bg-secondary">Open</span>
+                    }
+                </li>
+            }
+        </ul>
+    }
+</div>

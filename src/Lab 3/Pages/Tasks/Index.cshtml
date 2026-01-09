@@ -1,0 +1,107 @@
+@page
+@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
+@{
+    ViewData["Title"] = "Tasks • htmx Razor Pages Workshop";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="mb-1">Tasks</h1>
+        <p class="text-muted mb-0">Lab-friendly page with real-time validation.</p>
+    </div>
+    <form method="post" asp-page-handler="Reset" class="m-0">
+        <button class="btn btn-sm btn-outline-secondary" type="submit">Reset</button>
+    </form>
+</div>
+
+<partial name="Partials/_Messages" model="Model.FlashMessage" />
+
+<div class="row g-3 g-md-4">
+    <div class="col-lg-5">
+        <div class="card workshop-card h-100">
+            <div class="card-body">
+                <div class="workshop-kicker">Fragment boundary</div>
+                <h2 class="h5">Create</h2>
+                <partial name="Partials/_TaskForm" model="Model" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card workshop-card h-100">
+            <div class="card-body">
+                <div class="workshop-kicker">Fragment boundary</div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h2 class="h5 mb-0">List</h2>
+                    
+                    <div class="d-flex align-items-center gap-2">
+                        @* Loading indicator - hidden by default, shown during htmx requests *@
+                        <div id="task-loading" 
+                             class="htmx-indicator spinner-border spinner-border-sm text-secondary" 
+                             role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        
+                        <div class="btn-group btn-group-sm">
+                            @* Refresh all tasks *@
+                            <button type="button" 
+                                    class="btn btn-outline-secondary"
+                                    hx-get="?handler=List"
+                                    hx-target="#task-list"
+                                    hx-swap="outerHTML"
+                                    hx-indicator="#task-loading">
+                                Refresh All
+                            </button>
+                            
+                            @* Refresh with limit using hx-vals *@
+                            <button type="button" 
+                                    class="btn btn-outline-secondary"
+                                    hx-get="?handler=List"
+                                    hx-vals='{"take": 5}'
+                                    hx-target="#task-list"
+                                    hx-swap="outerHTML"
+                                    hx-indicator="#task-loading">
+                                Top 5
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <partial name="Partials/_TaskList" model="Model.Tasks" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@*
+    Event Listeners
+    ===============
+    
+    These invisible elements respond to HX-Trigger events from the server.
+    When the server sends "HX-Trigger: showMessage,clearForm", these listeners
+    fire their respective requests.
+    
+    Pattern benefits:
+    - Keeps markup clean (form doesn't need to know about messages)
+    - Server controls behavior through headers
+    - Each concern is handled independently
+*@
+
+@* Listener: Refresh messages when showMessage event fires *@
+<div hx-get="?handler=Messages"
+     hx-trigger="showMessage from:body"
+     hx-target="#messages"
+     hx-swap="outerHTML">
+</div>
+
+@* Listener: Reset form when clearForm event fires *@
+<div hx-get="?handler=EmptyForm"
+     hx-trigger="clearForm from:body"
+     hx-target="#task-form"
+     hx-swap="outerHTML">
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

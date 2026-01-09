@@ -1,0 +1,71 @@
+@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
+
+@*
+    Task Form Fragment (with real-time validation)
+    ==============================================
+    
+    Target ID: #task-form
+    Swap: outerHTML
+    Returned by: OnGetEmptyForm, OnPostCreate (on validation error)
+    
+    htmx attributes on form:
+    - hx-post: Submit to Create handler
+    - hx-target: Update #task-list on success
+    - hx-swap: Replace entire target element
+    - hx-indicator: Show loading spinner
+    
+    htmx attributes on Title input:
+    - hx-post: Validate on keystroke
+    - hx-trigger: Debounced keyup (500ms delay)
+    - hx-target: Update only #title-validation
+    - hx-include: Send form fields (for antiforgery)
+    
+    Progressive enhancement:
+    - Form works without JavaScript (method="post" fallback)
+    - htmx adds real-time validation on top
+*@
+
+<div id="task-form">
+    <form method="post" asp-page-handler="Create"
+          hx-post="?handler=Create"
+          hx-target="#task-list"
+          hx-swap="outerHTML"
+          hx-indicator="#task-loading"
+          class="vstack gap-3">
+        
+        @* Antiforgery token - required for all POST requests *@
+        @Html.AntiForgeryToken()
+        
+        @* Validation summary for full-form validation *@
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        
+        <div>
+            <label class="form-label" for="title">Task Title</label>
+            
+            @* Title input with real-time validation *@
+            <input id="title"
+                   class="form-control form-control-lg"
+                   asp-for="Input.Title"
+                   placeholder="e.g., Add htmx to Razor Pages"
+                   autocomplete="off"
+                   hx-post="?handler=ValidateTitle"
+                   hx-trigger="keyup changed delay:500ms"
+                   hx-target="#title-validation"
+                   hx-swap="outerHTML"
+                   hx-include="closest form" />
+            
+            <div class="form-text">Keep it short; we're optimizing for fast feedback loops.</div>
+            
+            @* Standard Razor validation message (shown on full submit) *@
+            <span class="text-danger" asp-validation-for="Input.Title"></span>
+            
+            @* htmx validation fragment (shown on keystrokes) *@
+            <partial name="Partials/_TitleValidation" model="@((string?)null)" />
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-lg" type="submit">Add task</button>
+            <a class="btn btn-outline-secondary btn-lg" asp-page="/Labs">Back to labs</a>
+        </div>
+    </form>
+</div>

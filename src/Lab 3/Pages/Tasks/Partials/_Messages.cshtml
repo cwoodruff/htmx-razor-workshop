@@ -1,0 +1,28 @@
+@model string?
+
+@*
+    Messages Fragment
+    =================
+    
+    Target ID: #messages
+    Swap: outerHTML
+    Returned by: OnGetMessages
+    
+    Purpose:
+    - Displays flash/success/info messages
+    - Must always render wrapper for consistent htmx swapping
+    - Can also receive error content via HX-Retarget
+    
+    Model:
+    - string? message - The message to display (null if none)
+*@
+
+<div id="messages">
+    @if (!string.IsNullOrWhiteSpace(Model))
+    {
+        <div class="alert alert-success alert-dismissible fade show workshop-alert" role="alert">
+            @Model
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+</div>
