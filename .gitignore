@@ -396,8 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/htmx-examples/.idea
-/docs/.idea
+idea/
+/.idea
 htmx-examples/.DS_Store
 docs/.DS_Store
 htmx-examples/wwwroot/.DS_Store
@@ -406,3 +406,5 @@ chinook-razor-htmx/.DS_Store
 /chinook-razor-htmx/.idea
 /chinook-razor-htmx/.idea
 .DS_Store
+*.xml
+/src/.idea
