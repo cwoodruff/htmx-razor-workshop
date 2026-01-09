@@ -1,14 +1,45 @@
 @model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
 
+@*
+    Task Form Fragment (htmx-enhanced)
+    ===================================
+    
+    Target ID: #task-form
+    Swap: outerHTML
+    Returned by: OnGetEmptyForm, OnPostCreate (on validation error)
+    
+    htmx attributes:
+    - hx-post: Send POST request to this URL
+    - hx-target: Where to swap the response (#task-list on success)
+    - hx-swap: How to swap (outerHTML replaces the entire target element)
+    - hx-indicator: Show loading spinner during request
+    
+    On successful submit:
+    - Server returns _TaskList partial
+    - htmx swaps it into #task-list
+    - Server sends HX-Trigger: clearForm
+    - Listener fetches empty form and swaps into #task-form
+    
+    On validation error:
+    - Server returns _TaskForm partial with errors (this file)
+    - Server sends HX-Retarget: #task-form
+    - htmx swaps form with validation errors displayed
+*@
+
 <div id="task-form">
-    <form method="post" asp-page-handler="Create" class="vstack gap-3">
+    <form method="post" asp-page-handler="Create"
+          hx-post="?handler=Create"
+          hx-target="#task-list"
+          hx-swap="outerHTML"
+          hx-indicator="#task-loading"
+          class="vstack gap-3">
         <div>
             <label class="form-label" for="title">Task title</label>
             <input id="title"
                    class="form-control form-control-lg"
                    asp-for="Input.Title"
                    placeholder="e.g., Add htmx to Razor Pages" />
-            <div class="form-text">Keep it short; we’re optimizing for fast feedback loops.</div>
+            <div class="form-text">Keep it short; we're optimizing for fast feedback loops.</div>
             <span class="text-danger" asp-validation-for="Input.Title"></span>
         </div>
 

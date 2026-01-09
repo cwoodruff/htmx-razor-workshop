@@ -31,11 +31,57 @@
         <div class="card workshop-card h-100">
             <div class="card-body">
                 <div class="workshop-kicker">Fragment boundary</div>
-                <h2 class="h5">List</h2>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h2 class="h5 mb-0">List</h2>
+                    
+                    <div class="d-flex align-items-center gap-2">
+                        @* Loading indicator - hidden by default, shown during htmx requests *@
+                        <div id="task-loading" 
+                             class="htmx-indicator spinner-border spinner-border-sm text-secondary" 
+                             role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        
+                        <div class="btn-group btn-group-sm">
+                            @* Refresh all tasks *@
+                            <button type="button" 
+                                    class="btn btn-outline-secondary"
+                                    hx-get="?handler=List"
+                                    hx-target="#task-list"
+                                    hx-swap="outerHTML"
+                                    hx-indicator="#task-loading">
+                                Refresh All
+                            </button>
+                            
+                            @* Refresh with limit using hx-vals *@
+                            <button type="button" 
+                                    class="btn btn-outline-secondary"
+                                    hx-get="?handler=List"
+                                    hx-vals='{"take": 5}'
+                                    hx-target="#task-list"
+                                    hx-swap="outerHTML"
+                                    hx-indicator="#task-loading">
+                                Top 5
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <partial name="Partials/_TaskList" model="Model.Tasks" />
             </div>
         </div>
     </div>
+</div>
+
+@* 
+    Invisible listeners for htmx events
+    These elements respond to HX-Trigger headers from the server
+*@
+<div hx-get="?handler=EmptyForm"
+     hx-trigger="clearForm from:body"
+     hx-target="#task-form"
+     hx-swap="outerHTML">
 </div>
 
 @section Scripts {

@@ -1,6 +1,19 @@
 @using RazorPagesHtmxWorkshop.Models
 @model IReadOnlyList<TaskItem>
 
+@*
+    Task List Fragment
+    ==================
+    
+    Target ID: #task-list
+    Swap: outerHTML
+    Returned by: OnGetList, OnPostCreate (on success)
+    
+    This fragment displays the list of tasks.
+    The wrapper div with id="task-list" is essential for htmx targeting.
+    Using outerHTML swap means the entire div is replaced, not just its contents.
+*@
+
 <div id="task-list">
     @if (Model.Count == 0)
     {

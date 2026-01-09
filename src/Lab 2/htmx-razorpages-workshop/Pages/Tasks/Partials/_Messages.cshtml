@@ -1,5 +1,16 @@
 @model string?
 
+@*
+    Messages Fragment
+    =================
+    
+    Target ID: #messages
+    Swap: innerHTML (when used as error target)
+    
+    This fragment displays flash messages and can also receive
+    error content via HX-Retarget from server error responses.
+*@
+
 <div id="messages">
     @if (!string.IsNullOrWhiteSpace(Model))
     {
