@@ -1,0 +1,43 @@
+@page
+@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
+@{
+    ViewData["Title"] = "Tasks • htmx Razor Pages Workshop";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="mb-1">Tasks</h1>
+        <p class="text-muted mb-0">Lab-friendly page with clear fragment boundaries.</p>
+    </div>
+    <form method="post" asp-page-handler="Reset" class="m-0">
+        <button class="btn btn-sm btn-outline-secondary" type="submit">Reset</button>
+    </form>
+</div>
+
+<partial name="Partials/_Messages" model="Model.FlashMessage" />
+
+<div class="row g-3 g-md-4">
+    <div class="col-lg-5">
+        <div class="card workshop-card h-100">
+            <div class="card-body">
+                <div class="workshop-kicker">Fragment boundary</div>
+                <h2 class="h5">Create</h2>
+                <partial name="Partials/_TaskForm" model="Model" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card workshop-card h-100">
+            <div class="card-body">
+                <div class="workshop-kicker">Fragment boundary</div>
+                <h2 class="h5">List</h2>
+                <partial name="Partials/_TaskList" model="Model.Tasks" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

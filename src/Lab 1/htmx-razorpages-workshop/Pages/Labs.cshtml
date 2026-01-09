@@ -1,0 +1,29 @@
+@page
+@model LabsModel
+@{
+    ViewData["Title"] = "Labs • htmx Razor Pages Workshop";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="mb-1">Labs</h1>
+        <p class="text-muted mb-0">A lightweight path from fragments to full interactivity.</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-page="/Tasks/Index">Open Tasks demo</a>
+</div>
+
+<div class="card workshop-card">
+    <div class="card-body">
+        <ol class="mb-0">
+            <li><strong>Lab 1:</strong> Baseline Razor Pages app + fragment boundaries</li>
+            <li><strong>Lab 2:</strong> Partial updates with <code>hx-get</code> and <code>hx-post</code></li>
+            <li><strong>Lab 3:</strong> Real-time validation and form UX patterns</li>
+            <li><strong>Lab 4:</strong> Modals, confirm flows, history, pagination</li>
+            <li><strong>Lab 5:</strong> Dynamic forms and long-running UX (polling)</li>
+        </ol>
+    </div>
+</div>
+
+<div class="alert alert-secondary mt-3 mb-0">
+    Tip: Keep your handlers small and return fragments intentionally.
+</div>

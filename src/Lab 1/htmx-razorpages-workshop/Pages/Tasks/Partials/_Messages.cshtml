@@ -1,0 +1,10 @@
+@model string?
+
+<div id="messages">
+    @if (!string.IsNullOrWhiteSpace(Model))
+    {
+        <div class="alert alert-info workshop-alert" role="alert">
+            @Model
+        </div>
+    }
+</div>

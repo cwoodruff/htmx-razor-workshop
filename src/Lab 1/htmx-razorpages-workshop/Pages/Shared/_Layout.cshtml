@@ -1,0 +1,73 @@
+@{
+    var title = ViewData["Title"] as string ?? "htmx Razor Pages Workshop";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@title</title>
+
+    <!-- Bootstrap (CDN) for quick workshop styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="workshop-body">
+
+<header class="navbar navbar-expand-lg workshop-nav border-bottom">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" asp-page="/Index">
+            <span class="brand-mark" aria-hidden="true">@Html.Raw(WorkshopBrand.MarkSvg)</span>
+            <span class="brand-text">
+                <span class="brand-title">htmx Razor Pages Workshop</span>
+                <span class="brand-subtitle d-none d-sm-inline">ASP.NET Core • Hypermedia • Server-driven UI</span>
+            </span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+                aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                <li class="nav-item"><a class="nav-link" asp-page="/Labs">Labs</a></li>
+                <li class="nav-item"><a class="nav-link" asp-page="/Tasks/Index">Demo: Tasks</a></li>
+                <li class="nav-item">
+                    <a class="btn btn-sm btn-outline-light ms-lg-2" href="https://htmx.org" target="_blank" rel="noreferrer">
+                        htmx docs
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<main class="container my-4">
+    @RenderBody()
+</main>
+
+<footer class="border-top py-4 mt-5 workshop-footer">
+    <div class="container d-flex flex-column flex-md-row gap-2 justify-content-between align-items-md-center">
+        <div class="text-muted small">
+            © @DateTime.UtcNow.Year htmx ASP.NET Core Razor Pages Workshop
+        </div>
+        <div class="text-muted small">
+            Built for hands-on labs: fragments first, interactivity second.
+        </div>
+    </div>
+</footer>
+
+<!-- htmx (not used in Lab 1 yet, but loaded for later labs) -->
+<script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-3g1x7qIYpYbVjQnqzQhB1d6+u0vA0h2Cwqg0rXy8r8Z0g5qHnOe4q1o4Rk3K9tQm"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

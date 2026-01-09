@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lab 1", "Lab 1", "{9D3ADBAE-1EE4-4142-944C-7155CF0838DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPagesHtmxWorkshop", "Lab 1\htmx-razorpages-workshop\RazorPagesHtmxWorkshop.csproj", "{3C0246BC-E83B-4224-9088-02467381EA74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lab 2", "Lab 2", "{3E1A645A-613A-46F7-94B0-826547CF1D23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPagesHtmxWorkshop", "Lab 2\htmx-razorpages-workshop\RazorPagesHtmxWorkshop.csproj", "{ACBC2C64-1E07-4251-B3FC-BFD84B3ACEEB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lab 3", "Lab 3", "{48D29E40-3AA8-48EA-AE14-DA5EC185021F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lab 4", "Lab 4", "{9BEB47F4-E485-4A07-9D47-8789514F70D6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lab 5", "Lab 5", "{4F245375-CB94-40C2-902D-AC697D124515}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3C0246BC-E83B-4224-9088-02467381EA74} = {9D3ADBAE-1EE4-4142-944C-7155CF0838DF}
+		{ACBC2C64-1E07-4251-B3FC-BFD84B3ACEEB} = {3E1A645A-613A-46F7-94B0-826547CF1D23}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3C0246BC-E83B-4224-9088-02467381EA74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C0246BC-E83B-4224-9088-02467381EA74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C0246BC-E83B-4224-9088-02467381EA74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C0246BC-E83B-4224-9088-02467381EA74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACBC2C64-1E07-4251-B3FC-BFD84B3ACEEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACBC2C64-1E07-4251-B3FC-BFD84B3ACEEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACBC2C64-1E07-4251-B3FC-BFD84B3ACEEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACBC2C64-1E07-4251-B3FC-BFD84B3ACEEB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
