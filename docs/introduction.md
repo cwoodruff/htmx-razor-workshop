@@ -107,12 +107,3 @@ You will need:
 - internet access (for library docs and reference)
 - browser DevTools (Chrome/Edge/Firefox)
 
-## Before we begin
-
-1. Open the starter solution and run the app.
-2. Confirm you can set breakpoints and hit a Razor Pages handler.
-3. Open DevTools → **Network** and **Elements**.
-4. Confirm htmx is loaded on the page (we will verify this early).
-
-Once your baseline is running, we’ll begin with **Fragment First**: building the page as a set of stable, swappable UI regions.
-
