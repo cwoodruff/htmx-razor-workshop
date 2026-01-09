@@ -12,8 +12,6 @@ This workshop is designed for ASP.NET Core developers who want to build fast, mo
 
 You already know Razor Pages, C#, and how to ship server-rendered applications. The goal today is to add a small, pragmatic tool—**htmx**—that lets you incrementally modernize UX with minimal new surface area and a maintainable architecture.
 
----
-
 ## What is htmx?
 
 **htmx** is a small library that extends HTML with attributes such as:
@@ -25,8 +23,6 @@ You already know Razor Pages, C#, and how to ship server-rendered applications. 
 - `hx-swap-oob` for out-of-band updates to multiple regions from a single response
 
 The key difference from SPA frameworks is that htmx does not ask you to build a client-side application. It asks you to **keep building HTML**—and then makes it easy to update only the parts of the page that change.
-
----
 
 ## What is hypermedia, and why does it matter?
 
@@ -41,8 +37,6 @@ In practical terms:
 
 This approach keeps the system simple because it aligns your UI with the web’s native strengths: **HTTP semantics, URLs, caching, progressive enhancement, and straightforward debugging** (you can inspect requests and HTML responses directly).
 
----
-
 ## The mental model for today
 
 Every lab in this workshop follows the same repeatable loop:
@@ -54,8 +48,6 @@ Every lab in this workshop follows the same repeatable loop:
 5. **Swap** the response into the correct target (`hx-target` + `hx-swap`).
 
 If you can do those five things, you can build most “modern UX” patterns without a SPA.
-
----
 
 ## Workshop outcomes
 
@@ -72,8 +64,6 @@ By the end of the workshop, you will be able to:
 - Implement long-running UX with polling and status fragments
 - Apply conventions that keep an htmx Razor Pages codebase production-livable
 
----
-
 ## How we will work today
 
 This is a hands-on workshop. You will:
@@ -87,8 +77,6 @@ This is a hands-on workshop. You will:
   - DOM swaps and target selection
 
 If something breaks, that’s expected—debugging is part of the learning. We will use a repeatable troubleshooting checklist to unblock quickly.
-
----
 
 ## Conventions we will follow
 
@@ -105,8 +93,6 @@ To keep the project maintainable:
 
 These conventions turn the labs into a blueprint you can reuse in real applications.
 
----
-
 ## Prerequisites
 
 You should already be comfortable with:
@@ -121,8 +107,6 @@ You will need:
 - internet access (for library docs and reference)
 - browser DevTools (Chrome/Edge/Firefox)
 
----
-
 ## Before we begin
 
 1. Open the starter solution and run the app.
@@ -131,6 +115,4 @@ You will need:
 4. Confirm htmx is loaded on the page (we will verify this early).
 
 Once your baseline is running, we’ll begin with **Fragment First**: building the page as a set of stable, swappable UI regions.
-
----
 
