@@ -1,0 +1,25 @@
+@model string?
+
+@*
+    Title Field Validation Fragment
+    ================================
+    
+    Target ID: #title-validation
+    Swap: outerHTML
+    Returned by: OnPostValidateTitle
+    
+    Purpose:
+    - Displays validation error for the Title field
+    - Swapped on every keystroke (debounced 500ms)
+    - Must always render the wrapper div for consistent swapping
+    
+    Model:
+    - string? error - The error message (null if valid)
+*@
+
+<div id="title-validation">
+    @if (!string.IsNullOrWhiteSpace(Model))
+    {
+        <div class="text-danger small mt-1">@Model</div>
+    }
+</div>

@@ -1,0 +1,135 @@
+@page
+@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
+@using RazorPagesHtmxWorkshop.Models
+@{
+    ViewData["Title"] = "Tasks • htmx Razor Pages Workshop";
+    
+    // Build the initial view model for the task list
+    var initialVm = new TaskListVm
+    {
+        Items = Model.Tasks,
+        Page = Model.CurrentPage,
+        PageSize = Model.PageSize,
+        Total = Model.TotalTasks,
+        Query = Model.Query
+    };
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="mb-1">Tasks</h1>
+        <p class="text-muted mb-0">Lab 4: Modals, confirm, history, and pagination.</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        @* Loading indicator - shown during htmx requests *@
+        <span id="task-loading" class="htmx-indicator">
+            <span class="spinner-border spinner-border-sm text-secondary" role="status" aria-hidden="true"></span>
+            <span class="visually-hidden">Loading...</span>
+        </span>
+        <form method="post" asp-page-handler="Reset" class="m-0">
+            <button class="btn btn-sm btn-outline-secondary" type="submit">Reset</button>
+        </form>
+    </div>
+</div>
+
+<partial name="Partials/_Messages" model="Model.FlashMessage" />
+
+<div class="row g-3 g-md-4">
+    <div class="col-lg-5">
+        <div class="card workshop-card h-100">
+            <div class="card-body">
+                <div class="workshop-kicker">Fragment boundary</div>
+                <h2 class="h5">Create</h2>
+                <partial name="Partials/_TaskForm" model="Model" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card workshop-card h-100">
+            <div class="card-body">
+                <div class="workshop-kicker">Fragment boundary</div>
+                <h2 class="h5 mb-3">List</h2>
+                
+                @*
+                    Filter Input
+                    ============
+                    
+                    Filters the task list as user types (debounced).
+                    Updates URL via hx-push-url for bookmarkability.
+                *@
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </span>
+                        <input type="text"
+                               class="form-control"
+                               name="q"
+                               placeholder="Filter tasks..."
+                               value="@Model.Query"
+                               hx-get="?handler=List"
+                               hx-trigger="keyup changed delay:400ms"
+                               hx-target="#task-list"
+                               hx-swap="outerHTML"
+                               hx-push-url="true"
+                               hx-indicator="#task-loading" />
+                    </div>
+                </div>
+                
+                <partial name="Partials/_TaskList" model="initialVm" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@*
+    Details Panel
+    =============
+    
+    Fragment boundary: #task-details
+    Purpose: Display detailed information about a selected task
+    
+    Design notes:
+    - Always renders the wrapper for consistent swapping
+    - Default state shows placeholder text
+    - Loaded via hx-get from task row buttons
+*@
+<div class="card workshop-card mt-4">
+    <div class="card-body">
+        <div class="workshop-kicker">Fragment boundary</div>
+        <h2 class="h5 mb-3">Task Details</h2>
+        <div id="task-details" class="text-muted">
+            Select a task to view details.
+        </div>
+    </div>
+</div>
+
+@*
+    Event Listeners
+    ===============
+    
+    These invisible elements respond to HX-Trigger events from the server.
+    When the server sends "HX-Trigger: showMessage,clearForm", these listeners
+    fire their respective requests.
+*@
+
+@* Listener: Refresh messages when showMessage event fires *@
+<div hx-get="?handler=Messages"
+     hx-trigger="showMessage from:body"
+     hx-target="#messages"
+     hx-swap="outerHTML">
+</div>
+
+@* Listener: Reset form when clearForm event fires *@
+<div hx-get="?handler=EmptyForm"
+     hx-trigger="clearForm from:body"
+     hx-target="#task-form"
+     hx-swap="outerHTML">
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
