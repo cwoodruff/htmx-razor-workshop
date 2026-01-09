@@ -4,7 +4,7 @@ icon: shield-check
 ---
 # Lazy Loading
 
-# Boosting Page Performance: Lazy Loading with HTMX and ASP.NET Core Razor Pages
+# Boosting Page Performance: Lazy Loading with htmx and ASP.NET Core Razor Pages
 
 In modern web development, speed is everything. A slow-loading dashboard can frustrate users and lead to higher bounce rates. One of the most effective techniques to improve perceived performance is **Lazy Loading**—deferring the loading of non-critical, heavy components until after the main page is ready.
 
@@ -41,10 +41,10 @@ public class IndexModel : PageModel
 }
 ```
 
-## 2. The Frontend: HTMX Magic
+## 2. The Frontend: htmx Magic
 Using htmx, we can trigger these handlers as soon as the page loads using the `hx-trigger="load"` attribute.
 
-In `Index.cshtml`, we set up containers with "skeletons" or loading spinners. HTMX will automatically replace these placeholders with the returned HTML once the server responds.
+In `Index.cshtml`, we set up containers with "skeletons" or loading spinners. htmx will automatically replace these placeholders with the returned HTML once the server responds.
 
 ```html
 <div class="row">

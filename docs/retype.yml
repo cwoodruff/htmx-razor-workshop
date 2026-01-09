@@ -2,7 +2,7 @@ input: ./
 output: .retype
 url: https://github.com/cwoodruff/htmx-razor-workshop
 branding:
-  title: HTMX Workshop
+  title: htmx Workshop
   label: v8
   logo: images/gear-earth.png
   logoDark: images/gear-earth-dark.png
