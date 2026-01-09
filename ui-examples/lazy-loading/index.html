@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821277826144">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -35,12 +35,12 @@
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.821277826144" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.820968444528" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.11.0.821277826144" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -60,7 +60,7 @@
                                 <img class="max-h-10 dark:hidden md:inline-block" src="../../images/gear-earth.png">
                                 <img class="max-h-10 hidden dark:inline-block" src="../../images/gear-earth-dark.png">
                             </span>
-                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">HTMX Workshop</span>
+                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">htmx Workshop</span>
                         </a><span id="retype-branding-label" class="inline-flex mt-1 px-2 py-1 ml-4 text-xs font-medium leading-none items-center rounded-md bg-branding-label-bg text-branding-label-text ring-1 ring-branding-label-border ring-inset md:inline-block">v8</span>
                     </div>
         
@@ -236,7 +236,7 @@
 <doc-anchor-target id="boosting-page-performance-lazy-loading-with-htmx-and-aspnet-core-razor-pages">
     <h1>
         <doc-anchor-trigger class="header-anchor-trigger" to="#boosting-page-performance-lazy-loading-with-htmx-and-aspnet-core-razor-pages">#</doc-anchor-trigger>
-        <span>Boosting Page Performance: Lazy Loading with HTMX and ASP.NET Core Razor Pages</span>
+        <span>Boosting Page Performance: Lazy Loading with htmx and ASP.NET Core Razor Pages</span>
     </h1>
 </doc-anchor-target>
 <p>In modern web development, speed is everything. A slow-loading dashboard can frustrate users and lead to higher bounce rates. One of the most effective techniques to improve perceived performance is <strong>Lazy Loading</strong>—deferring the loading of non-critical, heavy components until after the main page is ready.</p>
@@ -283,11 +283,11 @@
 <doc-anchor-target id="2-the-frontend-htmx-magic">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#2-the-frontend-htmx-magic">#</doc-anchor-trigger>
-        <span>2. The Frontend: HTMX Magic</span>
+        <span>2. The Frontend: htmx Magic</span>
     </h2>
 </doc-anchor-target>
 <p>Using htmx, we can trigger these handlers as soon as the page loads using the <code v-pre>hx-trigger=&quot;load&quot;</code> attribute.</p>
-<p>In <code v-pre>Index.cshtml</code>, we set up containers with &quot;skeletons&quot; or loading spinners. HTMX will automatically replace these placeholders with the returned HTML once the server responds.</p>
+<p>In <code v-pre>Index.cshtml</code>, we set up containers with &quot;skeletons&quot; or loading spinners. htmx will automatically replace these placeholders with the returned HTML once the server responds.</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;div class=&quot;row&quot;&gt;
     &lt;div class=&quot;col-md-7&quot;&gt;

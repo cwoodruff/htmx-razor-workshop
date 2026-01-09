@@ -7,14 +7,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821277826144">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
 
     <!-- Primary Meta Tags -->
-    <title>Lab 1: Baseline Razor Pages App + “Fragment First”</title>
-    <meta name="title" content="Lab 1: Baseline Razor Pages App + “Fragment First”">
+    <title>Lab 1: Baseline Razor Pages App + &quot;Fragment First&quot;</title>
+    <meta name="title" content="Lab 1: Baseline Razor Pages App + \"Fragment First\"">
+    <meta name="description" content="Welcome to the first lab of the htmx + ASP.NET Core Workshop! In this lab, you will build the foundation that all subsequent labs depend upon.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/lab-1-baseline-razor-pages-app-fragment-first/">
@@ -22,21 +23,24 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/lab-1-baseline-razor-pages-app-fragment-first/">
-    <meta property="og:title" content="Lab 1: Baseline Razor Pages App + “Fragment First”">
+    <meta property="og:title" content="Lab 1: Baseline Razor Pages App + \"Fragment First\"">
+    <meta property="og:description" content="Welcome to the first lab of the htmx + ASP.NET Core Workshop! In this lab, you will build the foundation that all subsequent labs depend upon.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/lab-1-baseline-razor-pages-app-fragment-first/">
-    <meta property="twitter:title" content="Lab 1: Baseline Razor Pages App + “Fragment First”">
+    <meta property="twitter:title" content="Lab 1: Baseline Razor Pages App + \"Fragment First\"">
+    <meta property="twitter:description" content="Welcome to the first lab of the htmx + ASP.NET Core Workshop! In this lab, you will build the foundation that all subsequent labs depend upon.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821277826144" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821277826144" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -56,7 +60,7 @@
                                 <img class="max-h-10 dark:hidden md:inline-block" src="../images/gear-earth.png">
                                 <img class="max-h-10 hidden dark:inline-block" src="../images/gear-earth-dark.png">
                             </span>
-                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">HTMX Workshop</span>
+                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">htmx Workshop</span>
                         </a><span id="retype-branding-label" class="inline-flex mt-1 px-2 py-1 ml-4 text-xs font-medium leading-none items-center rounded-md bg-branding-label-bg text-branding-label-text ring-1 ring-branding-label-border ring-inset md:inline-block">v8</span>
                     </div>
         
@@ -226,9 +230,1066 @@
 <doc-anchor-target id="lab-1-baseline-razor-pages-app--fragment-first" class="break-words">
     <h1>
         <doc-anchor-trigger class="header-anchor-trigger" to="#lab-1-baseline-razor-pages-app--fragment-first">#</doc-anchor-trigger>
-        <span>Lab 1: Baseline Razor Pages App + “Fragment First”</span>
+        <span>Lab 1: Baseline Razor Pages App + &quot;Fragment First&quot;</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="overview">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#overview">#</doc-anchor-trigger>
+        <span>Overview</span>
+    </h2>
+</doc-anchor-target>
+<p>Welcome to the first lab of the htmx + ASP.NET Core Workshop! In this lab, you will build the foundation that all subsequent labs depend upon. By the end of this lab, you will have a fully functional Razor Pages application with a clean &quot;Fragment First&quot; architecture—a design pattern that makes htmx integration seamless in later labs.</p>
+<doc-anchor-target id="what-is-fragment-first">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#what-is-fragment-first">#</doc-anchor-trigger>
+        <span>What is &quot;Fragment First&quot;?</span>
+    </h3>
+</doc-anchor-target>
+<p>&quot;Fragment First&quot; is an architectural approach where you design your UI as composable HTML fragments from the very beginning, <em>before</em> adding any htmx interactivity. Each fragment:</p>
+<ul>
+<li>Has a <strong>single responsibility</strong> (display a list, render a form, show messages)</li>
+<li>Lives in its own <strong>partial view file</strong></li>
+<li>Contains a <strong>stable root element with a predictable ID</strong> (e.g., <code v-pre>#task-list</code>, <code v-pre>#task-form</code>)</li>
+</ul>
+<p>This approach treats partials not as &quot;optimization&quot; or &quot;code organization,&quot; but as <strong>interfaces for future interactivity</strong>. When you later add htmx, each fragment becomes a swappable unit that the server can return independently.</p>
+<doc-anchor-target id="why-this-matters">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#why-this-matters">#</doc-anchor-trigger>
+        <span>Why This Matters</span>
+    </h3>
+</doc-anchor-target>
+<p>Traditional server-rendered applications return full pages on every interaction. With htmx, you can return <em>just the fragment that changed</em>. But this only works well if your fragments are designed with clear boundaries from the start. The &quot;Fragment First&quot; pattern ensures:</p>
+<ol>
+<li><strong>Predictable targets</strong>: Every region has a known ID that htmx can target</li>
+<li><strong>Clean separation</strong>: Each partial handles one concern</li>
+<li><strong>Easy testing</strong>: You can render and verify fragments in isolation</li>
+<li><strong>Progressive enhancement</strong>: The app works without htmx; adding it later is additive</li>
+</ol>
+<hr>
+<doc-anchor-target id="lab-outcomes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#lab-outcomes">#</doc-anchor-trigger>
+        <span>Lab Outcomes</span>
+    </h2>
+</doc-anchor-target>
+<p>By the end of this lab, you will have:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Outcome</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Working Razor Pages app</strong></td>
+<td>An application you can run and debug locally</td>
+</tr>
+<tr>
+<td><strong>Simple domain model</strong></td>
+<td>A &quot;Tasks&quot; domain with in-memory storage</td>
+</tr>
+<tr>
+<td><strong>Three fragment boundaries</strong></td>
+<td>List region, form region, and message region</td>
+</tr>
+<tr>
+<td><strong>Three partial views</strong></td>
+<td><code v-pre>_TaskList.cshtml</code>, <code v-pre>_TaskForm.cshtml</code>, <code v-pre>_Messages.cshtml</code></td>
+</tr>
+<tr>
+<td><strong>Stable target element IDs</strong></td>
+<td><code v-pre>#task-list</code>, <code v-pre>#task-form</code>, <code v-pre>#messages</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This becomes the &quot;frame&quot; for all htmx work in subsequent labs.</p>
+<hr>
+<doc-anchor-target id="prerequisites">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#prerequisites">#</doc-anchor-trigger>
+        <span>Prerequisites</span>
+    </h2>
+</doc-anchor-target>
+<p>Before starting this lab, ensure you have:</p>
+<ul>
+<li><strong>.NET 8 SDK or later</strong> installed (<a href="https://dotnet.microsoft.com/download">download</a>)</li>
+<li><strong>An IDE or editor</strong>: Visual Studio 2022, JetBrains Rider, or VS Code with C# extensions</li>
+<li><strong>A modern web browser</strong> with developer tools (Chrome, Edge, or Firefox)</li>
+<li><strong>Basic familiarity</strong> with C#, Razor Pages, and HTML</li>
+</ul>
+<hr>
+<doc-anchor-target id="step-1-create-a-new-razor-pages-project-58-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-1-create-a-new-razor-pages-project-58-minutes">#</doc-anchor-trigger>
+        <span>Step 1: Create a New Razor Pages Project (5–8 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>We will create the project from scratch using the .NET CLI. This gives you full control over the project structure and ensures everyone starts from the same baseline.</p>
+<doc-anchor-target id="11-open-your-terminal">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#11-open-your-terminal">#</doc-anchor-trigger>
+        <span>1.1 Open Your Terminal</span>
+    </h3>
+</doc-anchor-target>
+<p>Open a terminal or command prompt and navigate to your preferred working directory.</p>
+<doc-anchor-target id="12-create-the-project">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#12-create-the-project">#</doc-anchor-trigger>
+        <span>1.2 Create the Project</span>
+    </h3>
+</doc-anchor-target>
+<p>Run the following commands to create a new Razor Pages web application:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-bash"><code v-pre class="language-bash">dotnet new webapp -n RazorHtmxWorkshop
+cd RazorHtmxWorkshop
+```
+
+**What this does:**
+
+- `dotnet new webapp` creates a new ASP.NET Core Razor Pages application
+- `-n RazorHtmxWorkshop` names the project &quot;RazorHtmxWorkshop&quot;
+- `cd RazorHtmxWorkshop` navigates into the project directory
+
+### 1.3 Verify the Project Structure
+
+Your project should have this structure:
+```
+RazorHtmxWorkshop/
+├── Pages/
+│   ├── Shared/
+│   │   ├── _Layout.cshtml
+│   │   └── _ValidationScriptsPartial.cshtml
+│   ├── _ViewImports.cshtml
+│   ├── _ViewStart.cshtml
+│   ├── Error.cshtml
+│   ├── Index.cshtml
+│   └── Privacy.cshtml
+├── Properties/
+│   └── launchSettings.json
+├── wwwroot/
+│   ├── css/
+│   ├── js/
+│   ├── lib/
+│   └── favicon.ico
+├── appsettings.json
+├── appsettings.Development.json
+├── Program.cs
+└── RazorHtmxWorkshop.csproj</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="14-run-the-application">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#14-run-the-application">#</doc-anchor-trigger>
+        <span>1.4 Run the Application</span>
+    </h3>
+</doc-anchor-target>
+<p>Start the application to verify everything works:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-bash"><code v-pre class="language-bash">dotnet run
+```
+
+You should see output similar to:
+```
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: https://localhost:5001</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="15-open-in-browser">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#15-open-in-browser">#</doc-anchor-trigger>
+        <span>1.5 Open in Browser</span>
+    </h3>
+</doc-anchor-target>
+<p>Open your browser and navigate to the URL shown (e.g., <code v-pre>https://localhost:5001</code>). You should see the default ASP.NET Core welcome page.</p>
+<p><strong>Keep the browser open</strong>—you will refresh frequently throughout this lab.</p>
+<blockquote>
+<p><strong>Tip</strong>: If you prefer, you can use <code v-pre>dotnet watch run</code> instead of <code v-pre>dotnet run</code>. This enables hot reload, automatically rebuilding and refreshing when you save changes.</p>
+</blockquote>
+<hr>
+<doc-anchor-target id="step-2-create-the-domain-model-1012-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-2-create-the-domain-model-1012-minutes">#</doc-anchor-trigger>
+        <span>Step 2: Create the Domain Model (10–12 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Now we will establish a simple domain: <strong>Tasks</strong>. We are intentionally keeping this minimal so we can focus on UI patterns rather than data complexity.</p>
+<doc-anchor-target id="design-constraints">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#design-constraints">#</doc-anchor-trigger>
+        <span>Design Constraints</span>
+    </h3>
+</doc-anchor-target>
+<p>For this workshop, we follow these constraints:</p>
+<ul>
+<li><strong>Single page focus</strong>: One page that will become highly interactive with htmx</li>
+<li><strong>In-memory storage</strong>: No database setup required; focus stays on UI patterns</li>
+<li><strong>Fully server-rendered</strong>: No htmx yet—that comes in Lab 2</li>
+</ul>
+<doc-anchor-target id="21-create-the-taskitem-model">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#21-create-the-taskitem-model">#</doc-anchor-trigger>
+        <span>2.1 Create the TaskItem Model</span>
+    </h3>
+</doc-anchor-target>
+<p>Create a new folder called <code v-pre>Models</code> in your project root, then create a file named <code v-pre>TaskItem.cs</code>:</p>
+<p><strong>File: <code v-pre>Models/TaskItem.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">namespace RazorHtmxWorkshop.Models;
+
+/// &lt;summary&gt;
+/// Represents a single task in our task management domain.
+/// This is intentionally simple—we want to focus on UI patterns, not domain complexity.
+/// &lt;/summary&gt;
+public class TaskItem
+{
+    /// &lt;summary&gt;
+    /// Unique identifier for the task.
+    /// &lt;/summary&gt;
+    public int Id { get; set; }
+
+    /// &lt;summary&gt;
+    /// The task's title/description.
+    /// &lt;/summary&gt;
+    public string Title { get; set; } = &quot;&quot;;
+
+    /// &lt;summary&gt;
+    /// Whether the task has been completed.
+    /// &lt;/summary&gt;
+    public bool IsDone { get; set; }
+
+    /// &lt;summary&gt;
+    /// When the task was created (UTC).
+    /// &lt;/summary&gt;
+    public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>Why this design:</strong></p>
+<ul>
+<li><code v-pre>Id</code>: We need a way to identify individual tasks for future operations (edit, delete)</li>
+<li><code v-pre>Title</code>: The primary content users will see and interact with</li>
+<li><code v-pre>IsDone</code>: A simple status flag for visual differentiation</li>
+<li><code v-pre>CreatedUtc</code>: Useful for sorting (newest first) and displaying creation time</li>
+</ul>
+<doc-anchor-target id="22-create-the-in-memory-task-store">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#22-create-the-in-memory-task-store">#</doc-anchor-trigger>
+        <span>2.2 Create the In-Memory Task Store</span>
+    </h3>
+</doc-anchor-target>
+<p>Create a new folder called <code v-pre>Data</code> in your project root, then create a file named <code v-pre>InMemoryTaskStore.cs</code>:</p>
+<p><strong>File: <code v-pre>Data/InMemoryTaskStore.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using RazorHtmxWorkshop.Models;
+
+namespace RazorHtmxWorkshop.Data;
+
+/// &lt;summary&gt;
+/// A simple in-memory store for TaskItems.
+///
+/// Design notes:
+/// - Static class for simplicity in a workshop context
+/// - In production, you would use Entity Framework Core, Dapper, or another data access approach
+/// - Data is lost when the application restarts—this is intentional for workshop isolation
+/// &lt;/summary&gt;
+public static class InMemoryTaskStore
+{
+    // Auto-incrementing ID counter
+    private static int _nextId = 1;
+
+    // The actual storage - a simple list
+    private static readonly List&lt;TaskItem&gt; _tasks = new();
+
+    /// &lt;summary&gt;
+    /// Returns all tasks, ordered by creation date (newest first).
+    /// Returns a new list to prevent external modification of internal state.
+    /// &lt;/summary&gt;
+    public static IReadOnlyList&lt;TaskItem&gt; All() =&gt; _tasks
+        .OrderByDescending(t =&gt; t.CreatedUtc)
+        .ToList();
+
+    /// &lt;summary&gt;
+    /// Adds a new task with the given title.
+    /// Automatically assigns an ID and creation timestamp.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;title&quot;&gt;The task title (will be trimmed)&lt;/param&gt;
+    /// &lt;returns&gt;The newly created TaskItem&lt;/returns&gt;
+    public static TaskItem Add(string title)
+    {
+        var item = new TaskItem
+        {
+            Id = _nextId++,
+            Title = title.Trim(),
+            IsDone = false,
+            CreatedUtc = DateTime.UtcNow
+        };
+        _tasks.Add(item);
+        return item;
+    }
+}
+```
+
+**Why an in-memory store:**
+
+- **Zero setup**: No database connection strings, migrations, or external dependencies
+- **Fast iteration**: Changes are immediate; no waiting for database operations
+- **Workshop isolation**: Each attendee's data is independent; restarting clears everything
+- **Pattern focus**: We can concentrate on htmx and Razor Pages patterns, not data access
+
+&gt; **Production Note**: In a real application, you would replace this with a proper data access layer using Entity Framework Core, Dapper, or your preferred ORM. The interface (methods like `All()` and `Add()`) would remain similar.
+
+---
+
+## Step 3: Create the Tasks Page (10–12 minutes)
+
+Now we will create the main Tasks page with its PageModel. This page will host all three fragment regions.
+
+### 3.1 Create the Tasks Folder Structure
+
+Create the following folder structure:
+```
+Pages/
+└── Tasks/
+    ├── Index.cshtml
+    └── Index.cshtml.cs</code></pre>
+</doc-codeblock></div>
+<p>You can create these files manually or use your IDE&#x27;s scaffolding features.</p>
+<doc-anchor-target id="32-create-the-pagemodel">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#32-create-the-pagemodel">#</doc-anchor-trigger>
+        <span>3.2 Create the PageModel</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using RazorHtmxWorkshop.Data;
+using RazorHtmxWorkshop.Models;
+
+namespace RazorHtmxWorkshop.Pages.Tasks;
+
+/// &lt;summary&gt;
+/// PageModel for the Tasks index page.
+///
+/// This handles:
+/// - Displaying the list of tasks (OnGet)
+/// - Creating new tasks (OnPostCreate)
+///
+/// Design notes:
+/// - Tasks property is populated on every request that needs to display the list
+/// - Input property uses [BindProperty] for model binding on POST
+/// - FlashMessage uses [TempData] to survive redirects
+/// &lt;/summary&gt;
+public class IndexModel : PageModel
+{
+    /// &lt;summary&gt;
+    /// The list of tasks to display. Populated in handlers that render the page.
+    /// &lt;/summary&gt;
+    public IReadOnlyList&lt;TaskItem&gt; Tasks { get; private set; } = Array.Empty&lt;TaskItem&gt;();
+
+    /// &lt;summary&gt;
+    /// Input model for creating new tasks. Bound automatically on POST requests.
+    /// &lt;/summary&gt;
+    [BindProperty]
+    public NewTaskInput Input { get; set; } = new();
+
+    /// &lt;summary&gt;
+    /// Flash message to display after redirects.
+    /// TempData survives one redirect, making it perfect for &quot;success&quot; messages.
+    /// &lt;/summary&gt;
+    [TempData]
+    public string? FlashMessage { get; set; }
+
+    /// &lt;summary&gt;
+    /// Handles GET requests to /Tasks.
+    /// Loads all tasks for display.
+    /// &lt;/summary&gt;
+    public void OnGet()
+    {
+        Tasks = InMemoryTaskStore.All();
+    }
+
+    /// &lt;summary&gt;
+    /// Handles POST requests to /Tasks?handler=Create.
+    /// Validates input, creates the task, and redirects back to the page.
+    ///
+    /// The Post-Redirect-Get (PRG) pattern prevents duplicate submissions
+    /// when users refresh the page after submitting.
+    /// &lt;/summary&gt;
+    public IActionResult OnPostCreate()
+    {
+        // Manual validation (we'll add data annotations in Lab 3)
+        if (string.IsNullOrWhiteSpace(Input.Title))
+        {
+            ModelState.AddModelError(nameof(Input.Title), &quot;Title is required.&quot;);
+        }
+
+        // If validation failed, redisplay the page with errors
+        if (!ModelState.IsValid)
+        {
+            Tasks = InMemoryTaskStore.All();
+            return Page();
+        }
+
+        // Create the task
+        InMemoryTaskStore.Add(Input.Title);
+
+        // Set success message and redirect (PRG pattern)
+        FlashMessage = &quot;Task added.&quot;;
+        return RedirectToPage();
+    }
+
+    /// &lt;summary&gt;
+    /// Input model for the create task form.
+    /// Nested class keeps it close to its usage context.
+    /// &lt;/summary&gt;
+    public class NewTaskInput
+    {
+        public string Title { get; set; } = &quot;&quot;;
+    }
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>Key concepts explained:</strong></p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Concept</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>[BindProperty]</code></td>
+<td>Automatically populates <code v-pre>Input</code> from form data on POST</td>
+</tr>
+<tr>
+<td><code v-pre>[TempData]</code></td>
+<td>Stores data that survives exactly one redirect</td>
+</tr>
+<tr>
+<td><code v-pre>OnGet()</code></td>
+<td>Handles HTTP GET requests</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostCreate()</code></td>
+<td>Handles HTTP POST to <code v-pre>?handler=Create</code></td>
+</tr>
+<tr>
+<td>PRG Pattern</td>
+<td>Post-Redirect-Get prevents duplicate form submissions</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="33-create-the-razor-page-initial-version">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#33-create-the-razor-page-initial-version">#</doc-anchor-trigger>
+        <span>3.3 Create the Razor Page (Initial Version)</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@page
+@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+@{
+    ViewData[&quot;Title&quot;] = &quot;Tasks&quot;;
+}
+
+&lt;h1&gt;Tasks&lt;/h1&gt;
+
+@* Messages region - will become #messages fragment *@
+&lt;div id=&quot;messages&quot;&gt;
+    @if (!string.IsNullOrWhiteSpace(Model.FlashMessage))
+    {
+        &lt;div class=&quot;alert alert-success&quot; role=&quot;alert&quot;&gt;
+            @Model.FlashMessage
+        &lt;/div&gt;
+    }
+&lt;/div&gt;
+
+&lt;div class=&quot;row&quot;&gt;
+    @* Form region - will become #task-form fragment *@
+    &lt;div class=&quot;col-md-5&quot;&gt;
+        &lt;h2 class=&quot;h5&quot;&gt;Add a Task&lt;/h2&gt;
+        &lt;div id=&quot;task-form&quot;&gt;
+            &lt;form method=&quot;post&quot; asp-page-handler=&quot;Create&quot;&gt;
+                &lt;div class=&quot;mb-3&quot;&gt;
+                    &lt;label class=&quot;form-label&quot; for=&quot;title&quot;&gt;Task Title&lt;/label&gt;
+                    &lt;input id=&quot;title&quot;
+                           class=&quot;form-control&quot;
+                           asp-for=&quot;Input.Title&quot;
+                           placeholder=&quot;e.g., Add htmx to Razor Pages&quot; /&gt;
+                    &lt;span class=&quot;text-danger&quot; asp-validation-for=&quot;Input.Title&quot;&gt;&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;button class=&quot;btn btn-primary&quot; type=&quot;submit&quot;&gt;Add Task&lt;/button&gt;
+            &lt;/form&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    @* List region - will become #task-list fragment *@
+    &lt;div class=&quot;col-md-7&quot;&gt;
+        &lt;h2 class=&quot;h5&quot;&gt;Current Tasks&lt;/h2&gt;
+        &lt;div id=&quot;task-list&quot;&gt;
+            @if (Model.Tasks.Count == 0)
+            {
+                &lt;p class=&quot;text-muted&quot;&gt;No tasks yet.&lt;/p&gt;
+            }
+            else
+            {
+                &lt;ul class=&quot;list-group&quot;&gt;
+                    @foreach (var task in Model.Tasks)
+                    {
+                        &lt;li class=&quot;list-group-item d-flex justify-content-between align-items-center&quot;&gt;
+                            &lt;span&gt;@task.Title&lt;/span&gt;
+                            @if (task.IsDone)
+                            {
+                                &lt;span class=&quot;badge bg-success&quot;&gt;Done&lt;/span&gt;
+                            }
+                        &lt;/li&gt;
+                    }
+                &lt;/ul&gt;
+            }
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+@section Scripts {
+    &lt;partial name=&quot;_ValidationScriptsPartial&quot; /&gt;
+}
+```
+
+### 3.4 Test the Basic Functionality
+
+1. **Stop** any running instance of the application
+2. **Run** the application: `dotnet run`
+3. **Navigate** to `/Tasks` in your browser
+4. **Test** the following:
+   - The page loads with &quot;No tasks yet.&quot; message
+   - Enter a task title and click &quot;Add Task&quot;
+   - The page reloads with your task in the list
+   - The &quot;Task added.&quot; success message appears
+   - Try submitting an empty form—validation error should appear
+
+At this point, you have a fully functional (but traditional) server-rendered page. Every interaction causes a full page reload. In the next steps, we will refactor this into the &quot;Fragment First&quot; architecture.
+
+---
+
+## Step 4: Identify Fragment Boundaries (5 minutes)
+
+Before creating partials, we need to clearly identify which parts of the UI should become independent fragments.
+
+### The Fragment Boundary Rule
+
+&gt; Any part of the UI that might update independently becomes a fragment boundary.
+
+When htmx is added later, it will request and replace *only that fragment*—not the entire page.
+
+### Fragment Boundaries for Our Tasks Page
+
+Looking at our page, we identify **three** fragment boundaries:
+
+| Fragment | Element ID | Purpose | When It Updates |
+|----------|------------|---------|-----------------|
+| **Messages** | `#messages` | Success/error notifications | After create, delete, or error |
+| **Form** | `#task-form` | Create task form | After validation errors, form reset |
+| **List** | `#task-list` | Display all tasks | After create, delete, refresh |
+
+### Visual Representation
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Tasks Page                                                  │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │  #messages - Success/error messages                     │ │
+│  └─────────────────────────────────────────────────────────┘ │
+│                                                              │
+│  ┌─────────────────────┐  ┌─────────────────────────────────┐ │
+│  │  #task-form         │  │  #task-list                    │ │
+│  │                     │  │                                 │ │
+│  │  - Title input      │  │  - Task 1                       │ │
+│  │  - Submit button    │  │  - Task 2                       │ │
+│  │                     │  │  - Task 3                       │ │
+│  └─────────────────────┘  └─────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Important Design Consideration
+
+Fragment boundaries are about **product UX**, not technical layering. Ask yourself:
+
+- &quot;What does the user expect to change when they perform this action?&quot;
+- &quot;What should stay the same?&quot;
+
+For example, when a user creates a task:
+- The **list** should update (show the new task)
+- The **messages** should update (show &quot;Task added&quot;)
+- The **form** might reset (clear the input)
+
+Each of these is a separate concern, so each becomes a fragment.
+
+---
+
+## Step 5: Create the Partial Views (10–12 minutes)
+
+Now we extract each fragment region into its own partial view. This is the core of the &quot;Fragment First&quot; pattern.
+
+### 5.1 Create the Partials Folder
+
+Create a new folder structure:
+```
+Pages/
+└── Tasks/
+    ├── Partials/
+    │   ├── _Messages.cshtml
+    │   ├── _TaskForm.cshtml
+    │   └── _TaskList.cshtml
+    ├── Index.cshtml
+    └── Index.cshtml.cs</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="52-create-the-messages-partial">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#52-create-the-messages-partial">#</doc-anchor-trigger>
+        <span>5.2 Create the Messages Partial</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Partials/_Messages.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model string?
+
+@*
+    Messages Fragment
+    =================
+
+    Purpose:
+    - Displays success/error messages to the user
+    - Wraps content in a stable #messages container
+
+    Design notes:
+    - The outer &lt;div id=&quot;messages&quot;&gt; MUST always render, even when empty
+    - This ensures htmx always has a target to swap into
+    - In later labs, htmx will swap this entire element using hx-swap=&quot;outerHTML&quot;
+
+    Model:
+    - string? message - The message to display, or null for empty state
+*@
+
+&lt;div id=&quot;messages&quot;&gt;
+    @if (!string.IsNullOrWhiteSpace(Model))
+    {
+        &lt;div class=&quot;alert alert-success&quot; role=&quot;alert&quot;&gt;
+            @Model
+        &lt;/div&gt;
+    }
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Critical design point</strong>: The outer <code v-pre>&lt;div id=&quot;messages&quot;&gt;</code> must <strong>always</strong> render, even when there is no message. This ensures htmx always has a valid target element to replace.</p>
+<doc-anchor-target id="53-create-the-task-form-partial">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#53-create-the-task-form-partial">#</doc-anchor-trigger>
+        <span>5.3 Create the Task Form Partial</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskForm.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+
+@*
+    Task Form Fragment
+    ==================
+
+    Purpose:
+    - Renders the &quot;Create Task&quot; form
+    - Handles validation error display
+    - Wraps content in a stable #task-form container
+
+    Design notes:
+    - We pass the entire IndexModel as the model because we need:
+      - Input.Title for the field value
+      - ModelState for validation messages
+    - The form uses asp-page-handler=&quot;Create&quot; which generates ?handler=Create
+    - We are NOT adding htmx attributes yet—that comes in Lab 2
+
+    Fragment contract:
+    - Root element: &lt;div id=&quot;task-form&quot;&gt;
+    - This ID is the &quot;contract&quot; for htmx targeting
+*@
+
+&lt;div id=&quot;task-form&quot;&gt;
+    &lt;form method=&quot;post&quot; asp-page-handler=&quot;Create&quot;&gt;
+        &lt;div class=&quot;mb-3&quot;&gt;
+            &lt;label class=&quot;form-label&quot; for=&quot;title&quot;&gt;Task Title&lt;/label&gt;
+            &lt;input id=&quot;title&quot;
+                   class=&quot;form-control&quot;
+                   asp-for=&quot;Input.Title&quot;
+                   placeholder=&quot;e.g., Add htmx to Razor Pages&quot; /&gt;
+            &lt;span class=&quot;text-danger&quot; asp-validation-for=&quot;Input.Title&quot;&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button class=&quot;btn btn-primary&quot; type=&quot;submit&quot;&gt;Add Task&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Why pass the full IndexModel:</strong></p>
+<p>The form partial needs access to:</p>
+<ul>
+<li><code v-pre>Model.Input.Title</code> - to populate the input field (especially after validation errors)</li>
+<li><code v-pre>ModelState</code> - which is accessed via the <code v-pre>asp-validation-for</code> tag helper</li>
+</ul>
+<p>Passing the full model keeps the partial self-contained.</p>
+<doc-anchor-target id="54-create-the-task-list-partial">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#54-create-the-task-list-partial">#</doc-anchor-trigger>
+        <span>5.4 Create the Task List Partial</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskList.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorHtmxWorkshop.Models
+@model IReadOnlyList&lt;TaskItem&gt;
+
+@*
+    Task List Fragment
+    ==================
+
+    Purpose:
+    - Displays all tasks in a list format
+    - Shows empty state when no tasks exist
+    - Wraps content in a stable #task-list container
+
+    Design notes:
+    - Model is just the list of tasks, not the full PageModel
+    - This keeps the partial focused on display logic only
+    - The list-group classes are Bootstrap styling
+
+    Fragment contract:
+    - Root element: &lt;div id=&quot;task-list&quot;&gt;
+    - This ID is the &quot;contract&quot; for htmx targeting
+*@
+
+&lt;div id=&quot;task-list&quot;&gt;
+    @if (Model.Count == 0)
+    {
+        &lt;p class=&quot;text-muted&quot;&gt;No tasks yet.&lt;/p&gt;
+    }
+    else
+    {
+        &lt;ul class=&quot;list-group&quot;&gt;
+            @foreach (var task in Model)
+            {
+                &lt;li class=&quot;list-group-item d-flex justify-content-between align-items-center&quot;&gt;
+                    &lt;span&gt;@task.Title&lt;/span&gt;
+                    @if (task.IsDone)
+                    {
+                        &lt;span class=&quot;badge bg-success&quot;&gt;Done&lt;/span&gt;
+                    }
+                &lt;/li&gt;
+            }
+        &lt;/ul&gt;
+    }
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Design decision - Model type:</strong></p>
+<p>This partial receives <code v-pre>IReadOnlyList&lt;TaskItem&gt;</code> rather than the full <code v-pre>IndexModel</code> because:</p>
+<ul>
+<li>It only needs the task data to render</li>
+<li>It doesn&#x27;t need form state or flash messages</li>
+<li>Simpler models are easier to test and reason about</li>
+</ul>
+<hr>
+<doc-anchor-target id="step-6-compose-the-page-with-partials-810-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-6-compose-the-page-with-partials-810-minutes">#</doc-anchor-trigger>
+        <span>Step 6: Compose the Page with Partials (8–10 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Now we update the main page to use our new partials instead of inline markup.</p>
+<doc-anchor-target id="61-update-the-index-page">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#61-update-the-index-page">#</doc-anchor-trigger>
+        <span>6.1 Update the Index Page</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@page
+@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+@{
+    ViewData[&quot;Title&quot;] = &quot;Tasks&quot;;
+}
+
+@*
+    Tasks Page - Fragment Composition
+    ==================================
+
+    This page demonstrates the &quot;Fragment First&quot; architecture:
+    - Each region is rendered by a dedicated partial
+    - Each partial has a stable root element ID
+    - The page is a composition of independent fragments
+
+    Fragment inventory:
+    - #messages    -&gt; Partials/_Messages (flash message display)
+    - #task-form   -&gt; Partials/_TaskForm (create task form)
+    - #task-list   -&gt; Partials/_TaskList (task list display)
+
+    In later labs, htmx will target these IDs to swap individual fragments
+    without reloading the entire page.
+*@
+
+&lt;h1&gt;Tasks&lt;/h1&gt;
+
+@*
+    Messages Fragment
+    -----------------
+    Displays success/error messages.
+    Model: FlashMessage (string?)
+*@
+&lt;partial name=&quot;Partials/_Messages&quot; model=&quot;Model.FlashMessage&quot; /&gt;
+
+&lt;div class=&quot;row&quot;&gt;
+    @*
+        Form Fragment
+        -------------
+        Create task form with validation.
+        Model: Full IndexModel (needs Input + ModelState)
+    *@
+    &lt;div class=&quot;col-md-5&quot;&gt;
+        &lt;h2 class=&quot;h5&quot;&gt;Add a Task&lt;/h2&gt;
+        &lt;partial name=&quot;Partials/_TaskForm&quot; model=&quot;Model&quot; /&gt;
+    &lt;/div&gt;
+
+    @*
+        List Fragment
+        -------------
+        Displays all tasks.
+        Model: Tasks collection (IReadOnlyList&lt;TaskItem&gt;)
+    *@
+    &lt;div class=&quot;col-md-7&quot;&gt;
+        &lt;h2 class=&quot;h5&quot;&gt;Current Tasks&lt;/h2&gt;
+        &lt;partial name=&quot;Partials/_TaskList&quot; model=&quot;Model.Tasks&quot; /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+@section Scripts {
+    &lt;partial name=&quot;_ValidationScriptsPartial&quot; /&gt;
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="62-understanding-the-partial-tag-helper">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#62-understanding-the-partial-tag-helper">#</doc-anchor-trigger>
+        <span>6.2 Understanding the Partial Tag Helper</span>
+    </h3>
+</doc-anchor-target>
+<p>The <code v-pre>&lt;partial&gt;</code> tag helper is the recommended way to render partials in ASP.NET Core:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;partial name=&quot;Partials/_Messages&quot; model=&quot;Model.FlashMessage&quot; /&gt;</code></pre>
+</doc-codeblock></div>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>name</code></td>
+<td>Path to the partial view (relative to current page folder)</td>
+</tr>
+<tr>
+<td><code v-pre>model</code></td>
+<td>Data to pass to the partial&#x27;s <code v-pre>@model</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Path resolution:</strong></p>
+<ul>
+<li><code v-pre>&quot;Partials/_Messages&quot;</code> looks for <code v-pre>Pages/Tasks/Partials/_Messages.cshtml</code></li>
+<li>The path is relative to the current page&#x27;s folder (<code v-pre>Pages/Tasks/</code>)</li>
+</ul>
+<doc-anchor-target id="63-test-the-refactored-application">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#63-test-the-refactored-application">#</doc-anchor-trigger>
+        <span>6.3 Test the Refactored Application</span>
+    </h3>
+</doc-anchor-target>
+<ol>
+<li><strong>Stop</strong> and <strong>restart</strong> the application</li>
+<li><strong>Navigate</strong> to <code v-pre>/Tasks</code></li>
+<li><strong>Verify</strong> the functionality:
+<ul>
+<li>Page displays correctly (same as before)</li>
+<li>Creating tasks works</li>
+<li>Validation errors display</li>
+<li>Success messages appear</li>
+</ul>
+</li>
+<li><strong>View the HTML source</strong> to confirm the fragment IDs are present</li>
+</ol>
+<hr>
+<doc-anchor-target id="step-7-verification-checklist-2-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-7-verification-checklist-2-minutes">#</doc-anchor-trigger>
+        <span>Step 7: Verification Checklist (2 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Before moving on to Lab 2, verify your application meets all requirements.</p>
+<doc-anchor-target id="dom-verification">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#dom-verification">#</doc-anchor-trigger>
+        <span>DOM Verification</span>
+    </h3>
+</doc-anchor-target>
+<p>Open your browser&#x27;s Developer Tools (F12) and confirm these elements exist:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Messages fragment --&gt;
+&lt;div id=&quot;messages&quot;&gt;...&lt;/div&gt;
+
+&lt;!-- Form fragment --&gt;
+&lt;div id=&quot;task-form&quot;&gt;...&lt;/div&gt;
+
+&lt;!-- List fragment --&gt;
+&lt;div id=&quot;task-list&quot;&gt;...&lt;/div&gt;
+```
+
+### Functionality Verification
+
+| Test | Expected Result |
+|------|-----------------|
+| Navigate to `/Tasks` | Page loads with empty task list |
+| Submit empty form | Validation error: &quot;Title is required.&quot; |
+| Enter title, submit | Page reloads, task appears, &quot;Task added.&quot; shows |
+| Refresh page | Task persists, success message gone (TempData consumed) |
+
+### File Structure Verification
+
+Confirm your project structure matches:
+```
+RazorHtmxWorkshop/
+├── Data/
+│   └── InMemoryTaskStore.cs
+├── Models/
+│   └── TaskItem.cs
+├── Pages/
+│   ├── Tasks/
+│   │   ├── Partials/
+│   │   │   ├── _Messages.cshtml
+│   │   │   ├── _TaskForm.cshtml
+│   │   │   └── _TaskList.cshtml
+│   │   ├── Index.cshtml
+│   │   └── Index.cshtml.cs
+│   └── ... (other pages)
+└── ... (other files)</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="key-takeaways">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#key-takeaways">#</doc-anchor-trigger>
+        <span>Key Takeaways</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="the-fragment-first-mental-model">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-fragment-first-mental-model">#</doc-anchor-trigger>
+        <span>The &quot;Fragment First&quot; Mental Model</span>
+    </h3>
+</doc-anchor-target>
+<ol>
+<li><strong>Partials are not optimization</strong>—they are interfaces for future interactivity</li>
+<li><strong>The fragment root element (with <code v-pre>id=&quot;...&quot;</code>) is the contract</strong>—htmx will target these IDs</li>
+<li><strong>Each fragment has a single responsibility</strong>—messages, form, or list</li>
+</ol>
+<doc-anchor-target id="what-comes-next">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#what-comes-next">#</doc-anchor-trigger>
+        <span>What Comes Next</span>
+    </h3>
+</doc-anchor-target>
+<p>In <strong>Lab 2</strong>, you will add htmx to this foundation:</p>
+<ul>
+<li>The create form will submit via <code v-pre>hx-post</code> and receive an updated <code v-pre>_TaskList</code> fragment</li>
+<li>Only <code v-pre>#task-list</code> will update—no full page reload</li>
+<li>You will add a &quot;Refresh list&quot; button using <code v-pre>hx-get</code></li>
+<li>Validation errors will swap into <code v-pre>#task-form</code> using response headers</li>
+</ul>
+<p>The &quot;Fragment First&quot; architecture you built in this lab makes all of that possible with minimal changes to your existing code.</p>
+<hr>
+<doc-anchor-target id="troubleshooting">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#troubleshooting">#</doc-anchor-trigger>
+        <span>Troubleshooting</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="common-issues-and-solutions">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#common-issues-and-solutions">#</doc-anchor-trigger>
+        <span>Common Issues and Solutions</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Problem</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Page not found at /Tasks</strong></td>
+<td>Ensure <code v-pre>Index.cshtml</code> is in <code v-pre>Pages/Tasks/</code> folder</td>
+</tr>
+<tr>
+<td><strong>Partial not found error</strong></td>
+<td>Check the path in <code v-pre>&lt;partial name=&quot;...&quot;&gt;</code> matches actual file location</td>
+</tr>
+<tr>
+<td><strong>Tasks disappear on restart</strong></td>
+<td>Expected behavior—data is in-memory only</td>
+</tr>
+<tr>
+<td><strong>Validation messages don&#x27;t show</strong></td>
+<td>Ensure <code v-pre>@section Scripts</code> includes <code v-pre>_ValidationScriptsPartial</code></td>
+</tr>
+<tr>
+<td><strong>Model binding not working</strong></td>
+<td>Verify <code v-pre>[BindProperty]</code> attribute on <code v-pre>Input</code> property</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="debug-tips">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#debug-tips">#</doc-anchor-trigger>
+        <span>Debug Tips</span>
+    </h3>
+</doc-anchor-target>
+<ol>
+<li><strong>View Page Source</strong>: Check that all fragment IDs render correctly</li>
+<li><strong>Network Tab</strong>: Verify form posts to <code v-pre>?handler=Create</code></li>
+<li><strong>Breakpoints</strong>: Set breakpoints in <code v-pre>OnGet()</code> and <code v-pre>OnPostCreate()</code> to trace execution</li>
+</ol>
+<hr>
+<doc-anchor-target id="summary">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#summary">#</doc-anchor-trigger>
+        <span>Summary</span>
+    </h2>
+</doc-anchor-target>
+<p>You have successfully completed Lab 1! You now have:</p>
+<ul>
+<li>A Razor Pages application with a clean project structure</li>
+<li>A simple domain model with in-memory storage</li>
+<li>Three partial views representing independent UI fragments</li>
+<li>Stable, predictable element IDs for future htmx targeting</li>
+</ul>
+<p>This &quot;Fragment First&quot; architecture is your foundation for building highly interactive server-driven UIs. In Lab 2, you will see how htmx leverages these fragments to create a responsive experience without the complexity of a JavaScript framework.</p>
+<p><strong>Proceed to Lab 2: Partial Updates with hx-get + hx-post →</strong></p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -257,7 +1318,7 @@
                                         <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../lab-2-partial-updates-with-hx-get-hx-post/">
                                             <span>
                                                 <span class="block text-xs font-normal text-right text-base-text-muted">Next</span>
-                                                <span class="block mt-1">Lab 2: Partial Updates with hx get + hx post</span>
+                                                <span class="block mt-1">Lab 2: Partial Updates with hx-​get + hx-​post</span>
                                             </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         </a>
@@ -321,6 +1382,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Lab 1: Baseline Razor Pages App + “Fragment First”", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Lab 1: Baseline Razor Pages App + \"Fragment First\"", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

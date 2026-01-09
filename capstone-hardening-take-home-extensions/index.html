@@ -7,14 +7,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821277826144">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
 
     <!-- Primary Meta Tags -->
-    <title>Capstone Hardening + Take-Home Extensions</title>
-    <meta name="title" content="Capstone Hardening + Take-Home Extensions">
+    <title>Capstone: Hardening + Take-Home Extensions</title>
+    <meta name="title" content="Capstone: Hardening + Take-Home Extensions">
+    <meta name="description" content="This capstone session transforms your workshop labs into a repeatable blueprint you can apply to real projects.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/capstone-hardening-take-home-extensions/">
@@ -22,21 +23,24 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/capstone-hardening-take-home-extensions/">
-    <meta property="og:title" content="Capstone Hardening + Take-Home Extensions">
+    <meta property="og:title" content="Capstone: Hardening + Take-Home Extensions">
+    <meta property="og:description" content="This capstone session transforms your workshop labs into a repeatable blueprint you can apply to real projects.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/capstone-hardening-take-home-extensions/">
-    <meta property="twitter:title" content="Capstone Hardening + Take-Home Extensions">
+    <meta property="twitter:title" content="Capstone: Hardening + Take-Home Extensions">
+    <meta property="twitter:description" content="This capstone session transforms your workshop labs into a repeatable blueprint you can apply to real projects.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821277826144" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821277826144" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -56,7 +60,7 @@
                                 <img class="max-h-10 dark:hidden md:inline-block" src="../images/gear-earth.png">
                                 <img class="max-h-10 hidden dark:inline-block" src="../images/gear-earth-dark.png">
                             </span>
-                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">HTMX Workshop</span>
+                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">htmx Workshop</span>
                         </a><span id="retype-branding-label" class="inline-flex mt-1 px-2 py-1 ml-4 text-xs font-medium leading-none items-center rounded-md bg-branding-label-bg text-branding-label-text ring-1 ring-branding-label-border ring-inset md:inline-block">v8</span>
                     </div>
         
@@ -226,9 +230,1593 @@
 <doc-anchor-target id="capstone-hardening--take-home-extensions" class="break-words">
     <h1>
         <doc-anchor-trigger class="header-anchor-trigger" to="#capstone-hardening--take-home-extensions">#</doc-anchor-trigger>
-        <span>Capstone Hardening + Take-Home Extensions</span>
+        <span>Capstone: Hardening + Take-Home Extensions</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="overview">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#overview">#</doc-anchor-trigger>
+        <span>Overview</span>
+    </h2>
+</doc-anchor-target>
+<p>This capstone session transforms your workshop labs into a <strong>repeatable blueprint</strong> you can apply to real projects. We&#x27;ll consolidate what you&#x27;ve learned, establish conventions you can document for your team, and explore advanced extensions you can implement on your own.</p>
+<doc-anchor-target id="session-goals">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#session-goals">#</doc-anchor-trigger>
+        <span>Session Goals</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Goal</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Consolidate</strong></td>
+<td>Clean up code, remove duplication, standardize patterns</td>
+</tr>
+<tr>
+<td><strong>Document</strong></td>
+<td>Create a convention checklist for your team</td>
+</tr>
+<tr>
+<td><strong>Extend</strong></td>
+<td>Explore advanced patterns (inline edit, optimistic UI, SSE)</td>
+</tr>
+<tr>
+<td><strong>Adopt</strong></td>
+<td>Understand how to introduce htmx to existing applications</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="time-estimate">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#time-estimate">#</doc-anchor-trigger>
+        <span>Time Estimate</span>
+    </h3>
+</doc-anchor-target>
+<p>15–20 minutes (core) + take-home extensions</p>
+<hr>
+<doc-anchor-target id="part-1-clean-up-pass-57-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-1-clean-up-pass-57-minutes">#</doc-anchor-trigger>
+        <span>Part 1: Clean-Up Pass (5–7 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Before leaving the workshop, let&#x27;s ensure your codebase is well-organized and ready to serve as a reference.</p>
+<doc-anchor-target id="11-fragment-consolidation">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#11-fragment-consolidation">#</doc-anchor-trigger>
+        <span>1.1 Fragment Consolidation</span>
+    </h3>
+</doc-anchor-target>
+<p>Review your <code v-pre>Pages/Tasks/Partials/</code> folder and ensure each fragment has a single responsibility:</p>
+<p><strong>Current Fragment Inventory:</strong></p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Fragment</th>
+<th>Purpose</th>
+<th>Model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>_TaskList.cshtml</code></td>
+<td>List with pagination</td>
+<td><code v-pre>TaskListVm</code></td>
+</tr>
+<tr>
+<td><code v-pre>_TaskForm.cshtml</code></td>
+<td>Create/edit form</td>
+<td><code v-pre>IndexModel</code></td>
+</tr>
+<tr>
+<td><code v-pre>_Messages.cshtml</code></td>
+<td>Success/error messages</td>
+<td><code v-pre>string?</code></td>
+</tr>
+<tr>
+<td><code v-pre>_TaskDetails.cshtml</code></td>
+<td>Detail view (panel/modal)</td>
+<td><code v-pre>TaskItem?</code></td>
+</tr>
+<tr>
+<td><code v-pre>_TitleValidation.cshtml</code></td>
+<td>Field-level validation</td>
+<td><code v-pre>string?</code></td>
+</tr>
+<tr>
+<td><code v-pre>_TagRow.cshtml</code></td>
+<td>Single tag input</td>
+<td><code v-pre>(int, string)</code></td>
+</tr>
+<tr>
+<td><code v-pre>_TagsContainer.cshtml</code></td>
+<td>Tags section with add button</td>
+<td><code v-pre>List&lt;string&gt;</code></td>
+</tr>
+<tr>
+<td><code v-pre>_SubcategorySelect.cshtml</code></td>
+<td>Dependent dropdown</td>
+<td><code v-pre>(IReadOnlyList&lt;string&gt;, string?)</code></td>
+</tr>
+<tr>
+<td><code v-pre>_JobStatus.cshtml</code></td>
+<td>Polling job status</td>
+<td><code v-pre>JobStatus?</code></td>
+</tr>
+<tr>
+<td><code v-pre>_JobStatusWithOob.cshtml</code></td>
+<td>Job status + OOB message</td>
+<td><code v-pre>(JobStatus, string, string)</code></td>
+</tr>
+<tr>
+<td><code v-pre>_Error.cshtml</code></td>
+<td>Generic error display</td>
+<td><code v-pre>string</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="12-remove-duplication">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#12-remove-duplication">#</doc-anchor-trigger>
+        <span>1.2 Remove Duplication</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Check for repeated patterns:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// BEFORE: Repeated htmx detection
+if (Request.Headers.TryGetValue(&quot;HX-Request&quot;, out var v) &amp;&amp; v == &quot;true&quot;)
+{
+    // ...
+}
+
+// AFTER: Use helper method consistently
+if (IsHtmx())
+{
+    // ...
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>Check for repeated fragment returns:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// BEFORE: Inline PartialViewResult construction
+return new PartialViewResult
+{
+    ViewName = &quot;Partials/_TaskList&quot;,
+    ViewData = new ViewDataDictionary(ViewData) { Model = tasks }
+};
+
+// AFTER: Use helper method
+return Fragment(&quot;Partials/_TaskList&quot;, tasks);</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="13-tighten-target-ids">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#13-tighten-target-ids">#</doc-anchor-trigger>
+        <span>1.3 Tighten Target IDs</span>
+    </h3>
+</doc-anchor-target>
+<p>Ensure every swappable region has:</p>
+<ol>
+<li><strong>A stable, unique ID</strong> in the fragment</li>
+<li><strong>Consistent naming</strong> (<code v-pre>#task-list</code>, not <code v-pre>#taskList</code> or <code v-pre>#list</code>)</li>
+<li><strong>Documentation</strong> (comment in the partial)</li>
+</ol>
+<p><strong>Example: Add ID documentation to each fragment:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@*
+    Fragment: _TaskList
+    Target ID: #task-list
+    Swap: outerHTML
+    Returned by: OnGetList, OnPostCreate, OnPostDelete
+*@
+&lt;div id=&quot;task-list&quot;&gt;
+    @* content *@
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="14-handler-organization">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#14-handler-organization">#</doc-anchor-trigger>
+        <span>1.4 Handler Organization</span>
+    </h3>
+</doc-anchor-target>
+<p>Group handlers logically in your PageModel:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class IndexModel : PageModel
+{
+    // ═══════════════════════════════════════════════════════════
+    // Properties
+    // ═══════════════════════════════════════════════════════════
+
+    public IReadOnlyList&lt;TaskItem&gt; Tasks { get; private set; } = Array.Empty&lt;TaskItem&gt;();
+
+    [BindProperty]
+    public NewTaskInput Input { get; set; } = new();
+
+    [TempData]
+    public string? FlashMessage { get; set; }
+
+    // ═══════════════════════════════════════════════════════════
+    // Page Lifecycle
+    // ═══════════════════════════════════════════════════════════
+
+    public void OnGet(string? q, int page = 1, int pageSize = 5) { }
+
+    // ═══════════════════════════════════════════════════════════
+    // List Fragment Handlers
+    // ═══════════════════════════════════════════════════════════
+
+    public IActionResult OnGetList(string? q, int page = 1, int pageSize = 5) { }
+    public IActionResult OnGetDetails(int id) { }
+
+    // ═══════════════════════════════════════════════════════════
+    // Form Fragment Handlers
+    // ═══════════════════════════════════════════════════════════
+
+    public IActionResult OnGetEmptyForm() { }
+    public IActionResult OnPostCreate() { }
+    public IActionResult OnPostValidateTitle() { }
+
+    // ═══════════════════════════════════════════════════════════
+    // Dynamic Form Handlers
+    // ═══════════════════════════════════════════════════════════
+
+    public IActionResult OnGetAddTag(int nextIndex) { }
+    public IActionResult OnGetRemoveTag(int index) { }
+    public IActionResult OnGetSubcategories(string? category) { }
+
+    // ═══════════════════════════════════════════════════════════
+    // CRUD Handlers
+    // ═══════════════════════════════════════════════════════════
+
+    public IActionResult OnPostDelete(int id) { }
+
+    // ═══════════════════════════════════════════════════════════
+    // Background Job Handlers
+    // ═══════════════════════════════════════════════════════════
+
+    public IActionResult OnPostStartJob() { }
+    public IActionResult OnGetJobStatus(string jobId) { }
+    public IActionResult OnGetResetJob() { }
+
+    // ═══════════════════════════════════════════════════════════
+    // Message Handlers
+    // ═══════════════════════════════════════════════════════════
+
+    public IActionResult OnGetMessages() { }
+
+    // ═══════════════════════════════════════════════════════════
+    // Helper Methods
+    // ═══════════════════════════════════════════════════════════
+
+    private bool IsHtmx() =&gt;
+        Request.Headers.TryGetValue(&quot;HX-Request&quot;, out var v) &amp;&amp; v == &quot;true&quot;;
+
+    private PartialViewResult Fragment(string partialName, object model) =&gt;
+        new()
+        {
+            ViewName = partialName,
+            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+        };
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="15-clean-up-checklist">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#15-clean-up-checklist">#</doc-anchor-trigger>
+        <span>1.5 Clean-Up Checklist</span>
+    </h3>
+</doc-anchor-target>
+<p>Before moving on, verify:</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> All fragments have consistent ID documentation</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> All handlers use <code v-pre>IsHtmx()</code> helper</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> All fragment returns use <code v-pre>Fragment()</code> helper</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Handlers are grouped logically</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> No duplicate code patterns exist</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Unused code/comments are removed</li>
+</ul>
+<hr>
+<doc-anchor-target id="part-2-convention-checklist-57-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-2-convention-checklist-57-minutes">#</doc-anchor-trigger>
+        <span>Part 2: Convention Checklist (5–7 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Create a reference document your team can use when building htmx + Razor Pages features.</p>
+<doc-anchor-target id="21-the-complete-convention-checklist">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#21-the-complete-convention-checklist">#</doc-anchor-trigger>
+        <span>2.1 The Complete Convention Checklist</span>
+    </h3>
+</doc-anchor-target>
+<p>Save this as <code v-pre>HTMX_CONVENTIONS.md</code> in your project root:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markdown"><code v-pre class="language-markdown"># htmx + Razor Pages Conventions
+
+## Fragment Rules
+
+### Naming
+- Partial files: `_PascalCase.cshtml` (underscore prefix)
+- Fragment IDs: `#kebab-case` (lowercase, hyphens)
+- Handlers: `OnGet{Resource}` / `OnPost{Action}`
+
+### Structure
+- Every fragment MUST have a stable wrapper element with an ID
+- The wrapper ID MUST match the hx-target selector
+- Fragments are self-contained (no dependencies on page layout)
+
+### Example
+```cshtml
+@* Fragment: _TaskList *@
+@* Target: #task-list *@
+@* Swap: outerHTML *@
+&lt;div id=&quot;task-list&quot;&gt;
+    &lt;!-- content --&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="response-rules">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#response-rules">#</doc-anchor-trigger>
+        <span>Response Rules</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="when-to-return-what">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#when-to-return-what">#</doc-anchor-trigger>
+        <span>When to return what</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Initial page load</td>
+<td><code v-pre>Page()</code></td>
+</tr>
+<tr>
+<td>Non-htmx form submit</td>
+<td><code v-pre>RedirectToPage()</code></td>
+</tr>
+<tr>
+<td>htmx success</td>
+<td><code v-pre>Fragment(&quot;...&quot;, model)</code></td>
+</tr>
+<tr>
+<td>htmx validation error</td>
+<td><code v-pre>Fragment(&quot;_Form&quot;, this)</code> + 422 + retarget</td>
+</tr>
+<tr>
+<td>htmx not found</td>
+<td><code v-pre>Fragment(&quot;_Messages&quot;, msg)</code> + 404 + retarget</td>
+</tr>
+<tr>
+<td>htmx server error</td>
+<td><code v-pre>Fragment(&quot;_Error&quot;, msg)</code> + 500 + retarget</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="status-codes">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#status-codes">#</doc-anchor-trigger>
+        <span>Status Codes</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li>200: Success</li>
+<li>302: Redirect (non-htmx)</li>
+<li>422: Validation error</li>
+<li>404: Not found</li>
+<li>500: Server error</li>
+</ul>
+<doc-anchor-target id="swap-strategies">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#swap-strategies">#</doc-anchor-trigger>
+        <span>Swap Strategies</span>
+    </h2>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Use When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>outerHTML</code></td>
+<td>Fragment includes its wrapper (default)</td>
+</tr>
+<tr>
+<td><code v-pre>innerHTML</code></td>
+<td>Swapping content inside a container</td>
+</tr>
+<tr>
+<td><code v-pre>beforeend</code></td>
+<td>Appending to a list</td>
+</tr>
+<tr>
+<td><code v-pre>afterbegin</code></td>
+<td>Prepending to a list</td>
+</tr>
+<tr>
+<td><code v-pre>delete</code></td>
+<td>Removing an element</td>
+</tr>
+<tr>
+<td><code v-pre>none</code></td>
+<td>Side effects only (triggers)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="htmx-attributes-quick-reference">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#htmx-attributes-quick-reference">#</doc-anchor-trigger>
+        <span>htmx Attributes Quick Reference</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="requests">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#requests">#</doc-anchor-trigger>
+        <span>Requests</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li><code v-pre>hx-get=&quot;?handler=List&quot;</code> - GET request</li>
+<li><code v-pre>hx-post=&quot;?handler=Create&quot;</code> - POST request</li>
+<li><code v-pre>hx-vals='{&quot;key&quot;: value}'</code> - Include additional values</li>
+</ul>
+<doc-anchor-target id="targeting">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#targeting">#</doc-anchor-trigger>
+        <span>Targeting</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li><code v-pre>hx-target=&quot;#element-id&quot;</code> - Where to swap</li>
+<li><code v-pre>hx-swap=&quot;outerHTML&quot;</code> - How to swap</li>
+</ul>
+<doc-anchor-target id="triggers">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#triggers">#</doc-anchor-trigger>
+        <span>Triggers</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li><code v-pre>hx-trigger=&quot;click&quot;</code> - On click (default for buttons)</li>
+<li><code v-pre>hx-trigger=&quot;change&quot;</code> - On change (default for select)</li>
+<li><code v-pre>hx-trigger=&quot;keyup changed delay:500ms&quot;</code> - Debounced input</li>
+<li><code v-pre>hx-trigger=&quot;every 1s&quot;</code> - Polling</li>
+</ul>
+<doc-anchor-target id="extras">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#extras">#</doc-anchor-trigger>
+        <span>Extras</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li><code v-pre>hx-confirm=&quot;Are you sure?&quot;</code> - Confirmation dialog</li>
+<li><code v-pre>hx-indicator=&quot;#loading&quot;</code> - Show during request</li>
+<li><code v-pre>hx-include=&quot;closest form&quot;</code> - Include form data</li>
+<li><code v-pre>hx-push-url=&quot;true&quot;</code> - Update browser URL</li>
+</ul>
+<doc-anchor-target id="response-headers">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#response-headers">#</doc-anchor-trigger>
+        <span>Response Headers</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="from-server">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#from-server">#</doc-anchor-trigger>
+        <span>From Server</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li><code v-pre>HX-Trigger: eventName</code> - Fire client event</li>
+<li><code v-pre>HX-Retarget: #selector</code> - Override hx-target</li>
+<li><code v-pre>HX-Reswap: innerHTML</code> - Override hx-swap</li>
+<li><code v-pre>HX-Push-Url: /path</code> - Update browser URL</li>
+</ul>
+<doc-anchor-target id="validation-pattern">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#validation-pattern">#</doc-anchor-trigger>
+        <span>Validation Pattern</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="field-level-keyup">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#field-level-keyup">#</doc-anchor-trigger>
+        <span>Field-level (keyup)</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;input hx-post=&quot;?handler=ValidateField&quot;
+       hx-trigger=&quot;keyup changed delay:500ms&quot;
+       hx-target=&quot;#field-validation&quot;
+       hx-swap=&quot;outerHTML&quot;
+       hx-include=&quot;closest form&quot; /&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="form-level-submit">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#form-level-submit">#</doc-anchor-trigger>
+        <span>Form-level (submit)</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;form hx-post=&quot;?handler=Create&quot;
+      hx-target=&quot;#list&quot;
+      hx-swap=&quot;outerHTML&quot;&gt;</code></pre>
+</doc-codeblock></div>
+<p>On validation failure: 422 + retarget to form.</p>
+<doc-anchor-target id="error-handling-pattern">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#error-handling-pattern">#</doc-anchor-trigger>
+        <span>Error Handling Pattern</span>
+    </h2>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">if (IsHtmx())
+{
+    Response.StatusCode = 422; // or 404, 500
+    Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
+    Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
+    return Fragment(&quot;Partials/_Messages&quot;, errorMessage);
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="polling-pattern">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#polling-pattern">#</doc-anchor-trigger>
+        <span>Polling Pattern</span>
+    </h2>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@if (Model.State == &quot;running&quot;)
+{
+    &lt;div hx-get=&quot;?handler=Status&amp;id=@Model.Id&quot;
+         hx-trigger=&quot;every 1s&quot;
+         hx-target=&quot;#status&quot;
+         hx-swap=&quot;outerHTML&quot;&gt;
+        &lt;!-- progress content --&gt;
+    &lt;/div&gt;
+}
+else
+{
+    &lt;div id=&quot;status&quot;&gt;
+        &lt;!-- final content - no polling --&gt;
+    &lt;/div&gt;
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="oob-swap-pattern">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#oob-swap-pattern">#</doc-anchor-trigger>
+        <span>OOB Swap Pattern</span>
+    </h2>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;!-- Primary fragment --&gt;
+&lt;div id=&quot;primary-target&quot;&gt;
+    &lt;!-- main content --&gt;
+&lt;/div&gt;
+
+&lt;!-- Out-of-band fragment --&gt;
+&lt;div id=&quot;secondary-target&quot; hx-swap-oob=&quot;true&quot;&gt;
+    &lt;!-- additional content --&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">
+### 2.2 Quick Reference Card
+
+Create a printable reference card:
+
+```markdown
+# htmx + Razor Pages Quick Reference
+
+## Request → Handler → Response
+</code></pre>
+</doc-codeblock></div>
+<p>hx-get=&quot;?handler=List&quot;    → OnGetList()    → Fragment(&quot;_List&quot;, data)
+hx-post=&quot;?handler=Create&quot; → OnPostCreate() → Fragment(&quot;_List&quot;, data)</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">
+## The Three Questions
+
+1. **What triggers the request?** (hx-trigger)
+2. **Where does the response go?** (hx-target + hx-swap)
+3. **What does the server return?** (Fragment or Page)
+
+## Common Patterns
+
+| Pattern | Trigger | Target | Handler Returns |
+|---------|---------|--------|-----------------|
+| Refresh list | click | #list | _List |
+| Submit form | submit | #list | _List (or _Form on error) |
+| Validate field | keyup delay:500ms | #field-error | _FieldValidation |
+| Load details | click | #details | _Details |
+| Delete item | click + confirm | #list | _List |
+| Poll status | every 1s | #status | _Status |
+| Add row | click | #container beforeend | _Row |
+| Cascade dropdown | change | #child-select | _ChildOptions |
+
+## Debugging Checklist
+
+1. Network tab: Is request firing?
+2. Request URL: Does handler match?
+3. Response body: Is it HTML fragment?
+4. Target exists: Is ID in DOM?
+5. Swap strategy: Matches fragment structure?</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="part-3-optional-extensions-take-home">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-3-optional-extensions-take-home">#</doc-anchor-trigger>
+        <span>Part 3: Optional Extensions (Take-Home)</span>
+    </h2>
+</doc-anchor-target>
+<p>These extensions build on the patterns you&#x27;ve learned. Implement them to deepen your understanding.</p>
+<doc-anchor-target id="extension-1-inline-edit-row-intermediate">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#extension-1-inline-edit-row-intermediate">#</doc-anchor-trigger>
+        <span>Extension 1: Inline Edit Row (Intermediate)</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Goal:</strong> Click an item to edit it inline, save without leaving the list.</p>
+<p><strong>Design:</strong></p>
+<ol>
+<li>Each list item has an &quot;Edit&quot; button</li>
+<li>Clicking Edit replaces the row with an edit form</li>
+<li>Save replaces the form with the updated row</li>
+<li>Cancel restores the original row</li>
+</ol>
+<p><strong>Implementation:</strong></p>
+<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskRow.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model RazorHtmxWorkshop.Models.TaskItem
+
+@*
+    Task Row Fragment (View Mode)
+    =============================
+
+    Purpose: Display a single task in the list
+    Swap target: #task-row-{id}
+
+    Design: Clicking Edit fetches the edit form for this row
+*@
+
+&lt;li class=&quot;list-group-item&quot; id=&quot;task-row-@Model.Id&quot;&gt;
+    &lt;div class=&quot;d-flex justify-content-between align-items-center&quot;&gt;
+        &lt;div&gt;
+            &lt;strong&gt;@Model.Title&lt;/strong&gt;
+            &lt;span class=&quot;text-muted small ms-2&quot;&gt;
+                Created @Model.CreatedUtc.ToLocalTime().ToString(&quot;g&quot;)
+            &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;btn-group btn-group-sm&quot;&gt;
+            &lt;button type=&quot;button&quot;
+                    class=&quot;btn btn-outline-secondary&quot;
+                    hx-get=&quot;?handler=EditRow&amp;id=@Model.Id&quot;
+                    hx-target=&quot;#task-row-@Model.Id&quot;
+                    hx-swap=&quot;outerHTML&quot;&gt;
+                Edit
+            &lt;/button&gt;
+            &lt;button type=&quot;button&quot;
+                    class=&quot;btn btn-outline-danger&quot;
+                    hx-post=&quot;?handler=Delete&quot;
+                    hx-vals='{&quot;id&quot;: @Model.Id}'
+                    hx-confirm=&quot;Delete this task?&quot;
+                    hx-target=&quot;#task-list&quot;
+                    hx-swap=&quot;outerHTML&quot;&gt;
+                Delete
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/li&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskRowEdit.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model RazorHtmxWorkshop.Models.TaskItem
+
+@*
+    Task Row Fragment (Edit Mode)
+    =============================
+
+    Purpose: Inline edit form for a single task
+    Swap target: #task-row-{id}
+
+    Design: Save updates the task and returns view mode
+            Cancel returns view mode without changes
+*@
+
+&lt;li class=&quot;list-group-item&quot; id=&quot;task-row-@Model.Id&quot;&gt;
+    &lt;form hx-post=&quot;?handler=UpdateRow&quot;
+          hx-target=&quot;#task-row-@Model.Id&quot;
+          hx-swap=&quot;outerHTML&quot;
+          class=&quot;d-flex gap-2 align-items-center&quot;&gt;
+
+        @Html.AntiForgeryToken()
+        &lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;@Model.Id&quot; /&gt;
+
+        &lt;input type=&quot;text&quot;
+               name=&quot;title&quot;
+               value=&quot;@Model.Title&quot;
+               class=&quot;form-control form-control-sm&quot;
+               required
+               autofocus /&gt;
+
+        &lt;div class=&quot;btn-group btn-group-sm&quot;&gt;
+            &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;
+                Save
+            &lt;/button&gt;
+            &lt;button type=&quot;button&quot;
+                    class=&quot;btn btn-outline-secondary&quot;
+                    hx-get=&quot;?handler=CancelEdit&amp;id=@Model.Id&quot;
+                    hx-target=&quot;#task-row-@Model.Id&quot;
+                    hx-swap=&quot;outerHTML&quot;&gt;
+                Cancel
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/form&gt;
+&lt;/li&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Handlers:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+/// Returns the edit form for a specific row.
+/// &lt;/summary&gt;
+public IActionResult OnGetEditRow(int id)
+{
+    var task = InMemoryTaskStore.Find(id);
+    if (task is null)
+    {
+        Response.StatusCode = 404;
+        return Content(&quot;&lt;li class='list-group-item text-danger'&gt;Task not found&lt;/li&gt;&quot;, &quot;text/html&quot;);
+    }
+
+    return Fragment(&quot;Partials/_TaskRowEdit&quot;, task);
+}
+
+/// &lt;summary&gt;
+/// Updates a task and returns the view mode row.
+/// &lt;/summary&gt;
+public IActionResult OnPostUpdateRow(int id, string title)
+{
+    var task = InMemoryTaskStore.Find(id);
+    if (task is null)
+    {
+        Response.StatusCode = 404;
+        return Content(&quot;&lt;li class='list-group-item text-danger'&gt;Task not found&lt;/li&gt;&quot;, &quot;text/html&quot;);
+    }
+
+    if (string.IsNullOrWhiteSpace(title) || title.Length &lt; 3)
+    {
+        // Return edit form with error
+        Response.StatusCode = 422;
+        return Fragment(&quot;Partials/_TaskRowEdit&quot;, task);
+    }
+
+    // Update the task
+    InMemoryTaskStore.Update(id, title.Trim());
+    task = InMemoryTaskStore.Find(id)!;
+
+    return Fragment(&quot;Partials/_TaskRow&quot;, task);
+}
+
+/// &lt;summary&gt;
+/// Cancels editing and returns the view mode row.
+/// &lt;/summary&gt;
+public IActionResult OnGetCancelEdit(int id)
+{
+    var task = InMemoryTaskStore.Find(id);
+    if (task is null)
+    {
+        Response.StatusCode = 404;
+        return Content(&quot;&lt;li class='list-group-item text-danger'&gt;Task not found&lt;/li&gt;&quot;, &quot;text/html&quot;);
+    }
+
+    return Fragment(&quot;Partials/_TaskRow&quot;, task);
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>Add to InMemoryTaskStore:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public static void Update(int id, string newTitle)
+{
+    var task = _tasks.FirstOrDefault(t =&gt; t.Id == id);
+    if (task is not null)
+    {
+        task.Title = newTitle;
+    }
+}</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="extension-2-optimistic-ui-with-disabled-buttons-beginner">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#extension-2-optimistic-ui-with-disabled-buttons-beginner">#</doc-anchor-trigger>
+        <span>Extension 2: Optimistic UI with Disabled Buttons (Beginner)</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Goal:</strong> Disable buttons and show loading state during requests to prevent double-submits.</p>
+<p><strong>Design:</strong></p>
+<ol>
+<li>Button shows spinner and disables during request</li>
+<li>Uses htmx CSS classes (<code v-pre>htmx-request</code>)</li>
+<li>No JavaScript required</li>
+</ol>
+<p><strong>Implementation:</strong></p>
+<p><strong>CSS (add to site.css):</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-css"><code v-pre class="language-css">/* ═══════════════════════════════════════════════════════════════
+   Optimistic UI - Button States
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Disable buttons during htmx requests */
+button.htmx-request,
+.htmx-request button {
+    pointer-events: none;
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* Hide button text during request */
+button.htmx-request .btn-text {
+    visibility: hidden;
+}
+
+/* Show spinner during request */
+button .btn-spinner {
+    display: none;
+}
+
+button.htmx-request .btn-spinner {
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Button needs relative positioning for spinner */
+button.btn-loading {
+    position: relative;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Optimistic UI - Form States
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Dim form during submission */
+form.htmx-request {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Optimistic UI - List Item States
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Highlight newly added items */
+.list-group-item.htmx-added {
+    animation: highlight-new 1s ease-out;
+}
+
+@keyframes highlight-new {
+    from {
+        background-color: rgba(25, 135, 84, 0.2);
+    }
+    to {
+        background-color: transparent;
+    }
+}
+
+/* Fade items being deleted */
+.list-group-item.htmx-swapping {
+    opacity: 0;
+    transition: opacity 200ms ease-out;
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>Button with Loading State:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;button type=&quot;submit&quot; class=&quot;btn btn-primary btn-loading&quot;&gt;
+    &lt;span class=&quot;btn-text&quot;&gt;Add Task&lt;/span&gt;
+    &lt;span class=&quot;btn-spinner spinner-border spinner-border-sm&quot; role=&quot;status&quot;&gt;
+        &lt;span class=&quot;visually-hidden&quot;&gt;Loading...&lt;/span&gt;
+    &lt;/span&gt;
+&lt;/button&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Delete Button with Loading:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;button type=&quot;button&quot;
+        class=&quot;btn btn-sm btn-outline-danger btn-loading&quot;
+        hx-post=&quot;?handler=Delete&quot;
+        hx-vals='{&quot;id&quot;: @task.Id}'
+        hx-confirm=&quot;Delete this task?&quot;
+        hx-target=&quot;#task-list&quot;
+        hx-swap=&quot;outerHTML&quot;&gt;
+    &lt;span class=&quot;btn-text&quot;&gt;Delete&lt;/span&gt;
+    &lt;span class=&quot;btn-spinner spinner-border spinner-border-sm&quot; role=&quot;status&quot;&gt;&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="extension-3-sse-server-sent-events-for-live-updates-advanced">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#extension-3-sse-server-sent-events-for-live-updates-advanced">#</doc-anchor-trigger>
+        <span>Extension 3: SSE (Server-Sent Events) for Live Updates (Advanced)</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Goal:</strong> Push updates to the browser without polling.</p>
+<p><strong>Design:</strong></p>
+<ol>
+<li>Server sends events when data changes</li>
+<li>htmx SSE extension listens for events</li>
+<li>Events trigger fragment refreshes</li>
+</ol>
+<p><strong>Implementation:</strong></p>
+<p><strong>1. Add htmx SSE Extension:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- In _Layout.cshtml, after htmx script --&gt;
+&lt;script src=&quot;https://unpkg.com/htmx-ext-sse@2.2.1/sse.js&quot;&gt;&lt;/script&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>2. Create SSE Endpoint:</strong></p>
+<p><strong>File: <code v-pre>Pages/Tasks/TaskEvents.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace RazorHtmxWorkshop.Pages.Tasks;
+
+public class TaskEventsModel : PageModel
+{
+    /// &lt;summary&gt;
+    /// SSE endpoint for task updates.
+    /// Sends events when tasks change.
+    /// &lt;/summary&gt;
+    public async Task OnGetAsync(CancellationToken cancellationToken)
+    {
+        Response.ContentType = &quot;text/event-stream&quot;;
+        Response.Headers[&quot;Cache-Control&quot;] = &quot;no-cache&quot;;
+        Response.Headers[&quot;Connection&quot;] = &quot;keep-alive&quot;;
+
+        // In production: subscribe to a message bus or change feed
+        // For demo: send heartbeat every 5 seconds
+
+        try
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                // Check for changes (in production: use proper event source)
+                var hasChanges = TaskChangeTracker.HasChanges();
+
+                if (hasChanges)
+                {
+                    // Send event that triggers list refresh
+                    await Response.WriteAsync($&quot;event: taskListChanged\n&quot;);
+                    await Response.WriteAsync($&quot;data: refresh\n\n&quot;);
+                    await Response.Body.FlushAsync(cancellationToken);
+
+                    TaskChangeTracker.ClearChanges();
+                }
+
+                // Heartbeat to keep connection alive
+                await Response.WriteAsync($&quot;: heartbeat\n\n&quot;);
+                await Response.Body.FlushAsync(cancellationToken);
+
+                await Task.Delay(5000, cancellationToken);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Client disconnected
+        }
+    }
+}
+
+/// &lt;summary&gt;
+/// Simple change tracker for demo purposes.
+/// In production, use a proper event bus.
+/// &lt;/summary&gt;
+public static class TaskChangeTracker
+{
+    private static bool _hasChanges = false;
+    private static readonly object _lock = new();
+
+    public static void NotifyChange()
+    {
+        lock (_lock) { _hasChanges = true; }
+    }
+
+    public static bool HasChanges()
+    {
+        lock (_lock) { return _hasChanges; }
+    }
+
+    public static void ClearChanges()
+    {
+        lock (_lock) { _hasChanges = false; }
+    }
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>3. Connect UI to SSE:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;!-- In Index.cshtml, wrap the list in SSE container --&gt;
+&lt;div hx-ext=&quot;sse&quot; sse-connect=&quot;/Tasks/TaskEvents&quot;&gt;
+    &lt;div id=&quot;task-list&quot;
+         sse-swap=&quot;taskListChanged&quot;
+         hx-get=&quot;?handler=List&quot;
+         hx-trigger=&quot;sse:taskListChanged&quot;
+         hx-target=&quot;#task-list&quot;
+         hx-swap=&quot;outerHTML&quot;&gt;
+        @* list content *@
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>4. Trigger Changes:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// In OnPostCreate, OnPostDelete, etc.
+public IActionResult OnPostCreate()
+{
+    // ... existing code ...
+
+    // Notify SSE listeners
+    TaskChangeTracker.NotifyChange();
+
+    // ... return fragment ...
+}</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="extension-4-authorization-edge-cases-intermediate">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#extension-4-authorization-edge-cases-intermediate">#</doc-anchor-trigger>
+        <span>Extension 4: Authorization Edge Cases (Intermediate)</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Goal:</strong> Handle authorization properly with htmx requests.</p>
+<p><strong>Design:</strong></p>
+<ol>
+<li>Return appropriate status codes for auth failures</li>
+<li>Redirect to login for unauthenticated users</li>
+<li>Show permission errors for unauthorized actions</li>
+</ol>
+<p><strong>Implementation:</strong></p>
+<p><strong>Custom Authorization Filter:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+
+public class HtmxAuthorizeAttribute : ActionFilterAttribute
+{
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        var user = context.HttpContext.User;
+
+        if (!user.Identity?.IsAuthenticated ?? true)
+        {
+            var isHtmx = context.HttpContext.Request.Headers
+                .TryGetValue(&quot;HX-Request&quot;, out var v) &amp;&amp; v == &quot;true&quot;;
+
+            if (isHtmx)
+            {
+                // For htmx: return 401 with redirect header
+                context.HttpContext.Response.StatusCode = 401;
+                context.HttpContext.Response.Headers[&quot;HX-Redirect&quot;] = &quot;/Identity/Account/Login&quot;;
+                context.Result = new EmptyResult();
+            }
+            else
+            {
+                // For regular requests: redirect normally
+                context.Result = new RedirectToPageResult(&quot;/Identity/Account/Login&quot;);
+            }
+
+            return;
+        }
+
+        base.OnActionExecuting(context);
+    }
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>Permission Check Helper:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">private IActionResult? CheckPermission(int taskId, string requiredPermission)
+{
+    // Example: Check if user can modify this task
+    var canModify = /* your permission logic */;
+
+    if (!canModify)
+    {
+        if (IsHtmx())
+        {
+            Response.StatusCode = 403;
+            Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
+            Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
+            return Fragment(&quot;Partials/_Messages&quot;, &quot;You don't have permission to modify this task.&quot;);
+        }
+
+        return Forbid();
+    }
+
+    return null; // Permission granted
+}
+
+// Usage in handler:
+public IActionResult OnPostDelete(int id)
+{
+    var permissionResult = CheckPermission(id, &quot;delete&quot;);
+    if (permissionResult is not null) return permissionResult;
+
+    // ... proceed with delete ...
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>Handle Expired Sessions:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-javascript"><code v-pre class="language-javascript">// In site.js or inline script
+document.body.addEventListener('htmx:responseError', function(event) {
+    if (event.detail.xhr.status === 401) {
+        // Session expired - redirect to login
+        window.location.href = '/Identity/Account/Login';
+    }
+});</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="extension-5-keyboard-shortcuts-beginner">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#extension-5-keyboard-shortcuts-beginner">#</doc-anchor-trigger>
+        <span>Extension 5: Keyboard Shortcuts (Beginner)</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Goal:</strong> Add keyboard navigation for power users.</p>
+<p><strong>Implementation:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-javascript"><code v-pre class="language-javascript">// In site.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Global shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+N: Focus new task input
+        if (e.ctrlKey &amp;&amp; e.key === 'n') {
+            e.preventDefault();
+            document.querySelector('#title')?.focus();
+        }
+
+        // Escape: Clear form
+        if (e.key === 'Escape') {
+            const form = document.querySelector('#task-form form');
+            if (form) {
+                form.reset();
+                document.querySelector('#title')?.blur();
+            }
+        }
+
+        // Ctrl+Enter: Submit form
+        if (e.ctrlKey &amp;&amp; e.key === 'Enter') {
+            const form = document.querySelector('#task-form form');
+            if (form &amp;&amp; document.activeElement?.closest('#task-form')) {
+                htmx.trigger(form, 'submit');
+            }
+        }
+    });
+});</code></pre>
+</doc-codeblock></div>
+<p><strong>Add to UI:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;div class=&quot;small text-muted mt-2&quot;&gt;
+    &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;N&lt;/kbd&gt; New task |
+    &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;Enter&lt;/kbd&gt; Submit |
+    &lt;kbd&gt;Esc&lt;/kbd&gt; Clear
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="part-4-final-recap-and-adoption-path">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-4-final-recap-and-adoption-path">#</doc-anchor-trigger>
+        <span>Part 4: Final Recap and Adoption Path</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="41-the-mental-model">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#41-the-mental-model">#</doc-anchor-trigger>
+        <span>4.1 The Mental Model</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Core Concept: Server-Driven UI</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">┌─────────────────────────────────────────────────────────────┐
+│                         Browser                              │
+│  ┌─────────┐    htmx     ┌─────────┐    htmx     ┌───────┐ │
+│  │ Trigger │ ──────────► │ Request │ ◄────────── │ Swap  │ │
+│  │ (click) │             │ (POST)  │             │ (DOM) │ │
+│  └─────────┘             └────┬────┘             └───┬───┘ │
+│                               │                       ▲     │
+└───────────────────────────────┼───────────────────────┼─────┘
+                                │                       │
+                                ▼                       │
+┌───────────────────────────────┼───────────────────────┼─────┐
+│                               │        Server         │     │
+│  ┌─────────┐    Razor    ┌────┴────┐    Razor    ┌───┴───┐ │
+│  │ Handler │ ──────────► │ Partial │ ◄────────── │ Model │ │
+│  │ (C#)    │             │ (HTML)  │             │ (C#)  │ │
+│  └─────────┘             └─────────┘             └───────┘ │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+</doc-codeblock></div>
+<p><strong>The Flow:</strong></p>
+<ol>
+<li><strong>User action</strong> triggers htmx request</li>
+<li><strong>Server handler</strong> processes request</li>
+<li><strong>Razor partial</strong> renders HTML fragment</li>
+<li><strong>htmx</strong> swaps fragment into DOM</li>
+<li><strong>Browser</strong> displays updated UI</li>
+</ol>
+<p><strong>What Makes This Powerful:</strong></p>
+<ul>
+<li>Server controls all logic and state</li>
+<li>HTML is the API contract</li>
+<li>No JSON parsing or DOM manipulation</li>
+<li>Progressive enhancement built-in</li>
+<li>Works with any backend</li>
+</ul>
+<doc-anchor-target id="42-adoption-path-for-real-applications">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#42-adoption-path-for-real-applications">#</doc-anchor-trigger>
+        <span>4.2 Adoption Path for Real Applications</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Phase 1: Start Small (Week 1)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">Choose ONE feature to enhance:
+├── A simple list with add/remove
+├── A form with inline validation
+├── A details panel or modal
+└── A filter/search component
+
+Goal: Learn the pattern in isolation</code></pre>
+</doc-codeblock></div>
+<p><strong>Phase 2: Establish Conventions (Week 2)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">Document your patterns:
+├── Create fragment naming conventions
+├── Define response rules
+├── Set up helper methods
+└── Build a style guide
+
+Goal: Consistency across features</code></pre>
+</doc-codeblock></div>
+<p><strong>Phase 3: Expand Gradually (Weeks 3-4)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">Apply to more features:
+├── Convert existing AJAX to htmx
+├── Add real-time validation
+├── Implement polling where needed
+└── Add OOB swaps for notifications
+
+Goal: htmx becomes the default approach</code></pre>
+</doc-codeblock></div>
+<p><strong>Phase 4: Advanced Patterns (Ongoing)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">Optimize and enhance:
+├── SSE for live updates
+├── Optimistic UI
+├── Offline support
+└── Performance tuning
+
+Goal: Polish and production-ready</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="43-common-adoption-questions">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#43-common-adoption-questions">#</doc-anchor-trigger>
+        <span>4.3 Common Adoption Questions</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Q: Can htmx work alongside existing JavaScript?</strong></p>
+<p>A: Yes. htmx is just a library that processes HTML attributes. Your existing JavaScript continues to work. You can mix approaches—use htmx for server-rendered fragments and JavaScript for purely client-side interactions.</p>
+<p><strong>Q: What about forms that need client-side validation?</strong></p>
+<p>A: Use both! Client-side validation for immediate feedback, server-side for authority. htmx doesn&#x27;t prevent you from using <code v-pre>required</code>, <code v-pre>pattern</code>, or JavaScript validation.</p>
+<p><strong>Q: How do I handle offline scenarios?</strong></p>
+<p>A: htmx works best with connectivity. For offline support, consider:</p>
+<ul>
+<li>Service workers for caching</li>
+<li>Local storage for queuing actions</li>
+<li>Progressive enhancement (forms work without JS)</li>
+</ul>
+<p><strong>Q: What about SEO?</strong></p>
+<p>A: Server-rendered HTML is SEO-friendly by default. Use <code v-pre>hx-push-url</code> to update URLs for shareable/indexable state. Initial page loads render full content.</p>
+<p><strong>Q: How do I test htmx interactions?</strong></p>
+<p>A: Test at two levels:</p>
+<ol>
+<li><strong>Unit tests</strong>: Test handlers return correct fragments</li>
+<li><strong>Integration tests</strong>: Use browser automation (Playwright, Selenium) to verify swaps</li>
+</ol>
+<doc-anchor-target id="44-resources-for-continued-learning">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#44-resources-for-continued-learning">#</doc-anchor-trigger>
+        <span>4.4 Resources for Continued Learning</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Official Resources:</strong></p>
+<ul>
+<li>htmx.org - Documentation and examples</li>
+<li>htmx.org/essays - Philosophy and patterns</li>
+<li>GitHub: bigskysoftware/htmx - Source and issues</li>
+</ul>
+<p><strong>Community:</strong></p>
+<ul>
+<li>htmx Discord server</li>
+<li>r/htmx on Reddit</li>
+<li>#htmx on Twitter/X</li>
+</ul>
+<p><strong>Books and Courses:</strong></p>
+<ul>
+<li>&quot;Hypermedia Systems&quot; by Carson Gross (htmx creator)</li>
+<li>Various YouTube tutorials and conference talks</li>
+</ul>
+<p><strong>ASP.NET Core Specific:</strong></p>
+<ul>
+<li>Microsoft Docs: Razor Pages</li>
+<li>htmx + ASP.NET Core blog posts</li>
+<li>This workshop materials!</li>
+</ul>
+<hr>
+<doc-anchor-target id="verification-checklist-final">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#verification-checklist-final">#</doc-anchor-trigger>
+        <span>Verification Checklist (Final)</span>
+    </h2>
+</doc-anchor-target>
+<p>Before leaving the workshop, confirm:</p>
+<doc-anchor-target id="code-quality">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#code-quality">#</doc-anchor-trigger>
+        <span>Code Quality</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> All fragments have documented IDs</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> All handlers use consistent helpers</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> No duplicate patterns exist</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Code is organized logically</li>
+</ul>
+<doc-anchor-target id="documentation">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#documentation">#</doc-anchor-trigger>
+        <span>Documentation</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Convention checklist is saved</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Quick reference card is printed/saved</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Fragment inventory is complete</li>
+</ul>
+<doc-anchor-target id="understanding">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#understanding">#</doc-anchor-trigger>
+        <span>Understanding</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> I can explain the htmx mental model</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> I know when to use each swap strategy</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> I understand the response rules</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> I can debug htmx interactions</li>
+</ul>
+<doc-anchor-target id="next-steps">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#next-steps">#</doc-anchor-trigger>
+        <span>Next Steps</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> I&#x27;ve identified a feature to convert</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> I have resources bookmarked</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> I know where to get help</li>
+</ul>
+<hr>
+<doc-anchor-target id="congratulations">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#congratulations">#</doc-anchor-trigger>
+        <span>Congratulations!</span>
+    </h2>
+</doc-anchor-target>
+<p>You&#x27;ve completed the htmx + ASP.NET Core Workshop!</p>
+<doc-anchor-target id="what-youve-learned">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#what-youve-learned">#</doc-anchor-trigger>
+        <span>What You&#x27;ve Learned</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Lab</th>
+<th>Key Skills</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Lab 1</strong></td>
+<td>Fragment boundaries, partial views, stable IDs</td>
+</tr>
+<tr>
+<td><strong>Lab 2</strong></td>
+<td><code v-pre>hx-get</code>, <code v-pre>hx-post</code>, targeting, swapping, retargeting</td>
+</tr>
+<tr>
+<td><strong>Lab 3</strong></td>
+<td>Real-time validation, debouncing, antiforgery</td>
+</tr>
+<tr>
+<td><strong>Lab 4</strong></td>
+<td>Modals, confirm dialogs, URL state, pagination</td>
+</tr>
+<tr>
+<td><strong>Lab 5</strong></td>
+<td>Dynamic forms, dependent selects, polling, OOB swaps</td>
+</tr>
+<tr>
+<td><strong>Capstone</strong></td>
+<td>Conventions, hardening, advanced extensions</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="the-htmx-philosophy">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-htmx-philosophy">#</doc-anchor-trigger>
+        <span>The htmx Philosophy</span>
+    </h3>
+</doc-anchor-target>
+<blockquote>
+<p>&quot;HTML is the contract. The server is in control. Complexity is optional.&quot;</p>
+</blockquote>
+<p>Take this approach back to your projects. Start small, establish conventions, and expand gradually.</p>
+<doc-anchor-target id="stay-connected">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#stay-connected">#</doc-anchor-trigger>
+        <span>Stay Connected</span>
+    </h3>
+</doc-anchor-target>
+<p>Share your htmx projects and questions:</p>
+<ul>
+<li>Workshop feedback: [your contact]</li>
+<li>htmx community: discord.gg/htmx</li>
+<li>Twitter/X: #htmx</li>
+</ul>
+<p><strong>Thank you for attending!</strong></p>
+<hr>
+<doc-anchor-target id="appendix-complete-handler-reference">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#appendix-complete-handler-reference">#</doc-anchor-trigger>
+        <span>Appendix: Complete Handler Reference</span>
+    </h2>
+</doc-anchor-target>
+<p>For reference, here&#x27;s a complete handler inventory from all labs:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Handler</th>
+<th>Verb</th>
+<th>Fragment</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>OnGet</code></td>
+<td>GET</td>
+<td>(Page)</td>
+<td>Initial page load</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetList</code></td>
+<td>GET</td>
+<td><code v-pre>_TaskList</code></td>
+<td>Fetch/refresh list</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetDetails</code></td>
+<td>GET</td>
+<td><code v-pre>_TaskDetails</code></td>
+<td>Load item details</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetMessages</code></td>
+<td>GET</td>
+<td><code v-pre>_Messages</code></td>
+<td>Fetch messages</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetEmptyForm</code></td>
+<td>GET</td>
+<td><code v-pre>_TaskForm</code></td>
+<td>Reset form</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetAddTag</code></td>
+<td>GET</td>
+<td><code v-pre>_TagRow</code></td>
+<td>Add tag input</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetRemoveTag</code></td>
+<td>GET</td>
+<td>(empty)</td>
+<td>Remove tag</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetSubcategories</code></td>
+<td>GET</td>
+<td><code v-pre>_SubcategorySelect</code></td>
+<td>Update dropdown</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetJobStatus</code></td>
+<td>GET</td>
+<td><code v-pre>_JobStatus</code></td>
+<td>Poll job progress</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetResetJob</code></td>
+<td>GET</td>
+<td><code v-pre>_JobStatus</code></td>
+<td>Reset job UI</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetEditRow</code></td>
+<td>GET</td>
+<td><code v-pre>_TaskRowEdit</code></td>
+<td>Edit mode (extension)</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetCancelEdit</code></td>
+<td>GET</td>
+<td><code v-pre>_TaskRow</code></td>
+<td>Cancel edit (extension)</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostCreate</code></td>
+<td>POST</td>
+<td><code v-pre>_TaskList</code></td>
+<td>Create item</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostDelete</code></td>
+<td>POST</td>
+<td><code v-pre>_TaskList</code></td>
+<td>Delete item</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostValidateTitle</code></td>
+<td>POST</td>
+<td><code v-pre>_TitleValidation</code></td>
+<td>Validate field</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostStartJob</code></td>
+<td>POST</td>
+<td><code v-pre>_JobStatus</code></td>
+<td>Start background job</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostUpdateRow</code></td>
+<td>POST</td>
+<td><code v-pre>_TaskRow</code></td>
+<td>Update item (extension)</td>
+</tr>
+</tbody>
+</table>
+</div>
 
                                 
                                 <!-- Required only on API pages -->
@@ -248,7 +1836,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                             <span>
                                                 <span class="block text-xs font-normal text-base-text-muted">Previous</span>
-                                                <span class="block mt-1">Lab 5: Dynamic Forms + Long Running UX (Polling)</span>
+                                                <span class="block mt-1">Lab 5: Dynamic Forms + Long-​Running UX (Polling)</span>
                                             </span>
                                         </a>
                                     </div>
@@ -321,6 +1909,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Capstone Hardening + Take-Home Extensions", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Capstone: Hardening + Take-Home Extensions", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

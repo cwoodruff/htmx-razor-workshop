@@ -7,14 +7,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821277826144">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
 
     <!-- Primary Meta Tags -->
-    <title>Checkpoint: Make It Production Livable</title>
-    <meta name="title" content="Checkpoint: Make It Production Livable">
+    <title>Checkpoint: Make It Production-Livable</title>
+    <meta name="title" content="Checkpoint: Make It Production-Livable">
+    <meta name="description" content="This checkpoint focuses on establishing maintainability patterns and conventions for htmx + Razor Pages applications.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/checkpoint-make-it-production-livable/">
@@ -22,21 +23,24 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/checkpoint-make-it-production-livable/">
-    <meta property="og:title" content="Checkpoint: Make It Production Livable">
+    <meta property="og:title" content="Checkpoint: Make It Production-Livable">
+    <meta property="og:description" content="This checkpoint focuses on establishing maintainability patterns and conventions for htmx + Razor Pages applications.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/checkpoint-make-it-production-livable/">
-    <meta property="twitter:title" content="Checkpoint: Make It Production Livable">
+    <meta property="twitter:title" content="Checkpoint: Make It Production-Livable">
+    <meta property="twitter:description" content="This checkpoint focuses on establishing maintainability patterns and conventions for htmx + Razor Pages applications.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821277826144" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821277826144" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -56,7 +60,7 @@
                                 <img class="max-h-10 dark:hidden md:inline-block" src="../images/gear-earth.png">
                                 <img class="max-h-10 hidden dark:inline-block" src="../images/gear-earth-dark.png">
                             </span>
-                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">HTMX Workshop</span>
+                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">htmx Workshop</span>
                         </a><span id="retype-branding-label" class="inline-flex mt-1 px-2 py-1 ml-4 text-xs font-medium leading-none items-center rounded-md bg-branding-label-bg text-branding-label-text ring-1 ring-branding-label-border ring-inset md:inline-block">v8</span>
                     </div>
         
@@ -226,9 +230,1204 @@
 <doc-anchor-target id="checkpoint-make-it-production-livable" class="break-words">
     <h1>
         <doc-anchor-trigger class="header-anchor-trigger" to="#checkpoint-make-it-production-livable">#</doc-anchor-trigger>
-        <span>Checkpoint: Make It Production Livable</span>
+        <span>Checkpoint: Make It Production-Livable</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="overview">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#overview">#</doc-anchor-trigger>
+        <span>Overview</span>
+    </h2>
+</doc-anchor-target>
+<p>This checkpoint focuses on establishing maintainability patterns and conventions for htmx + Razor Pages applications. Before moving to more advanced patterns, it&#x27;s essential to align on &quot;how to structure this&quot; so that your codebase remains clean, debuggable, and scalable.</p>
+<p>Production-livable means your code is:</p>
+<ul>
+<li><strong>Discoverable</strong>: Anyone can find the right file quickly</li>
+<li><strong>Predictable</strong>: Patterns are consistent across features</li>
+<li><strong>Debuggable</strong>: You can trace from request to response easily</li>
+<li><strong>Maintainable</strong>: Adding new features follows established conventions</li>
+</ul>
+<doc-anchor-target id="time-estimate">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#time-estimate">#</doc-anchor-trigger>
+        <span>Time Estimate</span>
+    </h3>
+</doc-anchor-target>
+<p>10–15 minutes</p>
+<hr>
+<doc-anchor-target id="checkpoint-outcomes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#checkpoint-outcomes">#</doc-anchor-trigger>
+        <span>Checkpoint Outcomes</span>
+    </h2>
+</doc-anchor-target>
+<p>By the end of this checkpoint, you will have:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Outcome</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Folder conventions</strong></td>
+<td>Clear structure for partials and handlers</td>
+</tr>
+<tr>
+<td><strong>Handler naming</strong></td>
+<td>Predictable, discoverable method names</td>
+</tr>
+<tr>
+<td><strong>Response rules</strong></td>
+<td>Consistent patterns for fragments vs pages vs errors</td>
+</tr>
+<tr>
+<td><strong>Reusable helpers</strong></td>
+<td>Standard utilities you can copy to real projects</td>
+</tr>
+<tr>
+<td><strong>Fragment inventory</strong></td>
+<td>Documentation of your htmx contracts</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<doc-anchor-target id="part-1-folder-conventions-for-partials-and-handlers-57-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-1-folder-conventions-for-partials-and-handlers-57-minutes">#</doc-anchor-trigger>
+        <span>Part 1: Folder Conventions for Partials and Handlers (5–7 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>A well-organized folder structure makes it easy to find and maintain code. The key principle: <strong>co-locate fragments with the features that use them</strong>.</p>
+<doc-anchor-target id="11-recommended-production-structure">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#11-recommended-production-structure">#</doc-anchor-trigger>
+        <span>1.1 Recommended Production Structure</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">Pages/
+├── Tasks/
+│   ├── Index.cshtml              # Page shell + composition
+│   ├── Index.cshtml.cs           # PageModel, handlers, orchestration
+│   └── Partials/                 # Fragment boundaries for this feature
+│       ├── _TaskList.cshtml      # Fragment: #task-list
+│       ├── _TaskForm.cshtml      # Fragment: #task-form
+│       ├── _Messages.cshtml      # Fragment: #messages
+│       ├── _TaskDetails.cshtml   # Fragment: #task-details
+│       ├── _TitleValidation.cshtml # Field fragment: #title-validation
+│       └── _Error.cshtml         # Dedicated error fragment
+
+Models/
+├── TaskItem.cs                   # Domain model
+└── TaskListVm.cs                 # View model for list + pagination
+
+Data/
+└── InMemoryTaskStore.cs          # Data access (workshop version)</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="12-why-this-structure-works">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#12-why-this-structure-works">#</doc-anchor-trigger>
+        <span>1.2 Why This Structure Works</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Benefit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Co-location</strong></td>
+<td>Partials live next to the page that owns them</td>
+</tr>
+<tr>
+<td><strong>Discoverability</strong></td>
+<td>File paths mirror the mental model</td>
+</tr>
+<tr>
+<td><strong>Ownership</strong></td>
+<td>Fragment boundaries are &quot;owned&quot; by a specific feature</td>
+</tr>
+<tr>
+<td><strong>Scalability</strong></td>
+<td>Easy to add new features following the same pattern</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="13-understanding-fragment-boundaries">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#13-understanding-fragment-boundaries">#</doc-anchor-trigger>
+        <span>1.3 Understanding Fragment Boundaries</span>
+    </h3>
+</doc-anchor-target>
+<p>Each partial represents a <strong>fragment boundary</strong>—a swappable region of the UI:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Partial</th>
+<th>Fragment ID</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>_TaskList.cshtml</code></td>
+<td><code v-pre>#task-list</code></td>
+<td>List of tasks (paginated, filtered)</td>
+</tr>
+<tr>
+<td><code v-pre>_TaskForm.cshtml</code></td>
+<td><code v-pre>#task-form</code></td>
+<td>Create/edit form</td>
+</tr>
+<tr>
+<td><code v-pre>_Messages.cshtml</code></td>
+<td><code v-pre>#messages</code></td>
+<td>Success/error messages</td>
+</tr>
+<tr>
+<td><code v-pre>_TaskDetails.cshtml</code></td>
+<td><code v-pre>#task-details</code></td>
+<td>Detail panel/modal content</td>
+</tr>
+<tr>
+<td><code v-pre>_TitleValidation.cshtml</code></td>
+<td><code v-pre>#title-validation</code></td>
+<td>Field-level validation</td>
+</tr>
+<tr>
+<td><code v-pre>_Error.cshtml</code></td>
+<td>(targets <code v-pre>#messages</code>)</td>
+<td>Error display</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="14-handler-placement-rule">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#14-handler-placement-rule">#</doc-anchor-trigger>
+        <span>1.4 Handler Placement Rule</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Keep htmx handlers on the same PageModel when:</strong></p>
+<ul>
+<li>They return fragments used only by that page (most common case)</li>
+<li>The fragments are feature-specific</li>
+</ul>
+<p><strong>Promote to dedicated endpoints when:</strong></p>
+<ul>
+<li>Multiple pages share the same fragment endpoint (true reuse)</li>
+<li>The fragment becomes an independent &quot;resource&quot; with its own lifecycle</li>
+<li>You need different authorization or caching rules</li>
+</ul>
+<p><strong>Example: When to Extract</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// Keep in TasksIndexModel - used only by Tasks page
+public IActionResult OnGetList(string? q, int page = 1) { ... }
+
+// Consider extracting to Minimal API - used by multiple features
+// GET /api/notifications (used by Tasks, Dashboard, Header)
+app.MapGet(&quot;/api/notifications&quot;, () =&gt; { ... });</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="15-verify-your-structure">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#15-verify-your-structure">#</doc-anchor-trigger>
+        <span>1.5 Verify Your Structure</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Checklist:</strong></p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Partials folder exists under each feature folder</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Each partial has a clear, single responsibility</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Partial file names start with underscore (<code v-pre>_</code>)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Fragment IDs are documented (even as comments)</li>
+</ul>
+<hr>
+<doc-anchor-target id="part-2-consistent-handler-naming-57-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-2-consistent-handler-naming-57-minutes">#</doc-anchor-trigger>
+        <span>Part 2: Consistent Handler Naming (5–7 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Handler names should be <strong>self-documenting</strong>. Anyone reading the code should know what a handler returns just from its name.</p>
+<doc-anchor-target id="21-handler-naming-convention">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#21-handler-naming-convention">#</doc-anchor-trigger>
+        <span>2.1 Handler Naming Convention</span>
+    </h3>
+</doc-anchor-target>
+<p>Use <strong>resource + intent</strong> naming aligned with HTTP verbs:</p>
+<doc-anchor-target id="get-fragment-handlers">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#get-fragment-handlers">#</doc-anchor-trigger>
+        <span>GET Fragment Handlers</span>
+    </h4>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Handler</th>
+<th>Returns</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>OnGetList(...)</code></td>
+<td><code v-pre>_TaskList</code></td>
+<td>Fetch the list fragment</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetDetails(int id)</code></td>
+<td><code v-pre>_TaskDetails</code></td>
+<td>Fetch details for one item</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetMessages()</code></td>
+<td><code v-pre>_Messages</code></td>
+<td>Fetch messages fragment</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetEmptyForm()</code></td>
+<td><code v-pre>_TaskForm</code> (reset)</td>
+<td>Fetch a clean form</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="post-action-handlers">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#post-action-handlers">#</doc-anchor-trigger>
+        <span>POST Action Handlers</span>
+    </h4>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Handler</th>
+<th>Returns</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>OnPostCreate()</code></td>
+<td><code v-pre>_TaskList</code> (success)</td>
+<td>Create new item</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostDelete(int id)</code></td>
+<td><code v-pre>_TaskList</code></td>
+<td>Delete an item</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostValidateTitle()</code></td>
+<td><code v-pre>_TitleValidation</code></td>
+<td>Validate a single field</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostUpdate(int id)</code></td>
+<td><code v-pre>_TaskList</code> or <code v-pre>_TaskDetails</code></td>
+<td>Update an item</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="22-the-naming-rule">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#22-the-naming-rule">#</doc-anchor-trigger>
+        <span>2.2 The Naming Rule</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>If the handler returns a fragment, its name should tell you which fragment it serves.</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// GOOD: Name tells you what it returns
+public IActionResult OnGetList(...) { }      // Returns _TaskList
+public IActionResult OnGetDetails(int id) { } // Returns _TaskDetails
+public IActionResult OnPostValidateTitle() { } // Returns _TitleValidation
+
+// BAD: Ambiguous names
+public IActionResult OnGetData(...) { }       // What data?
+public IActionResult OnPostSubmit() { }       // Submit what?
+public IActionResult OnGetFragment() { }      // Which fragment?</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="23-url-convention-in-markup">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#23-url-convention-in-markup">#</doc-anchor-trigger>
+        <span>2.3 URL Convention in Markup</span>
+    </h3>
+</doc-anchor-target>
+<p>Keep URLs consistent and predictable:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- GET handlers --&gt;
+hx-get=&quot;?handler=List&quot;           ↔ OnGetList()
+hx-get=&quot;?handler=Details&amp;id=123&quot; ↔ OnGetDetails(int id)
+hx-get=&quot;?handler=Messages&quot;       ↔ OnGetMessages()
+hx-get=&quot;?handler=EmptyForm&quot;      ↔ OnGetEmptyForm()
+
+&lt;!-- POST handlers --&gt;
+hx-post=&quot;?handler=Create&quot;        ↔ OnPostCreate()
+hx-post=&quot;?handler=Delete&quot;        ↔ OnPostDelete(int id)
+hx-post=&quot;?handler=ValidateTitle&quot; ↔ OnPostValidateTitle()</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="24-why-this-matters-for-debugging">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#24-why-this-matters-for-debugging">#</doc-anchor-trigger>
+        <span>2.4 Why This Matters for Debugging</span>
+    </h3>
+</doc-anchor-target>
+<p>With consistent naming, debugging becomes trivial:</p>
+<ol>
+<li><strong>Open Network tab</strong> in DevTools</li>
+<li><strong>See request URL</strong>: <code v-pre>?handler=Details&amp;id=42</code></li>
+<li><strong>Know immediately</strong>: Look in <code v-pre>OnGetDetails(int id)</code></li>
+<li><strong>Find the partial</strong>: Handler returns <code v-pre>_TaskDetails</code></li>
+</ol>
+<p>No guessing, no searching—the URL maps directly to a method name.</p>
+<doc-anchor-target id="25-verify-your-naming">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#25-verify-your-naming">#</doc-anchor-trigger>
+        <span>2.5 Verify Your Naming</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Checklist:</strong></p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Handler names follow verb + resource pattern</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> GET handlers start with <code v-pre>OnGet</code></li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> POST handlers start with <code v-pre>OnPost</code></li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Names indicate which fragment they return</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> URL patterns in markup match handler names exactly</li>
+</ul>
+<hr>
+<doc-anchor-target id="part-3-basic-response-rules-57-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-3-basic-response-rules-57-minutes">#</doc-anchor-trigger>
+        <span>Part 3: Basic Response Rules (5–7 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>These rules prevent &quot;htmx spaghetti&quot;—random swaps, inconsistent fragments, and mixed concerns.</p>
+<doc-anchor-target id="31-response-rule-1-full-navigation-returns-pages">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#31-response-rule-1-full-navigation-returns-pages">#</doc-anchor-trigger>
+        <span>3.1 Response Rule 1: Full Navigation Returns Pages</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>When</strong>: The interaction is classic navigation (non-htmx request)</p>
+<p><strong>Return</strong>: <code v-pre>Page()</code> or <code v-pre>RedirectToPage()</code></p>
+<p><strong>Examples:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// Initial page load
+public void OnGet()
+{
+    Tasks = InMemoryTaskStore.All();
+    // Implicit return Page()
+}
+
+// Non-htmx form submit (fallback)
+public IActionResult OnPostCreate()
+{
+    // ... validation and save ...
+
+    if (!IsHtmx())
+    {
+        FlashMessage = &quot;Task added.&quot;;
+        return RedirectToPage(); // Full page redirect
+    }
+
+    // htmx path below...
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="32-response-rule-2-fragment-interactions-return-partials">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#32-response-rule-2-fragment-interactions-return-partials">#</doc-anchor-trigger>
+        <span>3.2 Response Rule 2: Fragment Interactions Return Partials</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>When</strong>: The request is htmx (<code v-pre>HX-Request: true</code>)</p>
+<p><strong>Return</strong>: A <code v-pre>PartialViewResult</code> containing only the fragment</p>
+<p><strong>Examples:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// List fragment
+public IActionResult OnGetList(string? q, int page = 1, int pageSize = 5)
+{
+    // ... build view model ...
+    return Fragment(&quot;Partials/_TaskList&quot;, vm);
+}
+
+// Details fragment
+public IActionResult OnGetDetails(int id)
+{
+    var task = InMemoryTaskStore.Find(id);
+    return Fragment(&quot;Partials/_TaskDetails&quot;, task);
+}
+
+// Success path in OnPostCreate
+if (IsHtmx())
+{
+    FlashMessage = &quot;Task added successfully!&quot;;
+    Response.Headers[&quot;HX-Trigger&quot;] = &quot;showMessage,clearForm&quot;;
+    return Fragment(&quot;Partials/_TaskList&quot;, vm);
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="33-the-fragment-contract">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#33-the-fragment-contract">#</doc-anchor-trigger>
+        <span>3.3 The Fragment Contract</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Critical Rule</strong>: If you use <code v-pre>hx-swap=&quot;outerHTML&quot;</code>, the fragment <strong>must</strong> include its wrapper with the correct ID.</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Fragment</th>
+<th>Must Return</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>_TaskList</code></td>
+<td><code v-pre>&lt;div id=&quot;task-list&quot;&gt;...&lt;/div&gt;</code></td>
+</tr>
+<tr>
+<td><code v-pre>_TaskForm</code></td>
+<td><code v-pre>&lt;div id=&quot;task-form&quot;&gt;...&lt;/div&gt;</code></td>
+</tr>
+<tr>
+<td><code v-pre>_Messages</code></td>
+<td><code v-pre>&lt;div id=&quot;messages&quot;&gt;...&lt;/div&gt;</code></td>
+</tr>
+<tr>
+<td><code v-pre>_TaskDetails</code></td>
+<td><code v-pre>&lt;div id=&quot;task-details&quot;&gt;...&lt;/div&gt;</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Why This Matters:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Markup expects to swap #task-list --&gt;
+&lt;button hx-get=&quot;?handler=List&quot;
+        hx-target=&quot;#task-list&quot;
+        hx-swap=&quot;outerHTML&quot;&gt;
+
+&lt;!-- Fragment MUST include the wrapper --&gt;
+&lt;div id=&quot;task-list&quot;&gt;
+    &lt;!-- list content --&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p>If the fragment doesn&#x27;t include the wrapper, htmx won&#x27;t find the element to swap.</p>
+<doc-anchor-target id="34-response-rule-3-errors-return-dedicated-fragments">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#34-response-rule-3-errors-return-dedicated-fragments">#</doc-anchor-trigger>
+        <span>3.4 Response Rule 3: Errors Return Dedicated Fragments</span>
+    </h3>
+</doc-anchor-target>
+<p>Have a consistent error handling strategy:</p>
+<doc-anchor-target id="validation-errors-422-unprocessable-entity">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#validation-errors-422-unprocessable-entity">#</doc-anchor-trigger>
+        <span>Validation Errors (422 Unprocessable Entity)</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">if (!TryValidateModel(Input, nameof(Input)))
+{
+    Tasks = InMemoryTaskStore.All();
+
+    if (IsHtmx())
+    {
+        Response.StatusCode = 422;
+        Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
+        Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
+        return Fragment(&quot;Partials/_TaskForm&quot;, this);
+    }
+
+    return Page();
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="not-found-errors-404">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#not-found-errors-404">#</doc-anchor-trigger>
+        <span>Not Found Errors (404)</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">if (!removed)
+{
+    if (IsHtmx())
+    {
+        Response.StatusCode = 404;
+        Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
+        Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
+        return Fragment(&quot;Partials/_Messages&quot;, &quot;Task not found.&quot;);
+    }
+
+    FlashMessage = &quot;Task not found.&quot;;
+    return RedirectToPage();
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="server-errors-500">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#server-errors-500">#</doc-anchor-trigger>
+        <span>Server Errors (500)</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">if (IsHtmx())
+{
+    Response.StatusCode = 500;
+    Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
+    Response.Headers[&quot;HX-Reswap&quot;] = &quot;innerHTML&quot;;
+    return Fragment(&quot;Partials/_Error&quot;, &quot;An unexpected error occurred.&quot;);
+}
+
+throw new InvalidOperationException(&quot;Server error.&quot;);</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="35-response-rules-summary-table">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#35-response-rules-summary-table">#</doc-anchor-trigger>
+        <span>3.5 Response Rules Summary Table</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Status</th>
+<th>Response</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Initial page load</td>
+<td>200</td>
+<td><code v-pre>Page()</code></td>
+<td>Full page</td>
+</tr>
+<tr>
+<td>Non-htmx form submit</td>
+<td>302</td>
+<td><code v-pre>RedirectToPage()</code></td>
+<td>Full page</td>
+</tr>
+<tr>
+<td>htmx success</td>
+<td>200</td>
+<td><code v-pre>Fragment(&quot;...&quot;, model)</code></td>
+<td>Original <code v-pre>hx-target</code></td>
+</tr>
+<tr>
+<td>htmx validation error</td>
+<td>422</td>
+<td><code v-pre>Fragment(&quot;_TaskForm&quot;, this)</code></td>
+<td>Retarget to <code v-pre>#task-form</code></td>
+</tr>
+<tr>
+<td>htmx not found</td>
+<td>404</td>
+<td><code v-pre>Fragment(&quot;_Messages&quot;, msg)</code></td>
+<td>Retarget to <code v-pre>#messages</code></td>
+</tr>
+<tr>
+<td>htmx server error</td>
+<td>500</td>
+<td><code v-pre>Fragment(&quot;_Error&quot;, msg)</code></td>
+<td>Retarget to <code v-pre>#messages</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="36-when-to-use-retargeting">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#36-when-to-use-retargeting">#</doc-anchor-trigger>
+        <span>3.6 When to Use Retargeting</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Use <code v-pre>HX-Retarget</code> + <code v-pre>HX-Reswap</code> only in these cases:</strong></p>
+<ol>
+<li><strong>Invalid submit</strong>: Form targets the list, but on validation failure you need to update the form instead</li>
+<li><strong>Error routing</strong>: Route errors to <code v-pre>#messages</code> from any interaction</li>
+</ol>
+<p><strong>Everything else</strong> should use explicit <code v-pre>hx-target</code> in markup.</p>
+<p><strong>Why limit retargeting?</strong></p>
+<ul>
+<li>Keeps behavior predictable</li>
+<li>Makes debugging easier (what you see in markup is what happens)</li>
+<li>Prevents &quot;action at a distance&quot; bugs</li>
+</ul>
+<hr>
+<doc-anchor-target id="part-4-standardize-pagemodel-helpers-35-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-4-standardize-pagemodel-helpers-35-minutes">#</doc-anchor-trigger>
+        <span>Part 4: Standardize PageModel Helpers (3–5 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Every PageModel that serves htmx requests should have these helpers:</p>
+<doc-anchor-target id="41-the-ishtmx-helper">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#41-the-ishtmx-helper">#</doc-anchor-trigger>
+        <span>4.1 The IsHtmx() Helper</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+/// Checks if the current request was made by htmx.
+/// &lt;/summary&gt;
+private bool IsHtmx() =&gt;
+    Request.Headers.TryGetValue(&quot;HX-Request&quot;, out var value) &amp;&amp; value == &quot;true&quot;;</code></pre>
+</doc-codeblock></div>
+<p><strong>Why it matters:</strong></p>
+<ul>
+<li>Removes magic strings from handler code</li>
+<li>Makes branching explicit and readable</li>
+<li>Easy to test (can mock header in tests)</li>
+</ul>
+<doc-anchor-target id="42-the-fragment-helper">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#42-the-fragment-helper">#</doc-anchor-trigger>
+        <span>4.2 The Fragment() Helper</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+/// Returns a partial view result for fragment responses.
+/// Properly propagates ViewData (including ModelState) to the partial.
+/// &lt;/summary&gt;
+private PartialViewResult Fragment(string partialName, object model) =&gt;
+    new()
+    {
+        ViewName = partialName,
+        ViewData = new ViewDataDictionary(ViewData) { Model = model }
+    };</code></pre>
+</doc-codeblock></div>
+<p><strong>Why it matters:</strong></p>
+<ul>
+<li>Ensures ViewData (including ModelState) flows to partials</li>
+<li>Consistent return type across all fragment handlers</li>
+<li>Cleaner than repeating <code v-pre>new PartialViewResult { ... }</code> everywhere</li>
+</ul>
+<doc-anchor-target id="43-required-using-statement">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#43-required-using-statement">#</doc-anchor-trigger>
+        <span>4.3 Required Using Statement</span>
+    </h3>
+</doc-anchor-target>
+<p>Add this to your PageModel:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using Microsoft.AspNetCore.Mvc.ViewFeatures;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="44-complete-helper-section">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#44-complete-helper-section">#</doc-anchor-trigger>
+        <span>4.4 Complete Helper Section</span>
+    </h3>
+</doc-anchor-target>
+<p>Here&#x27;s how the helpers look in context:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class IndexModel : PageModel
+{
+    // Properties...
+
+    #region Helper Methods
+
+    /// &lt;summary&gt;
+    /// Checks if the current request was made by htmx.
+    /// &lt;/summary&gt;
+    private bool IsHtmx() =&gt;
+        Request.Headers.TryGetValue(&quot;HX-Request&quot;, out var value) &amp;&amp; value == &quot;true&quot;;
+
+    /// &lt;summary&gt;
+    /// Returns a partial view result for fragment responses.
+    /// &lt;/summary&gt;
+    private PartialViewResult Fragment(string partialName, object model) =&gt;
+        new()
+        {
+            ViewName = partialName,
+            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+        };
+
+    #endregion
+
+    // Handlers...
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="45-verify-your-helpers">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#45-verify-your-helpers">#</doc-anchor-trigger>
+        <span>4.5 Verify Your Helpers</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Checklist:</strong></p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> <code v-pre>IsHtmx()</code> helper exists in PageModel</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> <code v-pre>Fragment()</code> helper exists in PageModel</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> <code v-pre>using Microsoft.AspNetCore.Mvc.ViewFeatures;</code> is added</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Handlers use <code v-pre>IsHtmx()</code> instead of checking headers directly</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Handlers use <code v-pre>Fragment()</code> instead of constructing PartialViewResult manually</li>
+</ul>
+<hr>
+<doc-anchor-target id="part-5-fragment-inventory-35-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-5-fragment-inventory-35-minutes">#</doc-anchor-trigger>
+        <span>Part 5: Fragment Inventory (3–5 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Document your fragment contracts to prevent accidental ID drift and broken swaps.</p>
+<doc-anchor-target id="51-create-a-fragment-inventory">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#51-create-a-fragment-inventory">#</doc-anchor-trigger>
+        <span>5.1 Create a Fragment Inventory</span>
+    </h3>
+</doc-anchor-target>
+<p>Add a comment block to your page&#x27;s Razor file or PageModel:</p>
+<p><strong>Option A: In Index.cshtml</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@*
+    Fragment Inventory for Tasks Page
+    ==================================
+
+    Fragment ID          | Partial              | Swap Strategy | Returned By
+    ---------------------|----------------------|---------------|------------------
+    #task-list           | _TaskList            | outerHTML     | OnGetList, OnPostCreate, OnPostDelete
+    #task-form           | _TaskForm            | outerHTML     | OnGetEmptyForm, OnPostCreate (invalid)
+    #messages            | _Messages            | outerHTML     | OnGetMessages, error handlers
+    #task-details        | _TaskDetails         | outerHTML     | OnGetDetails
+    #title-validation    | _TitleValidation     | outerHTML     | OnPostValidateTitle
+
+    Response Rules:
+    - Success responses target original hx-target
+    - Validation errors (422) retarget to #task-form
+    - Not found (404) and server errors (500) retarget to #messages
+*@</code></pre>
+</doc-codeblock></div>
+<p><strong>Option B: In Index.cshtml.cs</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+/// Tasks page with htmx fragment support.
+///
+/// Fragment Inventory:
+/// - #task-list → _TaskList (OnGetList, OnPostCreate, OnPostDelete)
+/// - #task-form → _TaskForm (OnGetEmptyForm, OnPostCreate invalid)
+/// - #messages → _Messages (OnGetMessages, error handlers)
+/// - #task-details → _TaskDetails (OnGetDetails)
+/// - #title-validation → _TitleValidation (OnPostValidateTitle)
+/// &lt;/summary&gt;
+public class IndexModel : PageModel
+{
+    // ...
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="52-why-document-fragment-contracts">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#52-why-document-fragment-contracts">#</doc-anchor-trigger>
+        <span>5.2 Why Document Fragment Contracts?</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Benefit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Prevents ID drift</strong></td>
+<td>Team knows which IDs are &quot;reserved&quot;</td>
+</tr>
+<tr>
+<td><strong>Debugging aid</strong></td>
+<td>Quick reference for which handler returns what</td>
+</tr>
+<tr>
+<td><strong>Onboarding</strong></td>
+<td>New developers understand the page structure</td>
+</tr>
+<tr>
+<td><strong>Maintenance</strong></td>
+<td>Safely rename/refactor with full visibility</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="53-url-state-policy-if-using-filteringpagination">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#53-url-state-policy-if-using-filteringpagination">#</doc-anchor-trigger>
+        <span>5.3 URL State Policy (If Using Filtering/Pagination)</span>
+    </h3>
+</doc-anchor-target>
+<p>Document your URL state policy:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@*
+    URL State Policy:
+    - List filtering uses hx-push-url=&quot;true&quot;
+    - Query parameters: q (filter), page (pagination), pageSize
+    - Initial OnGet() must accept same parameters as OnGetList()
+    - Back/forward navigation should restore filter/page state
+*@</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="part-6-quick-reference-card">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-6-quick-reference-card">#</doc-anchor-trigger>
+        <span>Part 6: Quick Reference Card</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="response-decision-tree">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#response-decision-tree">#</doc-anchor-trigger>
+        <span>Response Decision Tree</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">Is this an htmx request? (HX-Request: true)
+├── NO → Return Page() or RedirectToPage()
+└── YES
+    ├── Success? → Return Fragment() to original hx-target
+    ├── Validation error? → 422 + Retarget to form fragment
+    └── Server error? → 500 + Retarget to messages</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="handler-naming-quick-reference">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#handler-naming-quick-reference">#</doc-anchor-trigger>
+        <span>Handler Naming Quick Reference</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Example</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>OnGet{Resource}</code></td>
+<td><code v-pre>OnGetList()</code></td>
+<td><code v-pre>_TaskList</code></td>
+</tr>
+<tr>
+<td><code v-pre>OnGet{Resource}</code></td>
+<td><code v-pre>OnGetDetails(int id)</code></td>
+<td><code v-pre>_TaskDetails</code></td>
+</tr>
+<tr>
+<td><code v-pre>OnPost{Action}</code></td>
+<td><code v-pre>OnPostCreate()</code></td>
+<td><code v-pre>_TaskList</code> (success)</td>
+</tr>
+<tr>
+<td><code v-pre>OnPost{Action}</code></td>
+<td><code v-pre>OnPostDelete(int id)</code></td>
+<td><code v-pre>_TaskList</code></td>
+</tr>
+<tr>
+<td><code v-pre>OnPostValidate{Field}</code></td>
+<td><code v-pre>OnPostValidateTitle()</code></td>
+<td><code v-pre>_TitleValidation</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="status-codes-quick-reference">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#status-codes-quick-reference">#</doc-anchor-trigger>
+        <span>Status Codes Quick Reference</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td>OK</td>
+<td>Successful response</td>
+</tr>
+<tr>
+<td>302</td>
+<td>Redirect</td>
+<td>Non-htmx form submit</td>
+</tr>
+<tr>
+<td>422</td>
+<td>Unprocessable Entity</td>
+<td>Validation errors</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not Found</td>
+<td>Resource doesn&#x27;t exist</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Server Error</td>
+<td>Unexpected failures</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="htmx-headers-quick-reference">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#htmx-headers-quick-reference">#</doc-anchor-trigger>
+        <span>htmx Headers Quick Reference</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Header</th>
+<th>Direction</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>HX-Request</code></td>
+<td>Request</td>
+<td>Identifies htmx request</td>
+</tr>
+<tr>
+<td><code v-pre>HX-Trigger</code></td>
+<td>Response</td>
+<td>Fire client-side events</td>
+</tr>
+<tr>
+<td><code v-pre>HX-Retarget</code></td>
+<td>Response</td>
+<td>Override hx-target</td>
+</tr>
+<tr>
+<td><code v-pre>HX-Reswap</code></td>
+<td>Response</td>
+<td>Override hx-swap</td>
+</tr>
+<tr>
+<td><code v-pre>HX-Push-Url</code></td>
+<td>Response</td>
+<td>Update browser URL</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<doc-anchor-target id="verification-checklist">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#verification-checklist">#</doc-anchor-trigger>
+        <span>Verification Checklist</span>
+    </h2>
+</doc-anchor-target>
+<p>Before moving to Lab 5, verify these items:</p>
+<doc-anchor-target id="folder-structure">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#folder-structure">#</doc-anchor-trigger>
+        <span>Folder Structure</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Partials folder exists under <code v-pre>Pages/Tasks/</code></li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Each fragment has a dedicated partial file</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Partial names start with underscore</li>
+</ul>
+<doc-anchor-target id="handler-naming">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#handler-naming">#</doc-anchor-trigger>
+        <span>Handler Naming</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> GET handlers follow <code v-pre>OnGet{Resource}</code> pattern</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> POST handlers follow <code v-pre>OnPost{Action}</code> pattern</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Handler names indicate which fragment they return</li>
+</ul>
+<doc-anchor-target id="response-rules">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#response-rules">#</doc-anchor-trigger>
+        <span>Response Rules</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Non-htmx requests return <code v-pre>Page()</code> or <code v-pre>RedirectToPage()</code></li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> htmx requests return <code v-pre>Fragment()</code></li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Validation errors use 422 status</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Error responses retarget to <code v-pre>#messages</code></li>
+</ul>
+<doc-anchor-target id="helpers">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#helpers">#</doc-anchor-trigger>
+        <span>Helpers</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> <code v-pre>IsHtmx()</code> helper is implemented</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> <code v-pre>Fragment()</code> helper is implemented</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Handlers use helpers consistently</li>
+</ul>
+<doc-anchor-target id="documentation">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#documentation">#</doc-anchor-trigger>
+        <span>Documentation</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Fragment inventory exists (comment or doc)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Fragment IDs are documented</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Handler-to-fragment mapping is clear</li>
+</ul>
+<hr>
+<doc-anchor-target id="ready-to-proceed-gate">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#ready-to-proceed-gate">#</doc-anchor-trigger>
+        <span>&quot;Ready to Proceed&quot; Gate</span>
+    </h2>
+</doc-anchor-target>
+<p>Attendees should be able to answer &quot;yes&quot; to all of these:</p>
+<ol>
+<li><strong>I can locate fragments</strong>: I know exactly where to find <code v-pre>_TaskList.cshtml</code> and other partials</li>
+<li><strong>I can trace requests</strong>: Given a URL like <code v-pre>?handler=Details&amp;id=42</code>, I can find the handler immediately</li>
+<li><strong>I understand response rules</strong>: I know when to return <code v-pre>Page()</code> vs <code v-pre>Fragment()</code> vs retarget</li>
+<li><strong>I have consistent helpers</strong>: <code v-pre>IsHtmx()</code> and <code v-pre>Fragment()</code> are in my PageModel</li>
+<li><strong>I can debug swaps</strong>: I can verify fragment boundaries in DevTools</li>
+</ol>
+<hr>
+<doc-anchor-target id="key-takeaways">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#key-takeaways">#</doc-anchor-trigger>
+        <span>Key Takeaways</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="the-core-principle">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-core-principle">#</doc-anchor-trigger>
+        <span>The Core Principle</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>htmx + Razor Pages is about discipline, not complexity.</strong></p>
+<p>The patterns are simple:</p>
+<ul>
+<li>Fragment boundaries with stable IDs</li>
+<li>Handlers that return partials</li>
+<li>Consistent naming and response rules</li>
+</ul>
+<p>The discipline is maintaining these patterns consistently across your codebase.</p>
+<doc-anchor-target id="what-makes-code-production-livable">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#what-makes-code-production-livable">#</doc-anchor-trigger>
+        <span>What Makes Code &quot;Production-Livable&quot;</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>How to Achieve It</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Discoverable</strong></td>
+<td>Co-locate partials with features, use clear naming</td>
+</tr>
+<tr>
+<td><strong>Predictable</strong></td>
+<td>Follow response rules, name handlers consistently</td>
+</tr>
+<tr>
+<td><strong>Debuggable</strong></td>
+<td>URL matches handler, fragment matches ID</td>
+</tr>
+<tr>
+<td><strong>Maintainable</strong></td>
+<td>Document contracts, use helpers</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="the-anti-patterns-to-avoid">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-anti-patterns-to-avoid">#</doc-anchor-trigger>
+        <span>The Anti-Patterns to Avoid</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Anti-Pattern</th>
+<th>Why It&#x27;s Bad</th>
+<th>Better Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Random hx-targets</td>
+<td>Hard to debug</td>
+<td>Explicit fragment boundaries</td>
+</tr>
+<tr>
+<td>Inconsistent naming</td>
+<td>Can&#x27;t find handlers</td>
+<td>Verb + resource pattern</td>
+</tr>
+<tr>
+<td>Mixed response types</td>
+<td>Unpredictable behavior</td>
+<td>Clear response rules</td>
+</tr>
+<tr>
+<td>Magic strings</td>
+<td>Hard to refactor</td>
+<td>Use helpers</td>
+</tr>
+<tr>
+<td>Undocumented fragments</td>
+<td>ID drift, broken swaps</td>
+<td>Fragment inventory</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<doc-anchor-target id="what-comes-next">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#what-comes-next">#</doc-anchor-trigger>
+        <span>What Comes Next</span>
+    </h2>
+</doc-anchor-target>
+<p>In <strong>Lab 5</strong>, you&#x27;ll implement:</p>
+<ul>
+<li>Dynamic form rows (Add/Remove tag inputs)</li>
+<li>Dependent dropdowns (Category → Subcategory)</li>
+<li>Long-running operations with polling</li>
+<li>Out-of-band swaps for global updates</li>
+</ul>
+<p>With your codebase now &quot;production-livable,&quot; these advanced patterns will be easier to implement and maintain.</p>
+<p><strong>Proceed to Lab 5: Dynamic Forms + Long-Running UX (Polling) →</strong></p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -257,7 +1456,7 @@
                                         <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../lab-5-dynamic-forms-long-running-ux-(polling)/">
                                             <span>
                                                 <span class="block text-xs font-normal text-right text-base-text-muted">Next</span>
-                                                <span class="block mt-1">Lab 5: Dynamic Forms + Long Running UX (Polling)</span>
+                                                <span class="block mt-1">Lab 5: Dynamic Forms + Long-​Running UX (Polling)</span>
                                             </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         </a>
@@ -321,6 +1520,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Checkpoint: Make It Production Livable", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Checkpoint: Make It Production-Livable", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

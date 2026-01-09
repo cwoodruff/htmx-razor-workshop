@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821277826144">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Checkpoint: Troubleshooting + Pattern Review</title>
     <meta name="title" content="Checkpoint: Troubleshooting + Pattern Review">
+    <meta name="description" content="This checkpoint is a structured pause between Labs 2 and 3.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/checkpoint-troubleshooting-pattern-review/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/checkpoint-troubleshooting-pattern-review/">
     <meta property="og:title" content="Checkpoint: Troubleshooting + Pattern Review">
+    <meta property="og:description" content="This checkpoint is a structured pause between Labs 2 and 3.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/checkpoint-troubleshooting-pattern-review/">
     <meta property="twitter:title" content="Checkpoint: Troubleshooting + Pattern Review">
+    <meta property="twitter:description" content="This checkpoint is a structured pause between Labs 2 and 3.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821277826144" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821277826144" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -56,7 +60,7 @@
                                 <img class="max-h-10 dark:hidden md:inline-block" src="../images/gear-earth.png">
                                 <img class="max-h-10 hidden dark:inline-block" src="../images/gear-earth-dark.png">
                             </span>
-                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">HTMX Workshop</span>
+                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">htmx Workshop</span>
                         </a><span id="retype-branding-label" class="inline-flex mt-1 px-2 py-1 ml-4 text-xs font-medium leading-none items-center rounded-md bg-branding-label-bg text-branding-label-text ring-1 ring-branding-label-border ring-inset md:inline-block">v8</span>
                     </div>
         
@@ -229,6 +233,1088 @@
         <span>Checkpoint: Troubleshooting + Pattern Review</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="overview">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#overview">#</doc-anchor-trigger>
+        <span>Overview</span>
+    </h2>
+</doc-anchor-target>
+<p>This checkpoint is a structured pause between Labs 2 and 3. Before moving to more advanced patterns like real-time validation, you need to be confident that:</p>
+<ol>
+<li>Your development environment works reliably</li>
+<li>You can debug htmx interactions using browser DevTools</li>
+<li>You understand the common mistakes and how to fix them</li>
+<li>You have consistent conventions for handling htmx vs. non-htmx requests</li>
+</ol>
+<p><strong>Time estimate</strong>: 10–15 minutes</p>
+<hr>
+<doc-anchor-target id="checkpoint-outcomes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#checkpoint-outcomes">#</doc-anchor-trigger>
+        <span>Checkpoint Outcomes</span>
+    </h2>
+</doc-anchor-target>
+<p>By the end of this checkpoint, you will be able to:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Outcome</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Run and debug confidently</strong></td>
+<td>Locate the right handler for any interaction</td>
+</tr>
+<tr>
+<td><strong>Use DevTools effectively</strong></td>
+<td>Verify htmx request/response behavior</td>
+</tr>
+<tr>
+<td><strong>Recognize common mistakes</strong></td>
+<td>Identify and fix the top 5 htmx/Razor Pages integration issues</td>
+</tr>
+<tr>
+<td><strong>Apply consistent conventions</strong></td>
+<td>Standardize Page vs. Fragment response patterns</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<doc-anchor-target id="part-1-verify-your-development-loop-57-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-1-verify-your-development-loop-57-minutes">#</doc-anchor-trigger>
+        <span>Part 1: Verify Your Development Loop (5–7 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Before debugging htmx-specific issues, confirm your basic development workflow is solid.</p>
+<doc-anchor-target id="11-run--debug-checklist">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#11-run--debug-checklist">#</doc-anchor-trigger>
+        <span>1.1 Run + Debug Checklist</span>
+    </h3>
+</doc-anchor-target>
+<p>Verify each of these items:</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Application runs locally (HTTPS or HTTP—either is fine)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Breakpoints hit inside handlers:
+<ul>
+<li><code v-pre>OnPostCreate</code></li>
+<li><code v-pre>OnGetList</code></li>
+</ul>
+</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Hot reload or rebuild works reliably</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Browser refreshes correctly after code changes</li>
+</ul>
+<p><strong>Debug Exercise:</strong></p>
+<p>Set a breakpoint on the first line of <code v-pre>OnPostCreate</code>. Submit the form and confirm:</p>
+<ol>
+<li>The breakpoint is hit</li>
+<li>You can inspect <code v-pre>Request.Headers</code> in the debugger</li>
+<li>You see <code v-pre>HX-Request: true</code> in the headers (for htmx requests)</li>
+</ol>
+<doc-anchor-target id="12-network-requests-what-good-looks-like">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#12-network-requests-what-good-looks-like">#</doc-anchor-trigger>
+        <span>1.2 Network Requests: What &quot;Good&quot; Looks Like</span>
+    </h3>
+</doc-anchor-target>
+<p>Open browser DevTools → <strong>Network</strong> tab and perform these actions:</p>
+<doc-anchor-target id="for-hx-post-create-form-submission">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#for-hx-post-create-form-submission">#</doc-anchor-trigger>
+        <span>For <code v-pre>hx-post</code> Create (Form Submission)</span>
+    </h4>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Check</th>
+<th>Expected Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Request Method</td>
+<td><code v-pre>POST</code></td>
+</tr>
+<tr>
+<td>Request URL</td>
+<td>Contains <code v-pre>?handler=Create</code></td>
+</tr>
+<tr>
+<td>Request Headers</td>
+<td>Includes <code v-pre>HX-Request: true</code></td>
+</tr>
+<tr>
+<td>Response Body</td>
+<td>HTML fragment starting with <code v-pre>&lt;div id=&quot;task-list&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>Response Status</td>
+<td><code v-pre>200</code> (success) or <code v-pre>422</code> (validation error)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Example Request Headers:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">POST /Tasks?handler=Create HTTP/1.1
+Host: localhost:5001
+HX-Request: true
+HX-Current-URL: https://localhost:5001/Tasks
+Content-Type: application/x-www-form-urlencoded</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="for-hx-get-refresh-list-refresh">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#for-hx-get-refresh-list-refresh">#</doc-anchor-trigger>
+        <span>For <code v-pre>hx-get</code> Refresh (List Refresh)</span>
+    </h4>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Check</th>
+<th>Expected Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Request Method</td>
+<td><code v-pre>GET</code></td>
+</tr>
+<tr>
+<td>Request URL</td>
+<td>Contains <code v-pre>?handler=List</code></td>
+</tr>
+<tr>
+<td>Request Headers</td>
+<td>Includes <code v-pre>HX-Request: true</code></td>
+</tr>
+<tr>
+<td>Response Body</td>
+<td>HTML fragment: <code v-pre>&lt;div id=&quot;task-list&quot;&gt;...&lt;/div&gt;</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="for-validation-error-responses">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#for-validation-error-responses">#</doc-anchor-trigger>
+        <span>For Validation Error Responses</span>
+    </h4>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Check</th>
+<th>Expected Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Response Status</td>
+<td><code v-pre>422</code> (Unprocessable Entity)</td>
+</tr>
+<tr>
+<td>Response Headers</td>
+<td><code v-pre>HX-Retarget: #task-form</code> and <code v-pre>HX-Reswap: outerHTML</code></td>
+</tr>
+<tr>
+<td>Response Body</td>
+<td>HTML fragment: <code v-pre>&lt;div id=&quot;task-form&quot;&gt;...&lt;/div&gt;</code> with error messages</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="13-inspect-returned-fragments-in-elements-panel">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#13-inspect-returned-fragments-in-elements-panel">#</doc-anchor-trigger>
+        <span>1.3 Inspect Returned Fragments in Elements Panel</span>
+    </h3>
+</doc-anchor-target>
+<p>Use the <strong>Elements</strong> tab in DevTools to verify swaps are working:</p>
+<ol>
+<li><strong>Before submitting</strong>: Note the DOM node for <code v-pre>div#task-list</code></li>
+<li><strong>After submitting</strong>: The node should be replaced (different DOM reference)</li>
+<li><strong>Confirm</strong>: The content inside <code v-pre>#task-list</code> reflects the new data</li>
+</ol>
+<p><strong>Key Insight:</strong></p>
+<p>htmx swaps <strong>HTML</strong>, not JSON. Debugging htmx is about inspecting HTML fragments and target elements—not parsing API payloads.</p>
+<hr>
+<doc-anchor-target id="part-2-common-gotchas-and-fixes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-2-common-gotchas-and-fixes">#</doc-anchor-trigger>
+        <span>Part 2: Common Gotchas and Fixes</span>
+    </h2>
+</doc-anchor-target>
+<p>This section covers the five most common htmx + Razor Pages integration mistakes. For each, you&#x27;ll learn the symptoms, likely causes, and fastest diagnostic steps.</p>
+<doc-anchor-target id="gotcha-a-nothing-happens-on-submit-or-button-click">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#gotcha-a-nothing-happens-on-submit-or-button-click">#</doc-anchor-trigger>
+        <span>Gotcha A: Nothing Happens on Submit (or Button Click)</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Clicking the button or submitting the form does nothing</li>
+<li>No network request appears in DevTools</li>
+<li>Page doesn&#x27;t change at all</li>
+</ul>
+<p><strong>Likely Causes:</strong></p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Cause</th>
+<th>Why It Happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>htmx not loaded</td>
+<td>Script tag missing, blocked, or has error</td>
+</tr>
+<tr>
+<td>Wrong file edited</td>
+<td>Added <code v-pre>hx-*</code> to <code v-pre>Index.cshtml</code> instead of <code v-pre>_TaskForm.cshtml</code></td>
+</tr>
+<tr>
+<td>JavaScript error</td>
+<td>Console error prevented htmx from initializing</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Fast Diagnostic Steps:</strong></p>
+<ol>
+<li><p><strong>Check Console for htmx:</strong></p>
+<p>Open DevTools Console and type:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-javascript"><code v-pre class="language-javascript">htmx</code></pre>
+</doc-codeblock></div>
+<ul>
+<li>If you see an object → htmx is loaded</li>
+<li>If you see <code v-pre>undefined</code> → htmx is NOT loaded</li>
+</ul>
+</li>
+<li><p><strong>View Page Source:</strong></p>
+<p>Press <code v-pre>Ctrl+U</code> and search for <code v-pre>htmx</code>. Confirm the script tag exists:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;script src=&quot;https://unpkg.com/htmx.org@1.9.12&quot;&gt;&lt;/script&gt;</code></pre>
+</doc-codeblock></div>
+</li>
+<li><p><strong>Verify File Location:</strong></p>
+<p>Confirm you edited <code v-pre>Pages/Tasks/Partials/_TaskForm.cshtml</code>, not <code v-pre>Pages/Tasks/Index.cshtml</code>.</p>
+</li>
+</ol>
+<p><strong>Fix:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Add to _Layout.cshtml before &lt;/body&gt; --&gt;
+&lt;script src=&quot;https://unpkg.com/htmx.org@1.9.12&quot;&gt;&lt;/script&gt;</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="gotcha-b-request-fires-but-wrong-part-updates-or-nothing-updates">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#gotcha-b-request-fires-but-wrong-part-updates-or-nothing-updates">#</doc-anchor-trigger>
+        <span>Gotcha B: Request Fires, But Wrong Part Updates (or Nothing Updates)</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Network tab shows the request completed successfully</li>
+<li>Response contains HTML</li>
+<li>But the page doesn&#x27;t update, or the wrong element updates</li>
+</ul>
+<p><strong>Likely Causes:</strong></p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Cause</th>
+<th>Why It Happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wrong <code v-pre>hx-target</code> selector</td>
+<td>Typo in ID or selector doesn&#x27;t match DOM</td>
+</tr>
+<tr>
+<td>Duplicate IDs</td>
+<td>Multiple elements have the same ID</td>
+</tr>
+<tr>
+<td>Response fragment shape mismatch</td>
+<td>Using <code v-pre>outerHTML</code> but response doesn&#x27;t include wrapper</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Fast Diagnostic Steps:</strong></p>
+<ol>
+<li><p><strong>Check for Single ID:</strong></p>
+<p>In Elements panel, search for <code v-pre>#task-list</code>. There should be exactly <strong>one</strong> element.</p>
+</li>
+<li><p><strong>Inspect Response Body:</strong></p>
+<p>In Network tab, click the request and view Response. Confirm it includes:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;div id=&quot;task-list&quot;&gt;
+    &lt;!-- list content --&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p>The response must include the wrapper element when using <code v-pre>hx-swap=&quot;outerHTML&quot;</code>.</p>
+</li>
+<li><p><strong>Verify Target Selector:</strong></p>
+<p>Check that <code v-pre>hx-target=&quot;#task-list&quot;</code> matches the actual element ID (case-sensitive).</p>
+</li>
+</ol>
+<p><strong>Fix:</strong></p>
+<p>Ensure your partial returns the complete wrapper:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@* _TaskList.cshtml - Must include the wrapper *@
+&lt;div id=&quot;task-list&quot;&gt;
+    @* Content here *@
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Common Mistake:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@* WRONG - Missing wrapper, will break outerHTML swap *@
+@foreach (var task in Model)
+{
+    &lt;li&gt;@task.Title&lt;/li&gt;
+}</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="gotcha-c-404--handler-not-found--wrong-handler-invoked">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#gotcha-c-404--handler-not-found--wrong-handler-invoked">#</doc-anchor-trigger>
+        <span>Gotcha C: 404 / Handler Not Found / Wrong Handler Invoked</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Network tab shows <code v-pre>404 Not Found</code></li>
+<li>Or: A different handler runs than expected</li>
+<li>Or: <code v-pre>OnGet</code> runs when you expected <code v-pre>OnPostCreate</code></li>
+</ul>
+<p><strong>Likely Causes:</strong></p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Cause</th>
+<th>Why It Happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Handler name mismatch</td>
+<td><code v-pre>?handler=Create</code> but method is <code v-pre>OnPostAdd</code></td>
+</tr>
+<tr>
+<td>Wrong HTTP verb</td>
+<td><code v-pre>hx-get</code> calling an <code v-pre>OnPost...</code> handler</td>
+</tr>
+<tr>
+<td>Missing handler</td>
+<td>Method doesn&#x27;t exist in PageModel</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Fast Diagnostic Steps:</strong></p>
+<ol>
+<li><p><strong>Check Request URL:</strong></p>
+<p>In Network tab, verify the URL includes the correct handler:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">/Tasks?handler=Create    ← Should match OnPostCreate
+/Tasks?handler=List      ← Should match OnGetList</code></pre>
+</doc-codeblock></div>
+</li>
+<li><p><strong>Verify Method Names:</strong></p>
+<p>Razor Pages naming convention:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Handler Query</th>
+<th>Method Signature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>?handler=Create</code> (POST)</td>
+<td><code v-pre>OnPostCreate()</code></td>
+</tr>
+<tr>
+<td><code v-pre>?handler=List</code> (GET)</td>
+<td><code v-pre>OnGetList()</code></td>
+</tr>
+<tr>
+<td><code v-pre>?handler=Details&amp;id=1</code> (GET)</td>
+<td><code v-pre>OnGetDetails(int id)</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li><p><strong>Check HTTP Verb:</strong></p>
+<ul>
+<li><code v-pre>hx-post</code> → calls <code v-pre>OnPost...</code> handlers</li>
+<li><code v-pre>hx-get</code> → calls <code v-pre>OnGet...</code> handlers</li>
+</ul>
+</li>
+</ol>
+<p><strong>Fix:</strong></p>
+<p>Ensure handler names align:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Markup --&gt;
+&lt;form hx-post=&quot;?handler=Create&quot; ...&gt;
+
+&lt;!-- Must match --&gt;
+public IActionResult OnPostCreate() { ... }</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="gotcha-d-partial-path-errors-runtime-view-not-found">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#gotcha-d-partial-path-errors-runtime-view-not-found">#</doc-anchor-trigger>
+        <span>Gotcha D: Partial Path Errors (Runtime View Not Found)</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Server returns 500 error</li>
+<li>Exception message: &quot;The partial view &#x27;...&#x27; was not found&quot;</li>
+<li>Or: Wrong partial renders</li>
+</ul>
+<p><strong>Likely Causes:</strong></p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Cause</th>
+<th>Why It Happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Incorrect path in <code v-pre>Fragment()</code> call</td>
+<td>Path doesn&#x27;t match file location</td>
+</tr>
+<tr>
+<td>File in wrong folder</td>
+<td>Partial not where you think it is</td>
+</tr>
+<tr>
+<td>Typo in filename</td>
+<td><code v-pre>_TaskList.cshtml</code> vs <code v-pre>_Tasklist.cshtml</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Fast Diagnostic Steps:</strong></p>
+<ol>
+<li><p><strong>Verify File Exists:</strong></p>
+<p>If your code says:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">return Fragment(&quot;Partials/_TaskList&quot;, model);</code></pre>
+</doc-codeblock></div>
+<p>Then this file must exist:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">Pages/Tasks/Partials/_TaskList.cshtml</code></pre>
+</doc-codeblock></div>
+</li>
+<li><p><strong>Check Case Sensitivity:</strong></p>
+<p>On some systems, <code v-pre>_TaskList.cshtml</code> and <code v-pre>_Tasklist.cshtml</code> are different files.</p>
+</li>
+<li><p><strong>Use Consistent Paths:</strong></p>
+<p>Both of these should use the same path pattern:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// In handler
+return Fragment(&quot;Partials/_TaskList&quot;, Tasks);</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;!-- In Razor page --&gt;
+&lt;partial name=&quot;Partials/_TaskList&quot; model=&quot;Model.Tasks&quot; /&gt;</code></pre>
+</doc-codeblock></div>
+</li>
+</ol>
+<p><strong>Fix:</strong></p>
+<p>Organize partials consistently:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">Pages/Tasks/
+├── Index.cshtml
+├── Index.cshtml.cs
+└── Partials/
+    ├── _Messages.cshtml
+    ├── _TaskForm.cshtml
+    └── _TaskList.cshtml</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="gotcha-e-validation-as-you-type-fails-403-antiforgery-or-no-data-sent">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#gotcha-e-validation-as-you-type-fails-403-antiforgery-or-no-data-sent">#</doc-anchor-trigger>
+        <span>Gotcha E: Validation-as-You-Type Fails (403 Antiforgery or No Data Sent)</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Keystroke validation returns <code v-pre>400 Bad Request</code> or <code v-pre>403 Forbidden</code></li>
+<li>Request payload is empty or missing fields</li>
+<li>Server-side validation doesn&#x27;t receive the input value</li>
+</ul>
+<p><strong>Likely Causes:</strong></p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Cause</th>
+<th>Why It Happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Antiforgery token missing</td>
+<td>POST requests require the token</td>
+</tr>
+<tr>
+<td>Form fields not included</td>
+<td><code v-pre>hx-post</code> on input doesn&#x27;t send sibling fields</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Fast Diagnostic Steps:</strong></p>
+<ol>
+<li><p><strong>Check Request Payload:</strong></p>
+<p>In Network tab, check if the request includes <code v-pre>__RequestVerificationToken</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">Input.Title=my+task&amp;__RequestVerificationToken=CfDJ8...</code></pre>
+</doc-codeblock></div>
+</li>
+<li><p><strong>Verify Token in Form:</strong></p>
+<p>Ensure your form includes the antiforgery token:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;form method=&quot;post&quot; asp-page-handler=&quot;Create&quot;&gt;
+    @Html.AntiForgeryToken()
+    &lt;!-- or use: &lt;input asp-antiforgery=&quot;true&quot; /&gt; --&gt;</code></pre>
+</doc-codeblock></div>
+</li>
+<li><p><strong>Add <code v-pre>hx-include</code> if Needed:</strong></p>
+<p>If <code v-pre>hx-post</code> is on an input (not the form), add:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;input asp-for=&quot;Input.Title&quot;
+       hx-post=&quot;?handler=ValidateTitle&quot;
+       hx-include=&quot;closest form&quot;
+       ... /&gt;</code></pre>
+</doc-codeblock></div>
+</li>
+</ol>
+<p><strong>Fix:</strong></p>
+<p>Ensure the form has the token and inputs include it:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;div id=&quot;task-form&quot;&gt;
+    &lt;form method=&quot;post&quot; asp-page-handler=&quot;Create&quot;
+          hx-post=&quot;?handler=Create&quot;
+          hx-target=&quot;#task-list&quot;
+          hx-swap=&quot;outerHTML&quot;&gt;
+
+        @Html.AntiForgeryToken()
+
+        &lt;input asp-for=&quot;Input.Title&quot;
+               hx-post=&quot;?handler=ValidateTitle&quot;
+               hx-include=&quot;closest form&quot;
+               hx-trigger=&quot;keyup changed delay:500ms&quot;
+               hx-target=&quot;#title-validation&quot;
+               hx-swap=&quot;outerHTML&quot; /&gt;
+
+        &lt;!-- rest of form --&gt;
+    &lt;/form&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="part-3-standardize-response-conventions-mini-refactor">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-3-standardize-response-conventions-mini-refactor">#</doc-anchor-trigger>
+        <span>Part 3: Standardize Response Conventions (Mini-Refactor)</span>
+    </h2>
+</doc-anchor-target>
+<p>Now that you can diagnose issues, let&#x27;s establish conventions that prevent them.</p>
+<doc-anchor-target id="31-the-response-rule-set">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#31-the-response-rule-set">#</doc-anchor-trigger>
+        <span>3.1 The Response Rule Set</span>
+    </h3>
+</doc-anchor-target>
+<p>Every handler should return exactly one of these response types:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Request Type</th>
+<th>Response Type</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Non-htmx</td>
+<td><code v-pre>Page()</code> or <code v-pre>RedirectToPage()</code></td>
+<td>Full page navigation</td>
+</tr>
+<tr>
+<td>htmx</td>
+<td><code v-pre>Fragment(&quot;...&quot;, model)</code></td>
+<td>Partial updates</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Rule 1: A handler returns exactly one of:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// Non-htmx: Full page
+return Page();
+return RedirectToPage();
+
+// htmx: Fragment only
+return Fragment(&quot;Partials/_TaskList&quot;, Tasks);</code></pre>
+</doc-codeblock></div>
+<p><strong>Rule 2: Fragment handlers must return a wrapper with a stable ID:</strong></p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Partial</th>
+<th>Must Return</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>_TaskList</code></td>
+<td><code v-pre>&lt;div id=&quot;task-list&quot;&gt;...&lt;/div&gt;</code></td>
+</tr>
+<tr>
+<td><code v-pre>_TaskForm</code></td>
+<td><code v-pre>&lt;div id=&quot;task-form&quot;&gt;...&lt;/div&gt;</code></td>
+</tr>
+<tr>
+<td><code v-pre>_Messages</code></td>
+<td><code v-pre>&lt;div id=&quot;messages&quot;&gt;...&lt;/div&gt;</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Rule 3: Swap strategy must match fragment shape:</strong></p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>If You Use</th>
+<th>Response Must Be</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>hx-swap=&quot;outerHTML&quot;</code></td>
+<td>Full wrapper element (<code v-pre>&lt;div id=&quot;...&quot;&gt;</code>)</td>
+</tr>
+<tr>
+<td><code v-pre>hx-swap=&quot;innerHTML&quot;</code></td>
+<td>Content only (no wrapper needed)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="32-standardize-helper-methods">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#32-standardize-helper-methods">#</doc-anchor-trigger>
+        <span>3.2 Standardize Helper Methods</span>
+    </h3>
+</doc-anchor-target>
+<p>Ensure your PageModel includes these helpers:</p>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
+// Add inside your PageModel class:
+
+/// &lt;summary&gt;
+/// Checks if the current request was made by htmx.
+/// htmx sends &quot;HX-Request: true&quot; header with every request.
+/// &lt;/summary&gt;
+private bool IsHtmx() =&gt;
+    Request.Headers.TryGetValue(&quot;HX-Request&quot;, out var value) &amp;&amp; value == &quot;true&quot;;
+
+/// &lt;summary&gt;
+/// Returns a partial view result for fragment responses.
+/// Preserves ViewData context for validation messages, etc.
+/// &lt;/summary&gt;
+/// &lt;param name=&quot;partialName&quot;&gt;Path to the partial view&lt;/param&gt;
+/// &lt;param name=&quot;model&quot;&gt;Model to pass to the partial&lt;/param&gt;
+private PartialViewResult Fragment(string partialName, object model) =&gt;
+    new()
+    {
+        ViewName = partialName,
+        ViewData = new ViewDataDictionary(ViewData) { Model = model }
+    };</code></pre>
+</doc-codeblock></div>
+<p><strong>Why These Helpers:</strong></p>
+<ul>
+<li><code v-pre>IsHtmx()</code> removes magic strings scattered throughout handlers</li>
+<li><code v-pre>Fragment()</code> ensures consistent <code v-pre>ViewData</code> propagation (critical for validation)</li>
+<li>Both are small enough to copy into any PageModel</li>
+</ul>
+<doc-anchor-target id="33-standardize-handler-naming">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#33-standardize-handler-naming">#</doc-anchor-trigger>
+        <span>3.3 Standardize Handler Naming</span>
+    </h3>
+</doc-anchor-target>
+<p>Adopt these naming conventions:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Handler Name</th>
+<th>HTTP Verb</th>
+<th>Returns</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>OnGet</code></td>
+<td>GET</td>
+<td>Full Page</td>
+<td>Initial page load</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetList</code></td>
+<td>GET</td>
+<td><code v-pre>_TaskList</code></td>
+<td>Refresh list fragment</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetDetails</code></td>
+<td>GET</td>
+<td><code v-pre>_TaskDetails</code></td>
+<td>Load details fragment</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetMessages</code></td>
+<td>GET</td>
+<td><code v-pre>_Messages</code></td>
+<td>Refresh messages</td>
+</tr>
+<tr>
+<td><code v-pre>OnGetEmptyForm</code></td>
+<td>GET</td>
+<td><code v-pre>_TaskForm</code> (reset)</td>
+<td>Clear form</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostCreate</code></td>
+<td>POST</td>
+<td><code v-pre>_TaskList</code> (success)</td>
+<td>Create new task</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostDelete</code></td>
+<td>POST</td>
+<td><code v-pre>_TaskList</code></td>
+<td>Delete task</td>
+</tr>
+<tr>
+<td><code v-pre>OnPostValidateTitle</code></td>
+<td>POST</td>
+<td><code v-pre>_TitleValidation</code></td>
+<td>Field validation</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>The Pattern:</strong></p>
+<ul>
+<li>Handler name tells you which fragment it returns</li>
+<li><code v-pre>OnGet*</code> for reads, <code v-pre>OnPost*</code> for mutations</li>
+<li>The <code v-pre>?handler=</code> value maps directly to the method suffix</li>
+</ul>
+<doc-anchor-target id="34-standardize-retarget-usage">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#34-standardize-retarget-usage">#</doc-anchor-trigger>
+        <span>3.4 Standardize Retarget Usage</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Policy: Use <code v-pre>HX-Retarget</code> + <code v-pre>HX-Reswap</code> only in two scenarios:</strong></p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Original Target</th>
+<th>Retarget To</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Invalid form submit</td>
+<td><code v-pre>#task-list</code></td>
+<td><code v-pre>#task-form</code></td>
+<td>Show errors in place</td>
+</tr>
+<tr>
+<td>Server error</td>
+<td><code v-pre>#task-list</code></td>
+<td><code v-pre>#messages</code></td>
+<td>Route errors to message area</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Everything else should use explicit <code v-pre>hx-target</code> in markup.</strong></p>
+<p><strong>Example: Retargeting on Validation Error</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">if (!ModelState.IsValid)
+{
+    Tasks = InMemoryTaskStore.All();
+
+    if (IsHtmx())
+    {
+        // Retarget from #task-list to #task-form
+        Response.StatusCode = 422;
+        Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
+        Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
+        return Fragment(&quot;Partials/_TaskForm&quot;, this);
+    }
+
+    return Page();
+}</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="part-4-verification-exercise">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#part-4-verification-exercise">#</doc-anchor-trigger>
+        <span>Part 4: Verification Exercise</span>
+    </h2>
+</doc-anchor-target>
+<p>Complete these checks before proceeding to Lab 3.</p>
+<doc-anchor-target id="quick-verification-script-10-minutes">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#quick-verification-script-10-minutes">#</doc-anchor-trigger>
+        <span>Quick Verification Script (10 minutes)</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Step 1: Network Verification (2 minutes)</strong></p>
+<ol>
+<li>Open DevTools → Network</li>
+<li>Submit a valid task</li>
+<li>Confirm:
+<ul>
+<li>Request includes <code v-pre>HX-Request: true</code></li>
+<li>Response is HTML fragment (not full page)</li>
+<li>Only <code v-pre>#task-list</code> updates</li>
+</ul>
+</li>
+</ol>
+<p><strong>Step 2: Validation Error Verification (2 minutes)</strong></p>
+<ol>
+<li>Submit an empty form</li>
+<li>Confirm:
+<ul>
+<li>Response status is <code v-pre>422</code></li>
+<li>Response headers include <code v-pre>HX-Retarget: #task-form</code></li>
+<li>Form fragment replaces <code v-pre>#task-form</code> with error message</li>
+</ul>
+</li>
+</ol>
+<p><strong>Step 3: Refresh Button Verification (2 minutes)</strong></p>
+<ol>
+<li>Click &quot;Refresh All&quot; button</li>
+<li>Confirm:
+<ul>
+<li>GET request to <code v-pre>?handler=List</code></li>
+<li>Response is <code v-pre>#task-list</code> fragment</li>
+<li>List updates without page reload</li>
+</ul>
+</li>
+</ol>
+<p><strong>Step 4: Helper Method Verification (4 minutes)</strong></p>
+<ol>
+<li>Open <code v-pre>Index.cshtml.cs</code></li>
+<li>Verify <code v-pre>IsHtmx()</code> helper exists</li>
+<li>Verify <code v-pre>Fragment()</code> helper exists</li>
+<li>Verify all handlers follow the response rules</li>
+</ol>
+<hr>
+<doc-anchor-target id="ready-to-proceed-checklist">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#ready-to-proceed-checklist">#</doc-anchor-trigger>
+        <span>&quot;Ready to Proceed&quot; Checklist</span>
+    </h2>
+</doc-anchor-target>
+<p>You are ready for Lab 3 when you can answer <strong>&quot;Yes&quot;</strong> to all of these:</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> I can see htmx requests in Network tab with <code v-pre>HX-Request: true</code> header</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> My Create updates only <code v-pre>#task-list</code> without a full page reload</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Invalid Create swaps the form fragment and shows validation errors</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Refresh button updates only <code v-pre>#task-list</code></li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> I can locate the handler and partial returned for any interaction</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> I have <code v-pre>IsHtmx()</code> and <code v-pre>Fragment()</code> helpers in my PageModel</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> I understand when to use <code v-pre>HX-Retarget</code> (and when not to)</li>
+</ul>
+<hr>
+<doc-anchor-target id="quick-reference-diagnostic-commands">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#quick-reference-diagnostic-commands">#</doc-anchor-trigger>
+        <span>Quick Reference: Diagnostic Commands</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="browser-console">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#browser-console">#</doc-anchor-trigger>
+        <span>Browser Console</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-javascript"><code v-pre class="language-javascript">// Check if htmx is loaded
+htmx                    // Should return an object
+
+// Check htmx version
+htmx.version            // e.g., &quot;1.9.12&quot;
+
+// Manually trigger a request (debugging)
+htmx.trigger(document.querySelector('#refresh-btn'), 'click')</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="network-tab-filters">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#network-tab-filters">#</doc-anchor-trigger>
+        <span>Network Tab Filters</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li>Filter by <code v-pre>XHR</code> to see only AJAX requests</li>
+<li>Search for <code v-pre>handler=</code> to find htmx requests</li>
+<li>Check <code v-pre>Response Headers</code> for <code v-pre>HX-*</code> headers</li>
+</ul>
+<doc-anchor-target id="elements-tab">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#elements-tab">#</doc-anchor-trigger>
+        <span>Elements Tab</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li>Search for <code v-pre>#task-list</code> to find target element</li>
+<li>Watch for DOM node replacement during swaps</li>
+<li>Check for duplicate IDs (should be exactly one)</li>
+</ul>
+<hr>
+<doc-anchor-target id="summary">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#summary">#</doc-anchor-trigger>
+        <span>Summary</span>
+    </h2>
+</doc-anchor-target>
+<p>This checkpoint covered:</p>
+<ol>
+<li><strong>Development loop verification</strong>: Ensure debugging and hot reload work</li>
+<li><strong>Network inspection</strong>: Understand what &quot;good&quot; htmx requests look like</li>
+<li><strong>Common gotchas</strong>: Diagnose and fix the five most frequent issues</li>
+<li><strong>Response conventions</strong>: Standardize how handlers respond to htmx vs. non-htmx requests</li>
+<li><strong>Helper methods</strong>: Establish <code v-pre>IsHtmx()</code> and <code v-pre>Fragment()</code> as standard patterns</li>
+</ol>
+<p>With these foundations solid, you&#x27;re ready for Lab 3: Real-Time Validation and Form UX.</p>
+<hr>
+<doc-anchor-target id="troubleshooting-quick-reference">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#troubleshooting-quick-reference">#</doc-anchor-trigger>
+        <span>Troubleshooting Quick Reference</span>
+    </h2>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely Cause</th>
+<th>Quick Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nothing happens on click</td>
+<td>htmx not loaded</td>
+<td>Check console for <code v-pre>htmx</code> object</td>
+</tr>
+<tr>
+<td>Wrong element updates</td>
+<td>Wrong <code v-pre>hx-target</code> or duplicate ID</td>
+<td>Verify single ID in Elements</td>
+</tr>
+<tr>
+<td>404 on handler</td>
+<td>Name mismatch</td>
+<td>Match <code v-pre>?handler=X</code> to <code v-pre>OnPost/GetX()</code></td>
+</tr>
+<tr>
+<td>Partial not found</td>
+<td>Wrong path</td>
+<td>Verify file exists at expected location</td>
+</tr>
+<tr>
+<td>403 on POST</td>
+<td>Missing antiforgery token</td>
+<td>Add <code v-pre>@Html.AntiForgeryToken()</code></td>
+</tr>
+<tr>
+<td>Nested duplicates</td>
+<td>Wrong swap mode</td>
+<td>Use <code v-pre>outerHTML</code> with wrapper fragments</td>
+</tr>
+<tr>
+<td>Validation not showing</td>
+<td>Retarget missing</td>
+<td>Add <code v-pre>HX-Retarget</code> and <code v-pre>HX-Reswap</code> headers</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<doc-anchor-target id="appendix-fragment-inventory-template">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#appendix-fragment-inventory-template">#</doc-anchor-trigger>
+        <span>Appendix: Fragment Inventory Template</span>
+    </h2>
+</doc-anchor-target>
+<p>Add this comment to the top of your <code v-pre>Pages/Tasks/Index.cshtml</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@*
+    Fragment Inventory
+    ==================
+
+    | Target ID      | Partial                  | Handlers That Return It     |
+    |----------------|--------------------------|------------------------------|
+    | #messages      | Partials/_Messages       | OnGetMessages                |
+    | #task-form     | Partials/_TaskForm       | OnGetEmptyForm, OnPostCreate (invalid) |
+    | #task-list     | Partials/_TaskList       | OnGetList, OnPostCreate (success)      |
+    | #task-details  | Partials/_TaskDetails    | OnGetDetails                 |
+
+    Response Rules:
+    - Non-htmx → Page() or RedirectToPage()
+    - htmx → Fragment(&quot;...&quot;, model)
+    - Validation error → 422 + HX-Retarget to form
+    - Server error → 500 + HX-Retarget to messages
+*@</code></pre>
+</doc-codeblock></div>
+<p>This inventory prevents &quot;where does this fragment come from?&quot; confusion and documents your htmx contracts.</p>
+<p><strong>Proceed to Lab 3: Real-Time Validation and Form UX →</strong></p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -248,7 +1334,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                             <span>
                                                 <span class="block text-xs font-normal text-base-text-muted">Previous</span>
-                                                <span class="block mt-1">Lab 2: Partial Updates with hx get + hx post</span>
+                                                <span class="block mt-1">Lab 2: Partial Updates with hx-​get + hx-​post</span>
                                             </span>
                                         </a>
                                     </div>
@@ -257,7 +1343,7 @@
                                         <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../lab-3-real-time-validation-and-form-ux/">
                                             <span>
                                                 <span class="block text-xs font-normal text-right text-base-text-muted">Next</span>
-                                                <span class="block mt-1">Lab 3: Real Time Validation and Form UX</span>
+                                                <span class="block mt-1">Lab 3: Real-​Time Validation and Form UX</span>
                                             </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         </a>
@@ -321,6 +1407,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Checkpoint: Troubleshooting + Pattern Review", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Checkpoint: Troubleshooting + Pattern Review", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

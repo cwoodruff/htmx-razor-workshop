@@ -7,14 +7,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.820968444528">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821277826144">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
 
     <!-- Primary Meta Tags -->
-    <title>Lab 2: Partial Updates with hx get + hx post</title>
-    <meta name="title" content="Lab 2: Partial Updates with hx get + hx post">
+    <title>Lab 2: Partial Updates with hx-get + hx-post</title>
+    <meta name="title" content="Lab 2: Partial Updates with hx-get + hx-post">
+    <meta name="description" content="Welcome to Lab 2! In this lab, you will transform your traditional server-rendered application into an interactive experience using htmx.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/lab-2-partial-updates-with-hx-get-hx-post/">
@@ -22,21 +23,24 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/lab-2-partial-updates-with-hx-get-hx-post/">
-    <meta property="og:title" content="Lab 2: Partial Updates with hx get + hx post">
+    <meta property="og:title" content="Lab 2: Partial Updates with hx-get + hx-post">
+    <meta property="og:description" content="Welcome to Lab 2! In this lab, you will transform your traditional server-rendered application into an interactive experience using htmx.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/lab-2-partial-updates-with-hx-get-hx-post/">
-    <meta property="twitter:title" content="Lab 2: Partial Updates with hx get + hx post">
+    <meta property="twitter:title" content="Lab 2: Partial Updates with hx-get + hx-post">
+    <meta property="twitter:description" content="Welcome to Lab 2! In this lab, you will transform your traditional server-rendered application into an interactive experience using htmx.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.820968444528" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821277826144" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.820968444528" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821277826144" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821277826144" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -56,7 +60,7 @@
                                 <img class="max-h-10 dark:hidden md:inline-block" src="../images/gear-earth.png">
                                 <img class="max-h-10 hidden dark:inline-block" src="../images/gear-earth-dark.png">
                             </span>
-                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">HTMX Workshop</span>
+                            <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">htmx Workshop</span>
                         </a><span id="retype-branding-label" class="inline-flex mt-1 px-2 py-1 ml-4 text-xs font-medium leading-none items-center rounded-md bg-branding-label-bg text-branding-label-text ring-1 ring-branding-label-border ring-inset md:inline-block">v8</span>
                     </div>
         
@@ -226,9 +230,1649 @@
 <doc-anchor-target id="lab-2-partial-updates-with-hx-get--hx-post" class="break-words">
     <h1>
         <doc-anchor-trigger class="header-anchor-trigger" to="#lab-2-partial-updates-with-hx-get--hx-post">#</doc-anchor-trigger>
-        <span>Lab 2: Partial Updates with hx get + hx post</span>
+        <span>Lab 2: Partial Updates with hx-get + hx-post</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="overview">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#overview">#</doc-anchor-trigger>
+        <span>Overview</span>
+    </h2>
+</doc-anchor-target>
+<p>Welcome to Lab 2! In this lab, you will transform your traditional server-rendered application into an interactive experience using htmx. You&#x27;ll learn the primary htmx workflow: <strong>request a server-rendered fragment and swap it into a target</strong>.</p>
+<p>By the end of this lab, your Tasks page will:</p>
+<ul>
+<li>Submit forms without full page reloads</li>
+<li>Update only the parts of the page that changed</li>
+<li>Show loading indicators during requests</li>
+<li>Handle validation errors gracefully</li>
+</ul>
+<doc-anchor-target id="the-core-htmx-philosophy">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-core-htmx-philosophy">#</doc-anchor-trigger>
+        <span>The Core htmx Philosophy</span>
+    </h3>
+</doc-anchor-target>
+<p>htmx follows a simple but powerful pattern:</p>
+<ol>
+<li><strong>Trigger</strong>: User action (click, submit, keyup, etc.)</li>
+<li><strong>Request</strong>: htmx sends an AJAX request to the server</li>
+<li><strong>Response</strong>: Server returns an HTML fragment (not JSON, not a full page)</li>
+<li><strong>Swap</strong>: htmx replaces a target element with the returned HTML</li>
+</ol>
+<p>This is &quot;HTML over the wire&quot;—the server remains the source of truth for your UI, and htmx handles the transport and DOM manipulation.</p>
+<doc-anchor-target id="why-this-approach">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#why-this-approach">#</doc-anchor-trigger>
+        <span>Why This Approach?</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Traditional SPA</th>
+<th>htmx Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Server returns JSON</td>
+<td>Server returns HTML</td>
+</tr>
+<tr>
+<td>Client renders UI</td>
+<td>Server renders UI</td>
+</tr>
+<tr>
+<td>Complex client state</td>
+<td>Simple request/response</td>
+</tr>
+<tr>
+<td>Heavy JavaScript</td>
+<td>Minimal JavaScript</td>
+</tr>
+<tr>
+<td>Separate API contracts</td>
+<td>HTML is the contract</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<doc-anchor-target id="lab-outcomes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#lab-outcomes">#</doc-anchor-trigger>
+        <span>Lab Outcomes</span>
+    </h2>
+</doc-anchor-target>
+<p>By the end of Lab 2, you will be able to:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Outcome</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Submit via hx-post</strong></td>
+<td>Create form submits without page reload</td>
+</tr>
+<tr>
+<td><strong>Target specific regions</strong></td>
+<td>Update only <code v-pre>#task-list</code> using <code v-pre>hx-target</code></td>
+</tr>
+<tr>
+<td><strong>Swap strategies</strong></td>
+<td>Use <code v-pre>hx-swap=&quot;outerHTML&quot;</code> to replace fragments</td>
+</tr>
+<tr>
+<td><strong>Refresh via hx-get</strong></td>
+<td>Add a button that fetches fresh data</td>
+</tr>
+<tr>
+<td><strong>Pass parameters</strong></td>
+<td>Use <code v-pre>hx-vals</code> to send additional data</td>
+</tr>
+<tr>
+<td><strong>Loading indicators</strong></td>
+<td>Show feedback during requests with <code v-pre>hx-indicator</code></td>
+</tr>
+<tr>
+<td><strong>Error handling</strong></td>
+<td>Use response headers to retarget error responses</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<doc-anchor-target id="prerequisites">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#prerequisites">#</doc-anchor-trigger>
+        <span>Prerequisites</span>
+    </h2>
+</doc-anchor-target>
+<p>Before starting this lab, ensure you have:</p>
+<ul>
+<li><strong>Completed Lab 1</strong> with all verifications passing</li>
+<li><strong>htmx loaded</strong> in your <code v-pre>_Layout.cshtml</code> (we&#x27;ll verify this in Step 0)</li>
+<li><strong>Three partials</strong> with stable IDs: <code v-pre>#messages</code>, <code v-pre>#task-form</code>, <code v-pre>#task-list</code></li>
+<li><strong>Working OnPostCreate handler</strong> that creates tasks</li>
+</ul>
+<hr>
+<doc-anchor-target id="step-0-verify-prerequisites-12-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-0-verify-prerequisites-12-minutes">#</doc-anchor-trigger>
+        <span>Step 0: Verify Prerequisites (1–2 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Before adding htmx attributes, let&#x27;s confirm everything is in place.</p>
+<doc-anchor-target id="01-verify-htmx-is-loaded">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#01-verify-htmx-is-loaded">#</doc-anchor-trigger>
+        <span>0.1 Verify htmx is Loaded</span>
+    </h3>
+</doc-anchor-target>
+<p>Open <code v-pre>Pages/Shared/_Layout.cshtml</code> and ensure htmx is included. If not present, add it before the closing <code v-pre>&lt;/body&gt;</code> tag:</p>
+<p><strong>Add to <code v-pre>_Layout.cshtml</code> (if not already present):</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- htmx library --&gt;
+&lt;script src=&quot;https://unpkg.com/htmx.org@1.9.12&quot;&gt;&lt;/script&gt;</code></pre>
+</doc-codeblock></div>
+<blockquote>
+<p><strong>Note</strong>: You can also use a specific CDN or download htmx locally. The unpkg CDN is convenient for workshops.</p>
+</blockquote>
+<doc-anchor-target id="02-verify-fragment-structure">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#02-verify-fragment-structure">#</doc-anchor-trigger>
+        <span>0.2 Verify Fragment Structure</span>
+    </h3>
+</doc-anchor-target>
+<p>Open your browser&#x27;s Developer Tools and confirm these elements exist in the DOM:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;div id=&quot;task-list&quot;&gt;...&lt;/div&gt;
+&lt;div id=&quot;task-form&quot;&gt;...&lt;/div&gt;
+&lt;div id=&quot;messages&quot;&gt;...&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p>The <code v-pre>id</code> attributes are essential—htmx will target these elements.</p>
+<doc-anchor-target id="03-verify-htmx-is-working">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#03-verify-htmx-is-working">#</doc-anchor-trigger>
+        <span>0.3 Verify htmx is Working</span>
+    </h3>
+</doc-anchor-target>
+<p>Open the browser console and type:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-javascript"><code v-pre class="language-javascript">htmx</code></pre>
+</doc-codeblock></div>
+<p>You should see the htmx object. If you see <code v-pre>undefined</code>, htmx is not loaded correctly.</p>
+<hr>
+<doc-anchor-target id="step-1-add-hx-post-to-the-existing-form-57-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-1-add-hx-post-to-the-existing-form-57-minutes">#</doc-anchor-trigger>
+        <span>Step 1: Add hx-post to the Existing Form (5–7 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Our first htmx enhancement is the simplest possible change: make the create form submit via AJAX instead of a full page reload.</p>
+<doc-anchor-target id="11-understanding-the-change">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#11-understanding-the-change">#</doc-anchor-trigger>
+        <span>1.1 Understanding the Change</span>
+    </h3>
+</doc-anchor-target>
+<p>Currently, when you submit the form:</p>
+<ol>
+<li>Browser sends a POST request</li>
+<li>Server processes and redirects</li>
+<li>Browser loads the entire new page</li>
+</ol>
+<p>With htmx:</p>
+<ol>
+<li>htmx intercepts the submit</li>
+<li>htmx sends an AJAX POST request</li>
+<li>Server returns just the updated fragment</li>
+<li>htmx swaps that fragment into the target</li>
+</ol>
+<doc-anchor-target id="12-update-the-form-partial">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#12-update-the-form-partial">#</doc-anchor-trigger>
+        <span>1.2 Update the Form Partial</span>
+    </h3>
+</doc-anchor-target>
+<p>Edit <code v-pre>Pages/Tasks/Partials/_TaskForm.cshtml</code> to add htmx attributes:</p>
+<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskForm.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+
+@*
+    Task Form Fragment (htmx-enhanced)
+    ===================================
+
+    htmx attributes added:
+    - hx-post: Send POST request to this URL
+    - hx-target: Where to swap the response
+    - hx-swap: How to swap (outerHTML replaces the entire target element)
+
+    On successful submit:
+    - Server returns _TaskList partial
+    - htmx swaps it into #task-list
+    - Only the list updates; form and page stay intact
+*@
+
+&lt;div id=&quot;task-form&quot;&gt;
+    &lt;form method=&quot;post&quot; asp-page-handler=&quot;Create&quot;
+          hx-post=&quot;?handler=Create&quot;
+          hx-target=&quot;#task-list&quot;
+          hx-swap=&quot;outerHTML&quot;&gt;
+        &lt;div class=&quot;mb-3&quot;&gt;
+            &lt;label class=&quot;form-label&quot; for=&quot;title&quot;&gt;Task Title&lt;/label&gt;
+            &lt;input id=&quot;title&quot;
+                   class=&quot;form-control&quot;
+                   asp-for=&quot;Input.Title&quot;
+                   placeholder=&quot;e.g., Add htmx to Razor Pages&quot; /&gt;
+            &lt;span class=&quot;text-danger&quot; asp-validation-for=&quot;Input.Title&quot;&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button class=&quot;btn btn-primary&quot; type=&quot;submit&quot;&gt;Add Task&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="13-understanding-the-htmx-attributes">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#13-understanding-the-htmx-attributes">#</doc-anchor-trigger>
+        <span>1.3 Understanding the htmx Attributes</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>hx-post</code></td>
+<td><code v-pre>&quot;?handler=Create&quot;</code></td>
+<td>Send a POST request to this URL when form submits</td>
+</tr>
+<tr>
+<td><code v-pre>hx-target</code></td>
+<td><code v-pre>&quot;#task-list&quot;</code></td>
+<td>Put the response into the element with id=&quot;task-list&quot;</td>
+</tr>
+<tr>
+<td><code v-pre>hx-swap</code></td>
+<td><code v-pre>&quot;outerHTML&quot;</code></td>
+<td>Replace the entire target element (not just its contents)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Why keep <code v-pre>method=&quot;post&quot;</code> and <code v-pre>asp-page-handler</code>?</strong></p>
+<p>These provide <strong>progressive enhancement</strong>. If JavaScript is disabled or htmx fails to load, the form still works as a traditional form. The htmx attributes layer behavior on top without breaking the fallback.</p>
+<doc-anchor-target id="14-why-hx-swapouterhtml">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#14-why-hx-swapouterhtml">#</doc-anchor-trigger>
+        <span>1.4 Why <code v-pre>hx-swap=&quot;outerHTML&quot;</code>?</span>
+    </h3>
+</doc-anchor-target>
+<p>There are several swap strategies:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>innerHTML</code></td>
+<td>Replace target&#x27;s children only</td>
+</tr>
+<tr>
+<td><code v-pre>outerHTML</code></td>
+<td>Replace the entire target element</td>
+</tr>
+<tr>
+<td><code v-pre>beforebegin</code></td>
+<td>Insert before the target</td>
+</tr>
+<tr>
+<td><code v-pre>afterend</code></td>
+<td>Insert after the target</td>
+</tr>
+<tr>
+<td><code v-pre>beforeend</code></td>
+<td>Append inside target</td>
+</tr>
+<tr>
+<td><code v-pre>afterbegin</code></td>
+<td>Prepend inside target</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We use <code v-pre>outerHTML</code> because our partials return the complete wrapper element:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Server returns this: --&gt;
+&lt;div id=&quot;task-list&quot;&gt;
+    &lt;ul class=&quot;list-group&quot;&gt;...&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;!-- htmx replaces the entire #task-list element --&gt;</code></pre>
+</doc-codeblock></div>
+<p>If we used <code v-pre>innerHTML</code>, htmx would try to put <code v-pre>&lt;div id=&quot;task-list&quot;&gt;</code> inside the existing <code v-pre>&lt;div id=&quot;task-list&quot;&gt;</code>, creating nested duplicates.</p>
+<hr>
+<doc-anchor-target id="step-2-convert-onpostcreate-to-return-fragment-for-htmx-1012-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-2-convert-onpostcreate-to-return-fragment-for-htmx-1012-minutes">#</doc-anchor-trigger>
+        <span>Step 2: Convert OnPostCreate to Return Fragment for htmx (10–12 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Now we need to update the server to return just the list fragment (instead of redirecting) when htmx makes the request.</p>
+<doc-anchor-target id="21-the-strategy-detect-htmx-requests">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#21-the-strategy-detect-htmx-requests">#</doc-anchor-trigger>
+        <span>2.1 The Strategy: Detect htmx Requests</span>
+    </h3>
+</doc-anchor-target>
+<p>htmx sends a header with every request:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">HX-Request: true</code></pre>
+</doc-codeblock></div>
+<p>We&#x27;ll check for this header to decide how to respond:</p>
+<ul>
+<li><strong>htmx request</strong>: Return the partial fragment</li>
+<li><strong>Normal request</strong>: Redirect (traditional PRG pattern)</li>
+</ul>
+<doc-anchor-target id="22-add-helper-methods-to-the-pagemodel">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#22-add-helper-methods-to-the-pagemodel">#</doc-anchor-trigger>
+        <span>2.2 Add Helper Methods to the PageModel</span>
+    </h3>
+</doc-anchor-target>
+<p>Update <code v-pre>Pages/Tasks/Index.cshtml.cs</code> with these additions:</p>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using RazorHtmxWorkshop.Data;
+using RazorHtmxWorkshop.Models;
+
+namespace RazorHtmxWorkshop.Pages.Tasks;
+
+public class IndexModel : PageModel
+{
+    public IReadOnlyList&lt;TaskItem&gt; Tasks { get; private set; } = Array.Empty&lt;TaskItem&gt;();
+
+    [BindProperty]
+    public NewTaskInput Input { get; set; } = new();
+
+    [TempData]
+    public string? FlashMessage { get; set; }
+
+    /// &lt;summary&gt;
+    /// Checks if the current request was made by htmx.
+    /// htmx sends &quot;HX-Request: true&quot; header with every request.
+    /// &lt;/summary&gt;
+    private bool IsHtmx() =&gt;
+        Request.Headers.TryGetValue(&quot;HX-Request&quot;, out var value) &amp;&amp; value == &quot;true&quot;;
+
+    /// &lt;summary&gt;
+    /// Returns a partial view result for fragment responses.
+    /// This helper creates a PartialViewResult with the correct ViewData context.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;partialName&quot;&gt;Path to the partial view&lt;/param&gt;
+    /// &lt;param name=&quot;model&quot;&gt;Model to pass to the partial&lt;/param&gt;
+    private PartialViewResult Fragment(string partialName, object model) =&gt;
+        new()
+        {
+            ViewName = partialName,
+            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+        };
+
+    public void OnGet()
+    {
+        Tasks = InMemoryTaskStore.All();
+    }
+
+    public IActionResult OnPostCreate()
+    {
+        // Validation
+        if (string.IsNullOrWhiteSpace(Input.Title))
+        {
+            ModelState.AddModelError(nameof(Input.Title), &quot;Title is required.&quot;);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            Tasks = InMemoryTaskStore.All();
+
+            if (IsHtmx())
+            {
+                // For htmx: return the form fragment with validation errors
+                // Use response headers to retarget the swap to the form
+                Response.StatusCode = 422; // Unprocessable Entity
+                Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
+                Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
+                return Fragment(&quot;Partials/_TaskForm&quot;, this);
+            }
+
+            return Page();
+        }
+
+        // Create the task
+        InMemoryTaskStore.Add(Input.Title);
+        Tasks = InMemoryTaskStore.All();
+
+        if (IsHtmx())
+        {
+            // For htmx: return just the updated list fragment
+            return Fragment(&quot;Partials/_TaskList&quot;, Tasks);
+        }
+
+        // For traditional requests: redirect (PRG pattern)
+        FlashMessage = &quot;Task added.&quot;;
+        return RedirectToPage();
+    }
+
+    public class NewTaskInput
+    {
+        public string Title { get; set; } = &quot;&quot;;
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="23-understanding-the-changes">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#23-understanding-the-changes">#</doc-anchor-trigger>
+        <span>2.3 Understanding the Changes</span>
+    </h3>
+</doc-anchor-target>
+<doc-anchor-target id="the-ishtmx-helper">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-ishtmx-helper">#</doc-anchor-trigger>
+        <span>The <code v-pre>IsHtmx()</code> Helper</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">private bool IsHtmx() =&gt;
+    Request.Headers.TryGetValue(&quot;HX-Request&quot;, out var value) &amp;&amp; value == &quot;true&quot;;</code></pre>
+</doc-codeblock></div>
+<p>This checks for the <code v-pre>HX-Request</code> header that htmx sends with every request. This is the standard way to detect htmx requests.</p>
+<doc-anchor-target id="the-fragment-helper">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-fragment-helper">#</doc-anchor-trigger>
+        <span>The <code v-pre>Fragment()</code> Helper</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">private PartialViewResult Fragment(string partialName, object model) =&gt;
+    new()
+    {
+        ViewName = partialName,
+        ViewData = new ViewDataDictionary(ViewData) { Model = model }
+    };</code></pre>
+</doc-codeblock></div>
+<p>This creates a <code v-pre>PartialViewResult</code> that renders just the partial view, not the full page. The <code v-pre>ViewDataDictionary</code> preserves the context (like ModelState) needed for validation messages.</p>
+<doc-anchor-target id="the-success-path">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-success-path">#</doc-anchor-trigger>
+        <span>The Success Path</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">if (IsHtmx())
+{
+    return Fragment(&quot;Partials/_TaskList&quot;, Tasks);
+}</code></pre>
+</doc-codeblock></div>
+<p>When htmx submits successfully, we return just the <code v-pre>_TaskList</code> partial. htmx swaps this into <code v-pre>#task-list</code> as specified by <code v-pre>hx-target</code>.</p>
+<doc-anchor-target id="the-validation-error-path">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-validation-error-path">#</doc-anchor-trigger>
+        <span>The Validation Error Path</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">if (IsHtmx())
+{
+    Response.StatusCode = 422;
+    Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
+    Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
+    return Fragment(&quot;Partials/_TaskForm&quot;, this);
+}</code></pre>
+</doc-codeblock></div>
+<p>This is more complex. When validation fails:</p>
+<ol>
+<li><strong>Status 422</strong>: Signals &quot;validation error&quot; (Unprocessable Entity)</li>
+<li><strong>HX-Retarget</strong>: Overrides the original <code v-pre>hx-target</code>; swap into <code v-pre>#task-form</code> instead</li>
+<li><strong>HX-Reswap</strong>: Specifies the swap strategy for this response</li>
+<li><strong>Return form</strong>: The form fragment includes validation error messages</li>
+</ol>
+<doc-anchor-target id="24-why-retargeting">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#24-why-retargeting">#</doc-anchor-trigger>
+        <span>2.4 Why Retargeting?</span>
+    </h3>
+</doc-anchor-target>
+<p>The form&#x27;s <code v-pre>hx-target</code> is <code v-pre>#task-list</code> (for successful creates). But on validation failure, we want to update the form instead (to show errors). Response headers let us override the target per-response:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Target</th>
+<th>Response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Success</td>
+<td><code v-pre>#task-list</code></td>
+<td><code v-pre>_TaskList</code> partial</td>
+</tr>
+<tr>
+<td>Validation error</td>
+<td><code v-pre>#task-form</code> (retargeted)</td>
+<td><code v-pre>_TaskForm</code> partial with errors</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="25-test-the-implementation">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#25-test-the-implementation">#</doc-anchor-trigger>
+        <span>2.5 Test the Implementation</span>
+    </h3>
+</doc-anchor-target>
+<ol>
+<li><strong>Build and run</strong> the application</li>
+<li><strong>Navigate</strong> to <code v-pre>/Tasks</code></li>
+<li><strong>Open Network tab</strong> in Developer Tools</li>
+<li><strong>Submit a task</strong> with a valid title</li>
+<li><strong>Observe</strong>:
+<ul>
+<li>Request includes <code v-pre>HX-Request: true</code> header</li>
+<li>Response is just the list HTML (not a full page)</li>
+<li>Only <code v-pre>#task-list</code> updates; no page flash</li>
+</ul>
+</li>
+<li><strong>Submit empty form</strong></li>
+<li><strong>Observe</strong>:
+<ul>
+<li>Response has status 422</li>
+<li>Form updates with validation error</li>
+<li>List remains unchanged</li>
+</ul>
+</li>
+</ol>
+<hr>
+<doc-anchor-target id="step-3-add-a-refresh-list-button-using-hx-get-68-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-3-add-a-refresh-list-button-using-hx-get-68-minutes">#</doc-anchor-trigger>
+        <span>Step 3: Add a &quot;Refresh List&quot; Button Using hx-get (6–8 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Now let&#x27;s add a button that fetches fresh data without submitting a form. This demonstrates <code v-pre>hx-get</code> for read operations.</p>
+<doc-anchor-target id="31-add-a-handler-for-list-refresh">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#31-add-a-handler-for-list-refresh">#</doc-anchor-trigger>
+        <span>3.1 Add a Handler for List Refresh</span>
+    </h3>
+</doc-anchor-target>
+<p>Add this handler to <code v-pre>Pages/Tasks/Index.cshtml.cs</code>:</p>
+<p><strong>Add to <code v-pre>Index.cshtml.cs</code>:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+/// Handles GET requests to /Tasks?handler=List.
+/// Returns just the task list fragment for htmx to swap.
+///
+/// Optional parameter 'take' limits the number of tasks returned.
+/// &lt;/summary&gt;
+/// &lt;param name=&quot;take&quot;&gt;Optional: limit results to this many tasks&lt;/param&gt;
+public IActionResult OnGetList(int? take)
+{
+    var tasks = InMemoryTaskStore.All();
+
+    if (take is &gt; 0)
+    {
+        tasks = tasks.Take(take.Value).ToList();
+    }
+
+    return Fragment(&quot;Partials/_TaskList&quot;, tasks);
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="32-add-the-refresh-button-to-the-page">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#32-add-the-refresh-button-to-the-page">#</doc-anchor-trigger>
+        <span>3.2 Add the Refresh Button to the Page</span>
+    </h3>
+</doc-anchor-target>
+<p>Update <code v-pre>Pages/Tasks/Index.cshtml</code> to add a refresh button near the list:</p>
+<p><strong>Update <code v-pre>Pages/Tasks/Index.cshtml</code>:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@page
+@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+@{
+    ViewData[&quot;Title&quot;] = &quot;Tasks&quot;;
+}
+
+&lt;h1&gt;Tasks&lt;/h1&gt;
+
+&lt;partial name=&quot;Partials/_Messages&quot; model=&quot;Model.FlashMessage&quot; /&gt;
+
+&lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-md-5&quot;&gt;
+        &lt;h2 class=&quot;h5&quot;&gt;Add a Task&lt;/h2&gt;
+        &lt;partial name=&quot;Partials/_TaskForm&quot; model=&quot;Model&quot; /&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;col-md-7&quot;&gt;
+        &lt;div class=&quot;d-flex justify-content-between align-items-center mb-2&quot;&gt;
+            &lt;h2 class=&quot;h5 mb-0&quot;&gt;Current Tasks&lt;/h2&gt;
+
+            @* Refresh button using hx-get *@
+            &lt;button type=&quot;button&quot;
+                    class=&quot;btn btn-sm btn-outline-secondary&quot;
+                    hx-get=&quot;?handler=List&quot;
+                    hx-target=&quot;#task-list&quot;
+                    hx-swap=&quot;outerHTML&quot;&gt;
+                Refresh List
+            &lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;partial name=&quot;Partials/_TaskList&quot; model=&quot;Model.Tasks&quot; /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+@section Scripts {
+    &lt;partial name=&quot;_ValidationScriptsPartial&quot; /&gt;
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="33-understanding-hx-get">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#33-understanding-hx-get">#</doc-anchor-trigger>
+        <span>3.3 Understanding hx-get</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>hx-get</code></td>
+<td><code v-pre>&quot;?handler=List&quot;</code></td>
+<td>Send GET request to this URL when clicked</td>
+</tr>
+<tr>
+<td><code v-pre>hx-target</code></td>
+<td><code v-pre>&quot;#task-list&quot;</code></td>
+<td>Put the response into #task-list</td>
+</tr>
+<tr>
+<td><code v-pre>hx-swap</code></td>
+<td><code v-pre>&quot;outerHTML&quot;</code></td>
+<td>Replace the entire element</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This is the canonical &quot;fetch and swap&quot; pattern:</p>
+<ol>
+<li>User clicks the button</li>
+<li>htmx sends <code v-pre>GET /Tasks?handler=List</code></li>
+<li>Server returns <code v-pre>_TaskList</code> partial</li>
+<li>htmx replaces <code v-pre>#task-list</code> with the response</li>
+</ol>
+<doc-anchor-target id="34-test-the-refresh-button">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#34-test-the-refresh-button">#</doc-anchor-trigger>
+        <span>3.4 Test the Refresh Button</span>
+    </h3>
+</doc-anchor-target>
+<ol>
+<li><strong>Add a few tasks</strong> using the form</li>
+<li><strong>Click &quot;Refresh List&quot;</strong></li>
+<li><strong>Observe</strong> in Network tab:
+<ul>
+<li>GET request to <code v-pre>?handler=List</code></li>
+<li>Response is just the list HTML</li>
+<li>List updates without page reload</li>
+</ul>
+</li>
+</ol>
+<hr>
+<doc-anchor-target id="step-4-introduce-hx-vals-for-simple-parameters-57-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-4-introduce-hx-vals-for-simple-parameters-57-minutes">#</doc-anchor-trigger>
+        <span>Step 4: Introduce hx-vals for Simple Parameters (5–7 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Sometimes you need to pass additional data with a request without building a form. The <code v-pre>hx-vals</code> attribute lets you include JSON data in requests.</p>
+<doc-anchor-target id="41-update-the-refresh-button-with-hx-vals">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#41-update-the-refresh-button-with-hx-vals">#</doc-anchor-trigger>
+        <span>4.1 Update the Refresh Button with hx-vals</span>
+    </h3>
+</doc-anchor-target>
+<p>Let&#x27;s add a button that shows only the top 5 tasks:</p>
+<p><strong>Update the buttons section in <code v-pre>Index.cshtml</code>:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;div class=&quot;d-flex justify-content-between align-items-center mb-2&quot;&gt;
+    &lt;h2 class=&quot;h5 mb-0&quot;&gt;Current Tasks&lt;/h2&gt;
+
+    &lt;div class=&quot;btn-group btn-group-sm&quot;&gt;
+        @* Refresh all tasks *@
+        &lt;button type=&quot;button&quot;
+                class=&quot;btn btn-outline-secondary&quot;
+                hx-get=&quot;?handler=List&quot;
+                hx-target=&quot;#task-list&quot;
+                hx-swap=&quot;outerHTML&quot;&gt;
+            Refresh All
+        &lt;/button&gt;
+
+        @* Refresh with limit using hx-vals *@
+        &lt;button type=&quot;button&quot;
+                class=&quot;btn btn-outline-secondary&quot;
+                hx-get=&quot;?handler=List&quot;
+                hx-vals='{&quot;take&quot;: 5}'
+                hx-target=&quot;#task-list&quot;
+                hx-swap=&quot;outerHTML&quot;&gt;
+            Top 5
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="42-understanding-hx-vals">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#42-understanding-hx-vals">#</doc-anchor-trigger>
+        <span>4.2 Understanding hx-vals</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">hx-vals='{&quot;take&quot;: 5}'</code></pre>
+</doc-codeblock></div>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Format</strong></td>
+<td>JSON object as a string</td>
+</tr>
+<tr>
+<td><strong>Quotes</strong></td>
+<td>Use single quotes for the attribute, double quotes inside JSON</td>
+</tr>
+<tr>
+<td><strong>Result</strong></td>
+<td>Adds <code v-pre>?take=5</code> to the request URL (for GET) or form data (for POST)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The <code v-pre>OnGetList(int? take)</code> handler already accepts this parameter, so the server will limit results to 5 tasks.</p>
+<doc-anchor-target id="43-alternative-hidden-inputs">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#43-alternative-hidden-inputs">#</doc-anchor-trigger>
+        <span>4.3 Alternative: Hidden Inputs</span>
+    </h3>
+</doc-anchor-target>
+<p>For more complex scenarios or when you want the values in the DOM, you can use hidden inputs:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;form hx-get=&quot;?handler=List&quot; hx-target=&quot;#task-list&quot; hx-swap=&quot;outerHTML&quot;&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;take&quot; value=&quot;5&quot; /&gt;
+    &lt;button type=&quot;submit&quot; class=&quot;btn btn-outline-secondary&quot;&gt;Top 5&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+</doc-codeblock></div>
+<p>Both approaches work; <code v-pre>hx-vals</code> is more concise for simple cases.</p>
+<doc-anchor-target id="44-test-hx-vals">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#44-test-hx-vals">#</doc-anchor-trigger>
+        <span>4.4 Test hx-vals</span>
+    </h3>
+</doc-anchor-target>
+<ol>
+<li><strong>Add more than 5 tasks</strong> (or just a few to see the difference)</li>
+<li><strong>Click &quot;Top 5&quot;</strong></li>
+<li><strong>Check Network tab</strong>: Request URL should include <code v-pre>?handler=List&amp;take=5</code></li>
+<li><strong>Click &quot;Refresh All&quot;</strong>: Shows all tasks (no <code v-pre>take</code> parameter)</li>
+</ol>
+<hr>
+<doc-anchor-target id="step-5-add-loading-indicator--error-handling-1012-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-5-add-loading-indicator--error-handling-1012-minutes">#</doc-anchor-trigger>
+        <span>Step 5: Add Loading Indicator + Error Handling (10–12 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Real applications need user feedback during requests and graceful error handling. Let&#x27;s add both.</p>
+<doc-anchor-target id="51-add-a-loading-indicator-element">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#51-add-a-loading-indicator-element">#</doc-anchor-trigger>
+        <span>5.1 Add a Loading Indicator Element</span>
+    </h3>
+</doc-anchor-target>
+<p>First, add a spinner element to the page. Update <code v-pre>Pages/Tasks/Index.cshtml</code>:</p>
+<p><strong>Update the button section in <code v-pre>Index.cshtml</code>:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;div class=&quot;d-flex justify-content-between align-items-center mb-2&quot;&gt;
+    &lt;h2 class=&quot;h5 mb-0&quot;&gt;Current Tasks&lt;/h2&gt;
+
+    &lt;div class=&quot;d-flex align-items-center gap-2&quot;&gt;
+        @* Loading indicator - hidden by default, shown during htmx requests *@
+        &lt;div id=&quot;task-loading&quot;
+             class=&quot;htmx-indicator spinner-border spinner-border-sm text-secondary&quot;
+             role=&quot;status&quot;&gt;
+            &lt;span class=&quot;visually-hidden&quot;&gt;Loading...&lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;btn-group btn-group-sm&quot;&gt;
+            &lt;button type=&quot;button&quot;
+                    class=&quot;btn btn-outline-secondary&quot;
+                    hx-get=&quot;?handler=List&quot;
+                    hx-target=&quot;#task-list&quot;
+                    hx-swap=&quot;outerHTML&quot;
+                    hx-indicator=&quot;#task-loading&quot;&gt;
+                Refresh All
+            &lt;/button&gt;
+
+            &lt;button type=&quot;button&quot;
+                    class=&quot;btn btn-outline-secondary&quot;
+                    hx-get=&quot;?handler=List&quot;
+                    hx-vals='{&quot;take&quot;: 5}'
+                    hx-target=&quot;#task-list&quot;
+                    hx-swap=&quot;outerHTML&quot;
+                    hx-indicator=&quot;#task-loading&quot;&gt;
+                Top 5
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="52-update-the-form-with-indicator">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#52-update-the-form-with-indicator">#</doc-anchor-trigger>
+        <span>5.2 Update the Form with Indicator</span>
+    </h3>
+</doc-anchor-target>
+<p>Also update the form partial to use the indicator:</p>
+<p><strong>Update <code v-pre>Pages/Tasks/Partials/_TaskForm.cshtml</code>:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+
+&lt;div id=&quot;task-form&quot;&gt;
+    &lt;form method=&quot;post&quot; asp-page-handler=&quot;Create&quot;
+          hx-post=&quot;?handler=Create&quot;
+          hx-target=&quot;#task-list&quot;
+          hx-swap=&quot;outerHTML&quot;
+          hx-indicator=&quot;#task-loading&quot;&gt;
+        &lt;div class=&quot;mb-3&quot;&gt;
+            &lt;label class=&quot;form-label&quot; for=&quot;title&quot;&gt;Task Title&lt;/label&gt;
+            &lt;input id=&quot;title&quot;
+                   class=&quot;form-control&quot;
+                   asp-for=&quot;Input.Title&quot;
+                   placeholder=&quot;e.g., Add htmx to Razor Pages&quot; /&gt;
+            &lt;span class=&quot;text-danger&quot; asp-validation-for=&quot;Input.Title&quot;&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button class=&quot;btn btn-primary&quot; type=&quot;submit&quot;&gt;Add Task&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="53-add-css-for-the-indicator">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#53-add-css-for-the-indicator">#</doc-anchor-trigger>
+        <span>5.3 Add CSS for the Indicator</span>
+    </h3>
+</doc-anchor-target>
+<p>htmx adds/removes the class <code v-pre>htmx-request</code> on elements during requests. We need CSS to show/hide the indicator.</p>
+<p>Add to <code v-pre>wwwroot/css/site.css</code>:</p>
+<p><strong>Add to <code v-pre>site.css</code>:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-css"><code v-pre class="language-css">/* htmx loading indicator styles */
+
+/* Hide indicator by default */
+.htmx-indicator {
+    display: none;
+}
+
+/* Show indicator when htmx request is in progress */
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+    display: inline-block;
+}
+
+/* Optional: Add a subtle opacity transition to the target during loading */
+.htmx-request #task-list {
+    opacity: 0.5;
+    transition: opacity 200ms ease-in-out;
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="54-understanding-hx-indicator">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#54-understanding-hx-indicator">#</doc-anchor-trigger>
+        <span>5.4 Understanding hx-indicator</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>hx-indicator</code></td>
+<td>CSS selector for the indicator element</td>
+</tr>
+<tr>
+<td><code v-pre>htmx-indicator</code> class</td>
+<td>Added to indicator elements; CSS hides it by default</td>
+</tr>
+<tr>
+<td><code v-pre>htmx-request</code> class</td>
+<td>Added to the triggering element during requests</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>htmx&#x27;s built-in behavior:</p>
+<ol>
+<li>Request starts → adds <code v-pre>htmx-request</code> class to the element with <code v-pre>hx-*</code> attributes</li>
+<li>CSS rule <code v-pre>.htmx-request .htmx-indicator</code> shows the indicator</li>
+<li>Request ends → removes <code v-pre>htmx-request</code> class</li>
+<li>Indicator hides again</li>
+</ol>
+<doc-anchor-target id="55-create-an-error-fragment">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#55-create-an-error-fragment">#</doc-anchor-trigger>
+        <span>5.5 Create an Error Fragment</span>
+    </h3>
+</doc-anchor-target>
+<p>Create a partial for displaying errors:</p>
+<p><strong>File: <code v-pre>Pages/Tasks/Partials/_Error.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model string
+
+@*
+    Error Fragment
+    ==============
+
+    Purpose:
+    - Displays error messages in a consistent format
+    - Used for server errors, not found conditions, etc.
+
+    Model:
+    - string message - The error message to display
+*@
+
+&lt;div class=&quot;alert alert-danger&quot; role=&quot;alert&quot;&gt;
+    &lt;strong&gt;Error:&lt;/strong&gt; @Model
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="56-add-error-handling-to-onpostcreate">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#56-add-error-handling-to-onpostcreate">#</doc-anchor-trigger>
+        <span>5.6 Add Error Handling to OnPostCreate</span>
+    </h3>
+</doc-anchor-target>
+<p>Update the <code v-pre>OnPostCreate</code> method to demonstrate error handling:</p>
+<p><strong>Update <code v-pre>OnPostCreate</code> in <code v-pre>Index.cshtml.cs</code>:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public IActionResult OnPostCreate()
+{
+    // Validation
+    if (string.IsNullOrWhiteSpace(Input.Title))
+    {
+        ModelState.AddModelError(nameof(Input.Title), &quot;Title is required.&quot;);
+    }
+
+    if (!ModelState.IsValid)
+    {
+        Tasks = InMemoryTaskStore.All();
+
+        if (IsHtmx())
+        {
+            Response.StatusCode = 422;
+            Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
+            Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
+            return Fragment(&quot;Partials/_TaskForm&quot;, this);
+        }
+
+        return Page();
+    }
+
+    // Simulated error condition for demonstration
+    // Type &quot;boom&quot; as the title to trigger this error
+    if (Input.Title.Trim().Equals(&quot;boom&quot;, StringComparison.OrdinalIgnoreCase))
+    {
+        if (IsHtmx())
+        {
+            Response.StatusCode = 500;
+            Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
+            Response.Headers[&quot;HX-Reswap&quot;] = &quot;innerHTML&quot;;
+            return Fragment(&quot;Partials/_Error&quot;,
+                &quot;Simulated server error. Try a different title (anything except 'boom').&quot;);
+        }
+
+        throw new InvalidOperationException(&quot;Simulated server error.&quot;);
+    }
+
+    // Create the task
+    InMemoryTaskStore.Add(Input.Title);
+    Tasks = InMemoryTaskStore.All();
+
+    if (IsHtmx())
+    {
+        return Fragment(&quot;Partials/_TaskList&quot;, Tasks);
+    }
+
+    FlashMessage = &quot;Task added.&quot;;
+    return RedirectToPage();
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="57-understanding-error-handling">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#57-understanding-error-handling">#</doc-anchor-trigger>
+        <span>5.7 Understanding Error Handling</span>
+    </h3>
+</doc-anchor-target>
+<p>The error handling demonstrates several htmx patterns:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Status</th>
+<th>Retarget</th>
+<th>Fragment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Success</td>
+<td>200</td>
+<td>(none)</td>
+<td><code v-pre>_TaskList</code> → <code v-pre>#task-list</code></td>
+</tr>
+<tr>
+<td>Validation error</td>
+<td>422</td>
+<td><code v-pre>#task-form</code></td>
+<td><code v-pre>_TaskForm</code> with errors</td>
+</tr>
+<tr>
+<td>Server error</td>
+<td>500</td>
+<td><code v-pre>#messages</code></td>
+<td><code v-pre>_Error</code> message</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Key Points:</strong></p>
+<ol>
+<li><strong>htmx treats non-2xx responses as valid</strong>: You can still return HTML and swap it</li>
+<li><strong>HX-Retarget changes where content goes</strong>: Lets you route errors to a different location</li>
+<li><strong>HX-Reswap changes how content is swapped</strong>: <code v-pre>innerHTML</code> here because we want to put content inside <code v-pre>#messages</code>, not replace it</li>
+</ol>
+<doc-anchor-target id="58-test-everything">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#58-test-everything">#</doc-anchor-trigger>
+        <span>5.8 Test Everything</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Test the loading indicator:</strong></p>
+<ol>
+<li>Open Network tab, enable throttling (Slow 3G)</li>
+<li>Click refresh or submit a task</li>
+<li>Observe the spinner appears during the request</li>
+</ol>
+<p><strong>Test validation errors:</strong></p>
+<ol>
+<li>Submit an empty form</li>
+<li>Observe form updates with error message</li>
+<li>List remains unchanged</li>
+</ol>
+<p><strong>Test server error:</strong></p>
+<ol>
+<li>Type &quot;boom&quot; as the task title</li>
+<li>Submit the form</li>
+<li>Observe error message appears in the messages area</li>
+</ol>
+<hr>
+<doc-anchor-target id="step-6-clear-the-form-after-success-optional-enhancement">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-6-clear-the-form-after-success-optional-enhancement">#</doc-anchor-trigger>
+        <span>Step 6: Clear the Form After Success (Optional Enhancement)</span>
+    </h2>
+</doc-anchor-target>
+<p>Currently, after successfully adding a task, the form retains the entered value. Let&#x27;s add a mechanism to clear it.</p>
+<doc-anchor-target id="61-the-strategy-use-hx-trigger">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#61-the-strategy-use-hx-trigger">#</doc-anchor-trigger>
+        <span>6.1 The Strategy: Use HX-Trigger</span>
+    </h3>
+</doc-anchor-target>
+<p>htmx can fire custom events that other elements listen to. We&#x27;ll:</p>
+<ol>
+<li>Server sends <code v-pre>HX-Trigger: clearForm</code> header on success</li>
+<li>An invisible listener element catches this and refreshes the form</li>
+</ol>
+<doc-anchor-target id="62-add-a-handler-to-return-empty-form">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#62-add-a-handler-to-return-empty-form">#</doc-anchor-trigger>
+        <span>6.2 Add a Handler to Return Empty Form</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Add to <code v-pre>Index.cshtml.cs</code>:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+/// Returns an empty form fragment.
+/// Called via htmx trigger after successful task creation.
+/// &lt;/summary&gt;
+public IActionResult OnGetEmptyForm()
+{
+    Input = new NewTaskInput();
+    ModelState.Clear();
+    return Fragment(&quot;Partials/_TaskForm&quot;, this);
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="63-add-a-listener-element-to-the-page">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#63-add-a-listener-element-to-the-page">#</doc-anchor-trigger>
+        <span>6.3 Add a Listener Element to the Page</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Add to <code v-pre>Index.cshtml</code> (at the bottom, before <code v-pre>@section Scripts</code>):</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@*
+    Invisible listeners for htmx events
+    These elements respond to HX-Trigger headers from the server
+*@
+&lt;div hx-get=&quot;?handler=EmptyForm&quot;
+     hx-trigger=&quot;clearForm from:body&quot;
+     hx-target=&quot;#task-form&quot;
+     hx-swap=&quot;outerHTML&quot;&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="64-trigger-the-event-from-onpostcreate">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#64-trigger-the-event-from-onpostcreate">#</doc-anchor-trigger>
+        <span>6.4 Trigger the Event from OnPostCreate</span>
+    </h3>
+</doc-anchor-target>
+<p>Update the success path in <code v-pre>OnPostCreate</code>:</p>
+<p><strong>Update success path in <code v-pre>OnPostCreate</code>:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">if (IsHtmx())
+{
+    // Trigger form clear after successful creation
+    Response.Headers[&quot;HX-Trigger&quot;] = &quot;clearForm&quot;;
+    return Fragment(&quot;Partials/_TaskList&quot;, Tasks);
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="65-understanding-hx-trigger">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#65-understanding-hx-trigger">#</doc-anchor-trigger>
+        <span>6.5 Understanding HX-Trigger</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>HX-Trigger</code> header</td>
+<td>Tells htmx to fire a custom event</td>
+</tr>
+<tr>
+<td><code v-pre>hx-trigger=&quot;clearForm from:body&quot;</code></td>
+<td>Listen for &quot;clearForm&quot; event on body</td>
+</tr>
+<tr>
+<td>Flow</td>
+<td>Response includes header → htmx fires event → listener catches it → makes new request</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This pattern keeps your markup clean—the form itself doesn&#x27;t need to know about clearing. The server controls the behavior through headers.</p>
+<hr>
+<doc-anchor-target id="verification-checklist">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#verification-checklist">#</doc-anchor-trigger>
+        <span>Verification Checklist</span>
+    </h2>
+</doc-anchor-target>
+<p>Before moving to Lab 3, verify these behaviors:</p>
+<doc-anchor-target id="form-submission">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#form-submission">#</doc-anchor-trigger>
+        <span>Form Submission</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Submit with valid title updates only <code v-pre>#task-list</code> (no page reload)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Submit with empty title shows error in <code v-pre>#task-form</code> (retargeted)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Submit with &quot;boom&quot; shows error in <code v-pre>#messages</code> (retargeted)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Form clears after successful submit (if you implemented Step 6)</li>
+</ul>
+<doc-anchor-target id="refresh-buttons">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#refresh-buttons">#</doc-anchor-trigger>
+        <span>Refresh Buttons</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> &quot;Refresh All&quot; fetches and displays all tasks</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> &quot;Top 5&quot; fetches with <code v-pre>take=5</code> parameter</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Both buttons show loading indicator during request</li>
+</ul>
+<doc-anchor-target id="network-verification">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#network-verification">#</doc-anchor-trigger>
+        <span>Network Verification</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Requests include <code v-pre>HX-Request: true</code> header</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Responses are HTML fragments (not full pages)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Validation errors return status 422</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Server errors return status 500</li>
+</ul>
+<doc-anchor-target id="dom-verification">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#dom-verification">#</doc-anchor-trigger>
+        <span>DOM Verification</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> <code v-pre>#task-list</code> exists and updates correctly</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> <code v-pre>#task-form</code> exists and shows validation errors</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> <code v-pre>#messages</code> exists and shows server errors</li>
+</ul>
+<hr>
+<doc-anchor-target id="key-takeaways">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#key-takeaways">#</doc-anchor-trigger>
+        <span>Key Takeaways</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="the-htmx-mental-model">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-htmx-mental-model">#</doc-anchor-trigger>
+        <span>The htmx Mental Model</span>
+    </h3>
+</doc-anchor-target>
+<ol>
+<li><strong>HTML is the response format</strong>: Server returns fragments, not JSON</li>
+<li><strong>Targets are CSS selectors</strong>: <code v-pre>hx-target=&quot;#task-list&quot;</code> finds the element by ID</li>
+<li><strong>Swap strategies matter</strong>: <code v-pre>outerHTML</code> replaces, <code v-pre>innerHTML</code> fills</li>
+<li><strong>Headers control behavior</strong>: Response headers can override client attributes</li>
+</ol>
+<doc-anchor-target id="patterns-youve-learned">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#patterns-youve-learned">#</doc-anchor-trigger>
+        <span>Patterns You&#x27;ve Learned</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>hx-post</code> with <code v-pre>hx-target</code></td>
+<td>Submit form, update specific region</td>
+</tr>
+<tr>
+<td><code v-pre>hx-get</code> for refresh</td>
+<td>Fetch fresh data on demand</td>
+</tr>
+<tr>
+<td><code v-pre>hx-vals</code></td>
+<td>Pass parameters without forms</td>
+</tr>
+<tr>
+<td><code v-pre>hx-indicator</code></td>
+<td>Show loading feedback</td>
+</tr>
+<tr>
+<td><code v-pre>HX-Retarget</code></td>
+<td>Route responses to different targets</td>
+</tr>
+<tr>
+<td><code v-pre>HX-Trigger</code></td>
+<td>Fire events for secondary actions</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="what-comes-next">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#what-comes-next">#</doc-anchor-trigger>
+        <span>What Comes Next</span>
+    </h3>
+</doc-anchor-target>
+<p>In <strong>Lab 3</strong>, you&#x27;ll implement:</p>
+<ul>
+<li>Real-time validation (&quot;validate as you type&quot;)</li>
+<li>Data annotations for validation rules</li>
+<li>Field-level error fragments</li>
+<li>Antiforgery token handling with htmx</li>
+</ul>
+<hr>
+<doc-anchor-target id="troubleshooting">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#troubleshooting">#</doc-anchor-trigger>
+        <span>Troubleshooting</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="common-issues-and-solutions">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#common-issues-and-solutions">#</doc-anchor-trigger>
+        <span>Common Issues and Solutions</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Problem</th>
+<th>Likely Cause</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nothing happens on submit</td>
+<td>htmx not loaded</td>
+<td>Check console for htmx object</td>
+</tr>
+<tr>
+<td>Full page reloads</td>
+<td>htmx not intercepting</td>
+<td>Verify <code v-pre>hx-post</code> attribute is present</td>
+</tr>
+<tr>
+<td>Wrong content swapped in</td>
+<td>Incorrect <code v-pre>hx-target</code></td>
+<td>Check selector matches element ID</td>
+</tr>
+<tr>
+<td>Nested duplicate elements</td>
+<td>Using <code v-pre>innerHTML</code> with wrapper</td>
+<td>Change to <code v-pre>outerHTML</code></td>
+</tr>
+<tr>
+<td>Validation errors don&#x27;t show</td>
+<td>Retarget headers missing</td>
+<td>Add <code v-pre>HX-Retarget</code> and <code v-pre>HX-Reswap</code></td>
+</tr>
+<tr>
+<td>Indicator doesn&#x27;t show</td>
+<td>CSS missing</td>
+<td>Add <code v-pre>.htmx-indicator</code> and <code v-pre>.htmx-request</code> rules</td>
+</tr>
+<tr>
+<td>400 Bad Request</td>
+<td>Antiforgery token issue</td>
+<td>Ensure token is in form (we&#x27;ll fix properly in Lab 3)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="debug-tips">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#debug-tips">#</doc-anchor-trigger>
+        <span>Debug Tips</span>
+    </h3>
+</doc-anchor-target>
+<ol>
+<li><strong>Network Tab</strong>: Check request headers for <code v-pre>HX-Request: true</code></li>
+<li><strong>Network Tab</strong>: Check response headers for <code v-pre>HX-Retarget</code>, <code v-pre>HX-Reswap</code></li>
+<li><strong>Console</strong>: Look for htmx errors or warnings</li>
+<li><strong>Elements Tab</strong>: Watch DOM changes during swaps</li>
+<li><strong>Response Preview</strong>: Verify server returns HTML fragment, not full page</li>
+</ol>
+<hr>
+<doc-anchor-target id="complete-code-reference">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#complete-code-reference">#</doc-anchor-trigger>
+        <span>Complete Code Reference</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="indexcshtmlcs-complete">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#indexcshtmlcs-complete">#</doc-anchor-trigger>
+        <span>Index.cshtml.cs (Complete)</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using RazorHtmxWorkshop.Data;
+using RazorHtmxWorkshop.Models;
+
+namespace RazorHtmxWorkshop.Pages.Tasks;
+
+public class IndexModel : PageModel
+{
+    public IReadOnlyList&lt;TaskItem&gt; Tasks { get; private set; } = Array.Empty&lt;TaskItem&gt;();
+
+    [BindProperty]
+    public NewTaskInput Input { get; set; } = new();
+
+    [TempData]
+    public string? FlashMessage { get; set; }
+
+    private bool IsHtmx() =&gt;
+        Request.Headers.TryGetValue(&quot;HX-Request&quot;, out var value) &amp;&amp; value == &quot;true&quot;;
+
+    private PartialViewResult Fragment(string partialName, object model) =&gt;
+        new()
+        {
+            ViewName = partialName,
+            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+        };
+
+    public void OnGet()
+    {
+        Tasks = InMemoryTaskStore.All();
+    }
+
+    public IActionResult OnGetList(int? take)
+    {
+        var tasks = InMemoryTaskStore.All();
+
+        if (take is &gt; 0)
+        {
+            tasks = tasks.Take(take.Value).ToList();
+        }
+
+        return Fragment(&quot;Partials/_TaskList&quot;, tasks);
+    }
+
+    public IActionResult OnGetEmptyForm()
+    {
+        Input = new NewTaskInput();
+        ModelState.Clear();
+        return Fragment(&quot;Partials/_TaskForm&quot;, this);
+    }
+
+    public IActionResult OnPostCreate()
+    {
+        if (string.IsNullOrWhiteSpace(Input.Title))
+        {
+            ModelState.AddModelError(nameof(Input.Title), &quot;Title is required.&quot;);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            Tasks = InMemoryTaskStore.All();
+
+            if (IsHtmx())
+            {
+                Response.StatusCode = 422;
+                Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
+                Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
+                return Fragment(&quot;Partials/_TaskForm&quot;, this);
+            }
+
+            return Page();
+        }
+
+        if (Input.Title.Trim().Equals(&quot;boom&quot;, StringComparison.OrdinalIgnoreCase))
+        {
+            if (IsHtmx())
+            {
+                Response.StatusCode = 500;
+                Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
+                Response.Headers[&quot;HX-Reswap&quot;] = &quot;innerHTML&quot;;
+                return Fragment(&quot;Partials/_Error&quot;,
+                    &quot;Simulated server error. Try a different title (anything except 'boom').&quot;);
+            }
+
+            throw new InvalidOperationException(&quot;Simulated server error.&quot;);
+        }
+
+        InMemoryTaskStore.Add(Input.Title);
+        Tasks = InMemoryTaskStore.All();
+
+        if (IsHtmx())
+        {
+            Response.Headers[&quot;HX-Trigger&quot;] = &quot;clearForm&quot;;
+            return Fragment(&quot;Partials/_TaskList&quot;, Tasks);
+        }
+
+        FlashMessage = &quot;Task added.&quot;;
+        return RedirectToPage();
+    }
+
+    public class NewTaskInput
+    {
+        public string Title { get; set; } = &quot;&quot;;
+    }
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="indexcshtml-complete">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#indexcshtml-complete">#</doc-anchor-trigger>
+        <span>Index.cshtml (Complete)</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@page
+@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+@{
+    ViewData[&quot;Title&quot;] = &quot;Tasks&quot;;
+}
+
+&lt;h1&gt;Tasks&lt;/h1&gt;
+
+&lt;partial name=&quot;Partials/_Messages&quot; model=&quot;Model.FlashMessage&quot; /&gt;
+
+&lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-md-5&quot;&gt;
+        &lt;h2 class=&quot;h5&quot;&gt;Add a Task&lt;/h2&gt;
+        &lt;partial name=&quot;Partials/_TaskForm&quot; model=&quot;Model&quot; /&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;col-md-7&quot;&gt;
+        &lt;div class=&quot;d-flex justify-content-between align-items-center mb-2&quot;&gt;
+            &lt;h2 class=&quot;h5 mb-0&quot;&gt;Current Tasks&lt;/h2&gt;
+
+            &lt;div class=&quot;d-flex align-items-center gap-2&quot;&gt;
+                &lt;div id=&quot;task-loading&quot;
+                     class=&quot;htmx-indicator spinner-border spinner-border-sm text-secondary&quot;
+                     role=&quot;status&quot;&gt;
+                    &lt;span class=&quot;visually-hidden&quot;&gt;Loading...&lt;/span&gt;
+                &lt;/div&gt;
+
+                &lt;div class=&quot;btn-group btn-group-sm&quot;&gt;
+                    &lt;button type=&quot;button&quot;
+                            class=&quot;btn btn-outline-secondary&quot;
+                            hx-get=&quot;?handler=List&quot;
+                            hx-target=&quot;#task-list&quot;
+                            hx-swap=&quot;outerHTML&quot;
+                            hx-indicator=&quot;#task-loading&quot;&gt;
+                        Refresh All
+                    &lt;/button&gt;
+
+                    &lt;button type=&quot;button&quot;
+                            class=&quot;btn btn-outline-secondary&quot;
+                            hx-get=&quot;?handler=List&quot;
+                            hx-vals='{&quot;take&quot;: 5}'
+                            hx-target=&quot;#task-list&quot;
+                            hx-swap=&quot;outerHTML&quot;
+                            hx-indicator=&quot;#task-loading&quot;&gt;
+                        Top 5
+                    &lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;partial name=&quot;Partials/_TaskList&quot; model=&quot;Model.Tasks&quot; /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div hx-get=&quot;?handler=EmptyForm&quot;
+     hx-trigger=&quot;clearForm from:body&quot;
+     hx-target=&quot;#task-form&quot;
+     hx-swap=&quot;outerHTML&quot;&gt;
+&lt;/div&gt;
+
+@section Scripts {
+    &lt;partial name=&quot;_ValidationScriptsPartial&quot; /&gt;
+}</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="summary">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#summary">#</doc-anchor-trigger>
+        <span>Summary</span>
+    </h2>
+</doc-anchor-target>
+<p>You have successfully completed Lab 2! Your application now:</p>
+<ul>
+<li><span class="docs-emoji">&#x2705;</span> Submits forms via htmx without page reloads</li>
+<li><span class="docs-emoji">&#x2705;</span> Updates only the affected regions of the page</li>
+<li><span class="docs-emoji">&#x2705;</span> Shows loading indicators during requests</li>
+<li><span class="docs-emoji">&#x2705;</span> Handles validation errors gracefully with retargeting</li>
+<li><span class="docs-emoji">&#x2705;</span> Handles server errors with appropriate feedback</li>
+<li><span class="docs-emoji">&#x2705;</span> Supports parameterized queries with <code v-pre>hx-vals</code></li>
+</ul>
+<p>This is the core htmx workflow that you&#x27;ll use throughout your applications. In Lab 3, you&#x27;ll build on this foundation to add real-time validation and more sophisticated form handling.</p>
+<p><strong>Proceed to Lab 3: Real-Time Validation and Form UX →</strong></p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -248,7 +1892,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                             <span>
                                                 <span class="block text-xs font-normal text-base-text-muted">Previous</span>
-                                                <span class="block mt-1">Lab 1: Baseline Razor Pages App + “Fragment First”</span>
+                                                <span class="block mt-1">Lab 1: Baseline Razor Pages App + "Fragment First"</span>
                                             </span>
                                         </a>
                                     </div>
@@ -321,6 +1965,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Lab 2: Partial Updates with hx get + hx post", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Lab 2: Partial Updates with hx-get + hx-post", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>
