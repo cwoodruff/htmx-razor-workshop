@@ -27,10 +27,10 @@ We'll use htmx to keep validation rules in one place (the server) while deliveri
 
 ### Two Granularities of Validation
 
-| Type | When | What Updates | Fragment |
-|------|------|--------------|----------|
-| **Micro validation** | As you type (debounced) | Single field error | `_TitleValidation` |
-| **Full validation** | On submit | Entire form with summary | `_TaskForm` |
+| Type                 | When                    | What Updates             | Fragment           |
+|----------------------|-------------------------|--------------------------|--------------------|
+| **Micro validation** | As you type (debounced) | Single field error       | `_TitleValidation` |
+| **Full validation**  | On submit               | Entire form with summary | `_TaskForm`        |
 
 This dual approach gives users immediate feedback on individual fields while ensuring the full form is validated before submission.
 
@@ -40,15 +40,15 @@ This dual approach gives users immediate feedback on individual fields while ens
 
 By the end of Lab 3, you will be able to:
 
-| Outcome | Description |
-|---------|-------------|
-| **Data annotations** | Use `[Required]`, `[StringLength]` for validation rules |
-| **Validate as you type** | Implement `hx-trigger="keyup changed delay:500ms"` |
-| **Field-level fragments** | Create tiny fragments for individual field errors |
-| **Full form validation** | Return entire form fragment with validation summary |
-| **Antiforgery handling** | Ensure POST requests include the token |
-| **Success messaging** | Use `HX-Trigger` to update messages after success |
-| **Form reset** | Optionally clear the form after successful submission |
+| Outcome                   | Description                                             |
+|---------------------------|---------------------------------------------------------|
+| **Data annotations**      | Use `[Required]`, `[StringLength]` for validation rules |
+| **Validate as you type**  | Implement `hx-trigger="keyup changed delay:500ms"`      |
+| **Field-level fragments** | Create tiny fragments for individual field errors       |
+| **Full form validation**  | Return entire form fragment with validation summary     |
+| **Antiforgery handling**  | Ensure POST requests include the token                  |
+| **Success messaging**     | Use `HX-Trigger` to update messages after success       |
+| **Form reset**            | Optionally clear the form after successful submission   |
 
 ---
 
@@ -71,13 +71,13 @@ Currently, validation is handled with manual `if` statements. Let's replace that
 
 Data annotations are attributes that define validation rules declaratively:
 
-| Attribute | Purpose | Example |
-|-----------|---------|---------|
-| `[Required]` | Field must have a value | `[Required(ErrorMessage = "Title is required.")]` |
-| `[StringLength]` | Min/max length constraints | `[StringLength(60, MinimumLength = 3)]` |
-| `[Range]` | Numeric range | `[Range(1, 100)]` |
-| `[EmailAddress]` | Valid email format | `[EmailAddress]` |
-| `[RegularExpression]` | Custom pattern | `[RegularExpression(@"^[A-Z].*")]` |
+| Attribute             | Purpose                    | Example                                           |
+|-----------------------|----------------------------|---------------------------------------------------|
+| `[Required]`          | Field must have a value    | `[Required(ErrorMessage = "Title is required.")]` |
+| `[StringLength]`      | Min/max length constraints | `[StringLength(60, MinimumLength = 3)]`           |
+| `[Range]`             | Numeric range              | `[Range(1, 100)]`                                 |
+| `[EmailAddress]`      | Valid email format         | `[EmailAddress]`                                  |
+| `[RegularExpression]` | Custom pattern             | `[RegularExpression(@"^[A-Z].*")]`                |
 
 ### 1.2 Update the NewTaskInput Class
 
@@ -100,10 +100,10 @@ public class NewTaskInput
 
 ### 1.3 Understanding the Annotations
 
-| Annotation | Rule | Error Message |
-|------------|------|---------------|
-| `[Required]` | Cannot be null/empty | "Title is required." |
-| `[StringLength(60, MinimumLength = 3)]` | 3–60 characters | "Title must be 3–60 characters." |
+| Annotation                              | Rule                 | Error Message                    |
+|-----------------------------------------|----------------------|----------------------------------|
+| `[Required]`                            | Cannot be null/empty | "Title is required."             |
+| `[StringLength(60, MinimumLength = 3)]` | 3–60 characters      | "Title must be 3–60 characters." |
 
 **Why Annotations Over Manual Checks:**
 
@@ -170,13 +170,13 @@ public IActionResult OnPostCreate()
 if (!TryValidateModel(Input, nameof(Input)))
 ```
 
-| Aspect | Detail |
-|--------|--------|
+| Aspect           | Detail                                                |
+|------------------|-------------------------------------------------------|
 | **What it does** | Evaluates all data annotations on the specified model |
-| **Returns** | `true` if valid, `false` if any validation fails |
-| **Side effect** | Populates `ModelState` with errors |
-| **Parameter 1** | The model instance to validate |
-| **Parameter 2** | The prefix for error keys (matches `asp-for` binding) |
+| **Returns**      | `true` if valid, `false` if any validation fails      |
+| **Side effect**  | Populates `ModelState` with errors                    |
+| **Parameter 1**  | The model instance to validate                        |
+| **Parameter 2**  | The prefix for error keys (matches `asp-for` binding) |
 
 **Why `nameof(Input)`?**
 
@@ -307,10 +307,10 @@ public IActionResult OnPostValidateTitle()
 
 For this micro-validation handler, explicit checks are clearer and more predictable:
 
-| Approach | Pros | Cons |
-|----------|------|------|
-| Manual checks | Clear, explicit, easy to debug | Rules duplicated from annotations |
-| ModelState | Uses existing annotations | More complex to extract single-field error |
+| Approach      | Pros                           | Cons                                       |
+|---------------|--------------------------------|--------------------------------------------|
+| Manual checks | Clear, explicit, easy to debug | Rules duplicated from annotations          |
+| ModelState    | Uses existing annotations      | More complex to extract single-field error |
 
 For field-level validation, manual checks are simpler. The full submit still uses annotations via `TryValidateModel`.
 
@@ -429,13 +429,13 @@ Edit `Pages/Tasks/Partials/_TaskForm.cshtml` to add validation attributes and th
 
 #### On the Title Input
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
-| `hx-post` | `"?handler=ValidateTitle"` | Send POST to validation handler |
-| `hx-trigger` | `"keyup changed delay:500ms"` | Fire after 500ms of no typing |
-| `hx-target` | `"#title-validation"` | Update only the validation fragment |
-| `hx-swap` | `"outerHTML"` | Replace the entire fragment element |
-| `hx-include` | `"closest form"` | Include form fields (especially antiforgery token) |
+| Attribute    | Value                         | Purpose                                            |
+|--------------|-------------------------------|----------------------------------------------------|
+| `hx-post`    | `"?handler=ValidateTitle"`    | Send POST to validation handler                    |
+| `hx-trigger` | `"keyup changed delay:500ms"` | Fire after 500ms of no typing                      |
+| `hx-target`  | `"#title-validation"`         | Update only the validation fragment                |
+| `hx-swap`    | `"outerHTML"`                 | Replace the entire fragment element                |
+| `hx-include` | `"closest form"`              | Include form fields (especially antiforgery token) |
 
 #### Understanding `hx-trigger`
 
@@ -443,10 +443,10 @@ Edit `Pages/Tasks/Partials/_TaskForm.cshtml` to add validation attributes and th
 hx-trigger="keyup changed delay:500ms"
 ```
 
-| Part | Meaning |
-|------|---------|
-| `keyup` | Fire on key release |
-| `changed` | Only if value actually changed |
+| Part          | Meaning                                    |
+|---------------|--------------------------------------------|
+| `keyup`       | Fire on key release                        |
+| `changed`     | Only if value actually changed             |
 | `delay:500ms` | Wait 500ms after last keystroke (debounce) |
 
 **Why debounce?**
@@ -482,10 +482,10 @@ Notice we have both:
 
 **Why both?**
 
-| Element | When It Shows | Source |
-|---------|---------------|--------|
-| `asp-validation-for` | Full form submit | ModelState from server |
-| `#title-validation` | Keystroke validation | OnPostValidateTitle handler |
+| Element              | When It Shows        | Source                      |
+|----------------------|----------------------|-----------------------------|
+| `asp-validation-for` | Full form submit     | ModelState from server      |
+| `#title-validation`  | Keystroke validation | OnPostValidateTitle handler |
 
 The `asp-validation-for` provides fallback for non-htmx scenarios. The htmx fragment provides real-time feedback.
 
@@ -514,11 +514,11 @@ When the full form submits with errors, we want to show a summary at the top of 
 
 The `asp-validation-summary` tag helper renders a list of all validation errors:
 
-| Mode | What It Shows |
-|------|---------------|
-| `All` | All errors (model-level + property-level) |
+| Mode        | What It Shows                                       |
+|-------------|-----------------------------------------------------|
+| `All`       | All errors (model-level + property-level)           |
 | `ModelOnly` | Only model-level errors (not individual properties) |
-| `None` | Nothing |
+| `None`      | Nothing                                             |
 
 For our form, `ModelOnly` works well because property errors are shown next to each field.
 
@@ -592,10 +592,10 @@ For the input validation (`hx-post` on `<input>`):
 
 ### 6.4 Troubleshooting Antiforgery Issues
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| 400 Bad Request | Token missing from request | Add `hx-include="closest form"` |
-| 403 Forbidden | Token invalid or expired | Ensure token is in form, refresh page |
+| Symptom                             | Cause                           | Fix                                      |
+|-------------------------------------|---------------------------------|------------------------------------------|
+| 400 Bad Request                     | Token missing from request      | Add `hx-include="closest form"`          |
+| 403 Forbidden                       | Token invalid or expired        | Ensure token is in form, refresh page    |
 | Works on submit, fails on keystroke | `hx-include` missing from input | Add `hx-include="closest form"` to input |
 
 ### 6.5 Alternative: Global Antiforgery Header
@@ -743,12 +743,12 @@ These invisible elements respond to triggered events:
 </div>
 ```
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
-| `hx-get` | `"?handler=Messages"` | Fetch the messages fragment |
+| Attribute    | Value                     | Purpose                                       |
+|--------------|---------------------------|-----------------------------------------------|
+| `hx-get`     | `"?handler=Messages"`     | Fetch the messages fragment                   |
 | `hx-trigger` | `"showMessage from:body"` | Fire when `showMessage` event bubbles to body |
-| `hx-target` | `"#messages"` | Swap into the messages region |
-| `hx-swap` | `"outerHTML"` | Replace the entire element |
+| `hx-target`  | `"#messages"`             | Swap into the messages region                 |
+| `hx-swap`    | `"outerHTML"`             | Replace the entire element                    |
 
 **How it works:**
 
@@ -1158,29 +1158,29 @@ Before moving to Lab 4, verify these behaviors:
 
 ### Two Granularities of Feedback
 
-| Granularity | Trigger | Target | Fragment | Use Case |
-|-------------|---------|--------|----------|----------|
-| **Micro** | Keystroke (debounced) | Field container | `_TitleValidation` | Instant feedback |
-| **Full** | Form submit | Form container | `_TaskForm` | Complete validation |
+| Granularity | Trigger               | Target          | Fragment           | Use Case            |
+|-------------|-----------------------|-----------------|--------------------|---------------------|
+| **Micro**   | Keystroke (debounced) | Field container | `_TitleValidation` | Instant feedback    |
+| **Full**    | Form submit           | Form container  | `_TaskForm`        | Complete validation |
 
 ### Patterns You've Learned
 
-| Pattern | Implementation |
-|---------|----------------|
-| Debounced validation | `hx-trigger="keyup changed delay:500ms"` |
-| Field-level fragments | Tiny partials with stable wrapper IDs |
-| Include form fields | `hx-include="closest form"` for antiforgery |
-| Event-driven updates | `HX-Trigger` header + listener elements |
-| Data annotations | `[Required]`, `[StringLength]` on input models |
+| Pattern               | Implementation                                 |
+|-----------------------|------------------------------------------------|
+| Debounced validation  | `hx-trigger="keyup changed delay:500ms"`       |
+| Field-level fragments | Tiny partials with stable wrapper IDs          |
+| Include form fields   | `hx-include="closest form"` for antiforgery    |
+| Event-driven updates  | `HX-Trigger` header + listener elements        |
+| Data annotations      | `[Required]`, `[StringLength]` on input models |
 
 ### When to Use Which Approach
 
-| Scenario | Approach | Why |
-|----------|----------|-----|
-| Single field feedback | Micro validation | Fast, focused, non-disruptive |
-| Form submission | Full validation | Complete check before persist |
-| Success actions | HX-Trigger events | Decouple concerns, clean markup |
-| Error display | Retarget to form | Show all errors in context |
+| Scenario              | Approach          | Why                             |
+|-----------------------|-------------------|---------------------------------|
+| Single field feedback | Micro validation  | Fast, focused, non-disruptive   |
+| Form submission       | Full validation   | Complete check before persist   |
+| Success actions       | HX-Trigger events | Decouple concerns, clean markup |
+| Error display         | Retarget to form  | Show all errors in context      |
 
 ---
 
@@ -1188,14 +1188,14 @@ Before moving to Lab 4, verify these behaviors:
 
 ### Common Issues and Solutions
 
-| Problem | Likely Cause | Solution |
-|---------|--------------|----------|
-| Validation fires on every keystroke | Missing `delay:` | Add `delay:500ms` to trigger |
-| 400/403 on validation | Antiforgery token missing | Add `hx-include="closest form"` |
-| Error doesn't clear | Fragment returns nothing | Always render wrapper div |
-| Form doesn't reset | clearForm event not firing | Check `HX-Trigger` header |
-| Messages don't appear | showMessage event not firing | Check `HX-Trigger` header |
-| Double error messages | Both asp-validation-for and htmx | Style to hide one during typing |
+| Problem                             | Likely Cause                     | Solution                        |
+|-------------------------------------|----------------------------------|---------------------------------|
+| Validation fires on every keystroke | Missing `delay:`                 | Add `delay:500ms` to trigger    |
+| 400/403 on validation               | Antiforgery token missing        | Add `hx-include="closest form"` |
+| Error doesn't clear                 | Fragment returns nothing         | Always render wrapper div       |
+| Form doesn't reset                  | clearForm event not firing       | Check `HX-Trigger` header       |
+| Messages don't appear               | showMessage event not firing     | Check `HX-Trigger` header       |
+| Double error messages               | Both asp-validation-for and htmx | Style to hide one during typing |
 
 ### Debug Tips
 

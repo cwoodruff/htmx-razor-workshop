@@ -22,12 +22,12 @@ This checkpoint is a structured pause between Labs 2 and 3. Before moving to mor
 
 By the end of this checkpoint, you will be able to:
 
-| Outcome | Description |
-|---------|-------------|
-| **Run and debug confidently** | Locate the right handler for any interaction |
-| **Use DevTools effectively** | Verify htmx request/response behavior |
-| **Recognize common mistakes** | Identify and fix the top 5 htmx/Razor Pages integration issues |
-| **Apply consistent conventions** | Standardize Page vs. Fragment response patterns |
+| Outcome                          | Description                                                    |
+|----------------------------------|----------------------------------------------------------------|
+| **Run and debug confidently**    | Locate the right handler for any interaction                   |
+| **Use DevTools effectively**     | Verify htmx request/response behavior                          |
+| **Recognize common mistakes**    | Identify and fix the top 5 htmx/Razor Pages integration issues |
+| **Apply consistent conventions** | Standardize Page vs. Fragment response patterns                |
 
 ---
 
@@ -60,13 +60,13 @@ Open browser DevTools → **Network** tab and perform these actions:
 
 #### For `hx-post` Create (Form Submission)
 
-| Check | Expected Value |
-|-------|----------------|
-| Request Method | `POST` |
-| Request URL | Contains `?handler=Create` |
-| Request Headers | Includes `HX-Request: true` |
-| Response Body | HTML fragment starting with `<div id="task-list">` |
-| Response Status | `200` (success and validation error) |
+| Check           | Expected Value                                     |
+|-----------------|----------------------------------------------------|
+| Request Method  | `POST`                                             |
+| Request URL     | Contains `?handler=Create`                         |
+| Request Headers | Includes `HX-Request: true`                        |
+| Response Body   | HTML fragment starting with `<div id="task-list">` |
+| Response Status | `200` (success and validation error)               |
 
 **Example Request Headers:**
 
@@ -80,20 +80,20 @@ Content-Type: application/x-www-form-urlencoded
 
 #### For `hx-get` Refresh (List Refresh)
 
-| Check | Expected Value |
-|-------|----------------|
-| Request Method | `GET` |
-| Request URL | Contains `?handler=List` |
-| Request Headers | Includes `HX-Request: true` |
-| Response Body | HTML fragment: `<div id="task-list">...</div>` |
+| Check           | Expected Value                                 |
+|-----------------|------------------------------------------------|
+| Request Method  | `GET`                                          |
+| Request URL     | Contains `?handler=List`                       |
+| Request Headers | Includes `HX-Request: true`                    |
+| Response Body   | HTML fragment: `<div id="task-list">...</div>` |
 
 #### For Validation Error Responses
 
-| Check | Expected Value |
-|-------|----------------|
-| Response Status | `200` (Unprocessable Entity) |
-| Response Headers | `HX-Retarget: #task-form` and `HX-Reswap: outerHTML` |
-| Response Body | HTML fragment: `<div id="task-form">...</div>` with error messages |
+| Check            | Expected Value                                                     |
+|------------------|--------------------------------------------------------------------|
+| Response Status  | `200` (Unprocessable Entity)                                       |
+| Response Headers | `HX-Retarget: #task-form` and `HX-Reswap: outerHTML`               |
+| Response Body    | HTML fragment: `<div id="task-form">...</div>` with error messages |
 
 ### 1.3 Inspect Returned Fragments in Elements Panel
 
@@ -123,11 +123,11 @@ This section covers the five most common htmx + Razor Pages integration mistakes
 
 **Likely Causes:**
 
-| Cause | Why It Happens |
-|-------|----------------|
-| htmx not loaded | Script tag missing, blocked, or has error |
+| Cause             | Why It Happens                                               |
+|-------------------|--------------------------------------------------------------|
+| htmx not loaded   | Script tag missing, blocked, or has error                    |
 | Wrong file edited | Added `hx-*` to `Index.cshtml` instead of `_TaskForm.cshtml` |
-| JavaScript error | Console error prevented htmx from initializing |
+| JavaScript error  | Console error prevented htmx from initializing               |
 
 **Fast Diagnostic Steps:**
 
@@ -173,10 +173,10 @@ This section covers the five most common htmx + Razor Pages integration mistakes
 
 **Likely Causes:**
 
-| Cause | Why It Happens |
-|-------|----------------|
-| Wrong `hx-target` selector | Typo in ID or selector doesn't match DOM |
-| Duplicate IDs | Multiple elements have the same ID |
+| Cause                            | Why It Happens                                         |
+|----------------------------------|--------------------------------------------------------|
+| Wrong `hx-target` selector       | Typo in ID or selector doesn't match DOM               |
+| Duplicate IDs                    | Multiple elements have the same ID                     |
 | Response fragment shape mismatch | Using `outerHTML` but response doesn't include wrapper |
 
 **Fast Diagnostic Steps:**
@@ -234,11 +234,11 @@ Ensure your partial returns the complete wrapper:
 
 **Likely Causes:**
 
-| Cause | Why It Happens |
-|-------|----------------|
+| Cause                 | Why It Happens                              |
+|-----------------------|---------------------------------------------|
 | Handler name mismatch | `?handler=Create` but method is `OnPostAdd` |
-| Wrong HTTP verb | `hx-get` calling an `OnPost...` handler |
-| Missing handler | Method doesn't exist in PageModel |
+| Wrong HTTP verb       | `hx-get` calling an `OnPost...` handler     |
+| Missing handler       | Method doesn't exist in PageModel           |
 
 **Fast Diagnostic Steps:**
 
@@ -255,10 +255,10 @@ Ensure your partial returns the complete wrapper:
 
    Razor Pages naming convention:
 
-   | Handler Query | Method Signature |
-   |---------------|------------------|
-   | `?handler=Create` (POST) | `OnPostCreate()` |
-   | `?handler=List` (GET) | `OnGetList()` |
+   | Handler Query                 | Method Signature       |
+   |-------------------------------|------------------------|
+   | `?handler=Create` (POST)      | `OnPostCreate()`       |
+   | `?handler=List` (GET)         | `OnGetList()`          |
    | `?handler=Details&id=1` (GET) | `OnGetDetails(int id)` |
 
 3. **Check HTTP Verb:**
@@ -289,11 +289,11 @@ public IActionResult OnPostCreate() { ... }
 
 **Likely Causes:**
 
-| Cause | Why It Happens |
-|-------|----------------|
-| Incorrect path in `Fragment()` call | Path doesn't match file location |
-| File in wrong folder | Partial not where you think it is |
-| Typo in filename | `_TaskList.cshtml` vs `_Tasklist.cshtml` |
+| Cause                               | Why It Happens                           |
+|-------------------------------------|------------------------------------------|
+| Incorrect path in `Fragment()` call | Path doesn't match file location         |
+| File in wrong folder                | Partial not where you think it is        |
+| Typo in filename                    | `_TaskList.cshtml` vs `_Tasklist.cshtml` |
 
 **Fast Diagnostic Steps:**
 
@@ -355,10 +355,10 @@ Pages/Tasks/
 
 **Likely Causes:**
 
-| Cause | Why It Happens |
-|-------|----------------|
-| Antiforgery token missing | POST requests require the token |
-| Form fields not included | `hx-post` on input doesn't send sibling fields |
+| Cause                     | Why It Happens                                 |
+|---------------------------|------------------------------------------------|
+| Antiforgery token missing | POST requests require the token                |
+| Form fields not included  | `hx-post` on input doesn't send sibling fields |
 
 **Fast Diagnostic Steps:**
 
@@ -426,10 +426,10 @@ Now that you can diagnose issues, let's establish conventions that prevent them.
 
 Every handler should return exactly one of these response types:
 
-| Request Type | Response Type | When to Use |
-|--------------|---------------|-------------|
-| Non-htmx | `Page()` or `RedirectToPage()` | Full page navigation |
-| htmx | `Fragment("...", model)` | Partial updates |
+| Request Type | Response Type                  | When to Use          |
+|--------------|--------------------------------|----------------------|
+| Non-htmx     | `Page()` or `RedirectToPage()` | Full page navigation |
+| htmx         | `Fragment("...", model)`       | Partial updates      |
 
 **Rule 1: A handler returns exactly one of:**
 
@@ -444,18 +444,18 @@ return Fragment("Partials/_TaskList", Tasks);
 
 **Rule 2: Fragment handlers must return a wrapper with a stable ID:**
 
-| Partial | Must Return |
-|---------|-------------|
+| Partial     | Must Return                     |
+|-------------|---------------------------------|
 | `_TaskList` | `<div id="task-list">...</div>` |
 | `_TaskForm` | `<div id="task-form">...</div>` |
-| `_Messages` | `<div id="messages">...</div>` |
+| `_Messages` | `<div id="messages">...</div>`  |
 
 **Rule 3: Swap strategy must match fragment shape:**
 
-| If You Use | Response Must Be |
-|------------|------------------|
+| If You Use            | Response Must Be                        |
+|-----------------------|-----------------------------------------|
 | `hx-swap="outerHTML"` | Full wrapper element (`<div id="...">`) |
-| `hx-swap="innerHTML"` | Content only (no wrapper needed) |
+| `hx-swap="innerHTML"` | Content only (no wrapper needed)        |
 
 ### 3.2 Standardize Helper Methods
 
@@ -499,16 +499,16 @@ private PartialViewResult Fragment(string partialName, object model) =>
 
 Adopt these naming conventions:
 
-| Handler Name | HTTP Verb | Returns | Purpose |
-|--------------|-----------|---------|---------|
-| `OnGet` | GET | Full Page | Initial page load |
-| `OnGetList` | GET | `_TaskList` | Refresh list fragment |
-| `OnGetDetails` | GET | `_TaskDetails` | Load details fragment |
-| `OnGetMessages` | GET | `_Messages` | Refresh messages |
-| `OnGetEmptyForm` | GET | `_TaskForm` (reset) | Clear form |
-| `OnPostCreate` | POST | `_TaskList` (success) | Create new task |
-| `OnPostDelete` | POST | `_TaskList` | Delete task |
-| `OnPostValidateTitle` | POST | `_TitleValidation` | Field validation |
+| Handler Name          | HTTP Verb | Returns               | Purpose               |
+|-----------------------|-----------|-----------------------|-----------------------|
+| `OnGet`               | GET       | Full Page             | Initial page load     |
+| `OnGetList`           | GET       | `_TaskList`           | Refresh list fragment |
+| `OnGetDetails`        | GET       | `_TaskDetails`        | Load details fragment |
+| `OnGetMessages`       | GET       | `_Messages`           | Refresh messages      |
+| `OnGetEmptyForm`      | GET       | `_TaskForm` (reset)   | Clear form            |
+| `OnPostCreate`        | POST      | `_TaskList` (success) | Create new task       |
+| `OnPostDelete`        | POST      | `_TaskList`           | Delete task           |
+| `OnPostValidateTitle` | POST      | `_TitleValidation`    | Field validation      |
 
 **The Pattern:**
 
@@ -520,10 +520,10 @@ Adopt these naming conventions:
 
 **Policy: Use `HX-Retarget` + `HX-Reswap` only in two scenarios:**
 
-| Scenario | Original Target | Retarget To | Why |
-|----------|-----------------|-------------|-----|
-| Invalid form submit | `#task-list` | `#task-form` | Show errors in place |
-| Server error | `#task-list` | `#messages` | Route errors to message area |
+| Scenario            | Original Target | Retarget To  | Why                          |
+|---------------------|-----------------|--------------|------------------------------|
+| Invalid form submit | `#task-list`    | `#task-form` | Show errors in place         |
+| Server error        | `#task-list`    | `#messages`  | Route errors to message area |
 
 **Everything else should use explicit `hx-target` in markup.**
 
@@ -647,15 +647,15 @@ With these foundations solid, you're ready for Lab 3: Real-Time Validation and F
 
 ## Troubleshooting Quick Reference
 
-| Symptom | Likely Cause | Quick Fix |
-|---------|--------------|-----------|
-| Nothing happens on click | htmx not loaded | Check console for `htmx` object |
-| Wrong element updates | Wrong `hx-target` or duplicate ID | Verify single ID in Elements |
-| 404 on handler | Name mismatch | Match `?handler=X` to `OnPost/GetX()` |
-| Partial not found | Wrong path | Verify file exists at expected location |
-| 403 on POST | Missing antiforgery token | Add `@Html.AntiForgeryToken()` |
-| Nested duplicates | Wrong swap mode | Use `outerHTML` with wrapper fragments |
-| Validation not showing | Retarget missing | Add `HX-Retarget` and `HX-Reswap` headers |
+| Symptom                  | Likely Cause                      | Quick Fix                                 |
+|--------------------------|-----------------------------------|-------------------------------------------|
+| Nothing happens on click | htmx not loaded                   | Check console for `htmx` object           |
+| Wrong element updates    | Wrong `hx-target` or duplicate ID | Verify single ID in Elements              |
+| 404 on handler           | Name mismatch                     | Match `?handler=X` to `OnPost/GetX()`     |
+| Partial not found        | Wrong path                        | Verify file exists at expected location   |
+| 403 on POST              | Missing antiforgery token         | Add `@Html.AntiForgeryToken()`            |
+| Nested duplicates        | Wrong swap mode                   | Use `outerHTML` with wrapper fragments    |
+| Validation not showing   | Retarget missing                  | Add `HX-Retarget` and `HX-Reswap` headers |
 
 ---
 

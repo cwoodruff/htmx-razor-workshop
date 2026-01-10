@@ -20,11 +20,11 @@ By the end of this lab, your Tasks application will feel like a modern single-pa
 
 These patterns share a common theme: **the server remains in control**. Instead of building client-side state machines, you let htmx handle the transport while the server decides what HTML to return.
 
-| Traditional SPA | htmx Approach |
-|-----------------|---------------|
-| Client manages state | Server renders fragments |
-| Router handles URLs | `hx-push-url` syncs URL |
-| Modal logic in JS | Modal body loaded via `hx-get` |
+| Traditional SPA      | htmx Approach                       |
+|----------------------|-------------------------------------|
+| Client manages state | Server renders fragments            |
+| Router handles URLs  | `hx-push-url` syncs URL             |
+| Modal logic in JS    | Modal body loaded via `hx-get`      |
 | Pagination component | Links with `hx-get` + `hx-push-url` |
 
 ---
@@ -33,15 +33,15 @@ These patterns share a common theme: **the server remains in control**. Instead 
 
 By the end of Lab 4, you will be able to:
 
-| Outcome | Description |
-|---------|-------------|
-| **Details pattern** | Load task details into a side panel or Bootstrap modal |
-| **Delete with confirm** | Use `hx-confirm` for safe destructive actions |
-| **Filtering** | Filter the task list with URL state preserved |
-| **Pagination** | Navigate pages with back/forward support |
-| **URL state** | Use `hx-push-url` to make URLs bookmarkable |
-| **Swap strategies** | Choose between `outerHTML` and `innerHTML` appropriately |
-| **Transitions** | Add CSS transitions for smooth visual feedback |
+| Outcome                 | Description                                              |
+|-------------------------|----------------------------------------------------------|
+| **Details pattern**     | Load task details into a side panel or Bootstrap modal   |
+| **Delete with confirm** | Use `hx-confirm` for safe destructive actions            |
+| **Filtering**           | Filter the task list with URL state preserved            |
+| **Pagination**          | Navigate pages with back/forward support                 |
+| **URL state**           | Use `hx-push-url` to make URLs bookmarkable              |
+| **Swap strategies**     | Choose between `outerHTML` and `innerHTML` appropriately |
+| **Transitions**         | Add CSS transitions for smooth visual feedback           |
 
 ---
 
@@ -62,10 +62,10 @@ The Details pattern loads additional information about an item without navigatin
 
 ### 1.1 Choose Your Implementation
 
-| Option | Complexity | Best For |
-|--------|------------|----------|
-| **Side Panel** | Simple | Always-visible detail area |
-| **Bootstrap Modal** | Moderate | Focused attention, familiar UX |
+| Option              | Complexity | Best For                       |
+|---------------------|------------|--------------------------------|
+| **Side Panel**      | Simple     | Always-visible detail area     |
+| **Bootstrap Modal** | Moderate   | Focused attention, familiar UX |
 
 We'll cover both options. Choose one to implement.
 
@@ -255,11 +255,11 @@ Update `_TaskList.cshtml` to include a Details button:
         hx-swap="outerHTML">
 ```
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
-| `hx-get` | `"?handler=Details&id=@task.Id"` | GET request with task ID |
-| `hx-target` | `"#task-details"` | Update the details panel |
-| `hx-swap` | `"outerHTML"` | Replace entire fragment |
+| Attribute   | Value                            | Purpose                  |
+|-------------|----------------------------------|--------------------------|
+| `hx-get`    | `"?handler=Details&id=@task.Id"` | GET request with task ID |
+| `hx-target` | `"#task-details"`                | Update the details panel |
+| `hx-swap`   | `"outerHTML"`                    | Replace entire fragment  |
 
 **The Flow:**
 
@@ -406,11 +406,11 @@ public IActionResult OnGetDetails(int id)
 
 #### B.5 Understanding the Modal Pattern
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
-| `hx-target` | `"#details-modal-body"` | Target the modal body, not the whole modal |
-| `hx-swap` | `"innerHTML"` | Replace body content only |
-| `hx-on::after-request` | Bootstrap modal show | Open modal after content loads |
+| Attribute              | Value                   | Purpose                                    |
+|------------------------|-------------------------|--------------------------------------------|
+| `hx-target`            | `"#details-modal-body"` | Target the modal body, not the whole modal |
+| `hx-swap`              | `"innerHTML"`           | Replace body content only                  |
+| `hx-on::after-request` | Bootstrap modal show    | Open modal after content loads             |
 
 **Key Difference from Panel:**
 
@@ -531,13 +531,13 @@ Update `_TaskList.cshtml` to include a Delete button:
         hx-swap="outerHTML">
 ```
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
-| `hx-post` | `"?handler=Delete"` | POST request to Delete handler |
-| `hx-vals` | `'{"id": @task.Id}'` | Pass task ID as JSON |
-| `hx-confirm` | `"Delete this task?..."` | Browser confirmation dialog |
-| `hx-target` | `"#task-list"` | Update the entire list |
-| `hx-swap` | `"outerHTML"` | Replace list fragment |
+| Attribute    | Value                    | Purpose                        |
+|--------------|--------------------------|--------------------------------|
+| `hx-post`    | `"?handler=Delete"`      | POST request to Delete handler |
+| `hx-vals`    | `'{"id": @task.Id}'`     | Pass task ID as JSON           |
+| `hx-confirm` | `"Delete this task?..."` | Browser confirmation dialog    |
+| `hx-target`  | `"#task-list"`           | Update the entire list         |
+| `hx-swap`    | `"outerHTML"`            | Replace list fragment          |
 
 **Why `hx-vals` Instead of Query String?**
 
@@ -560,11 +560,11 @@ You could use `hx-post="?handler=Delete&id=@task.Id"`, but `hx-vals` is cleaner 
 
 The handler covers these scenarios:
 
-| Scenario | Response | Status | Target |
-|----------|----------|--------|--------|
-| Task found and deleted | `_TaskList` | 200 | `#task-list` |
-| Task not found | `_Messages` | 200 | `#messages` (retargeted) |
-| Non-htmx request | Redirect | 302 | Full page |
+| Scenario               | Response    | Status | Target                   |
+|------------------------|-------------|--------|--------------------------|
+| Task found and deleted | `_TaskList` | 200    | `#task-list`             |
+| Task not found         | `_Messages` | 200    | `#messages` (retargeted) |
+| Non-htmx request       | Redirect    | 302    | Full page                |
 
 ---
 
@@ -732,8 +732,8 @@ public void OnGet(string? q, int page = 1, int pageSize = 5)
        hx-push-url="true" />
 ```
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
+| Attribute     | Value    | Purpose                                 |
+|---------------|----------|-----------------------------------------|
 | `hx-push-url` | `"true"` | Push the request URL to browser history |
 
 **What This Enables:**
@@ -953,12 +953,12 @@ Add CSS transitions to make swaps feel polished rather than jarring.
 
 htmx adds these classes during the swap lifecycle:
 
-| Class | When Applied | Duration |
-|-------|--------------|----------|
-| `htmx-request` | Request is in flight | Until response |
-| `htmx-swapping` | Old content being removed | Brief |
-| `htmx-settling` | New content settling in | Brief |
-| `htmx-added` | New elements just added | Brief |
+| Class           | When Applied              | Duration       |
+|-----------------|---------------------------|----------------|
+| `htmx-request`  | Request is in flight      | Until response |
+| `htmx-swapping` | Old content being removed | Brief          |
+| `htmx-settling` | New content settling in   | Brief          |
+| `htmx-added`    | New elements just added   | Brief          |
 
 ### 5.2 Add Transition Styles
 
@@ -1071,10 +1071,10 @@ You can fine-tune swap timing with modifiers:
 hx-swap="outerHTML swap:100ms settle:200ms"
 ```
 
-| Modifier | Default | Purpose |
-|----------|---------|---------|
-| `swap:` | 0ms | Delay before removing old content |
-| `settle:` | 20ms | Delay before settling classes are removed |
+| Modifier  | Default | Purpose                                   |
+|-----------|---------|-------------------------------------------|
+| `swap:`   | 0ms     | Delay before removing old content         |
+| `settle:` | 20ms    | Delay before settling classes are removed |
 
 **Example: Slower, More Visible Transition**
 
@@ -1094,16 +1094,16 @@ Choose the right swap strategy for each use case:
 
 ### 6.1 Swap Strategy Reference
 
-| Strategy | What It Does | Use When |
-|----------|--------------|----------|
-| `innerHTML` | Replace target's children | Filling a container (modal body) |
-| `outerHTML` | Replace entire target | Replacing a fragment with wrapper |
-| `beforebegin` | Insert before target | Adding to a list (prepend sibling) |
-| `afterbegin` | Insert as first child | Adding to a list (prepend child) |
-| `beforeend` | Insert as last child | Adding to a list (append child) |
-| `afterend` | Insert after target | Adding to a list (append sibling) |
-| `delete` | Remove target | Removing an element |
-| `none` | Don't swap | Side effects only (e.g., trigger events) |
+| Strategy      | What It Does              | Use When                                 |
+|---------------|---------------------------|------------------------------------------|
+| `innerHTML`   | Replace target's children | Filling a container (modal body)         |
+| `outerHTML`   | Replace entire target     | Replacing a fragment with wrapper        |
+| `beforebegin` | Insert before target      | Adding to a list (prepend sibling)       |
+| `afterbegin`  | Insert as first child     | Adding to a list (prepend child)         |
+| `beforeend`   | Insert as last child      | Adding to a list (append child)          |
+| `afterend`    | Insert after target       | Adding to a list (append sibling)        |
+| `delete`      | Remove target             | Removing an element                      |
+| `none`        | Don't swap                | Side effects only (e.g., trigger events) |
 
 ### 6.2 When to Use Each
 
@@ -1480,13 +1480,13 @@ Before moving to Lab 5, verify these behaviors:
 
 ### Patterns Summary
 
-| Pattern | Key Attributes | Purpose |
-|---------|---------------|---------|
-| **Details** | `hx-get`, `hx-target` | Load content into panel/modal |
-| **Delete** | `hx-post`, `hx-confirm`, `hx-vals` | Safe destructive actions |
-| **Filter** | `hx-trigger`, `hx-push-url` | Live search with URL state |
-| **Pagination** | `hx-push-url` on links | Navigable, bookmarkable pages |
-| **Transitions** | CSS + htmx classes | Visual polish |
+| Pattern         | Key Attributes                     | Purpose                       |
+|-----------------|------------------------------------|-------------------------------|
+| **Details**     | `hx-get`, `hx-target`              | Load content into panel/modal |
+| **Delete**      | `hx-post`, `hx-confirm`, `hx-vals` | Safe destructive actions      |
+| **Filter**      | `hx-trigger`, `hx-push-url`        | Live search with URL state    |
+| **Pagination**  | `hx-push-url` on links             | Navigable, bookmarkable pages |
+| **Transitions** | CSS + htmx classes                 | Visual polish                 |
 
 ### URL State Philosophy
 
@@ -1505,12 +1505,12 @@ This enables:
 
 ### Swap Strategy Selection
 
-| If your response... | Use swap strategy... |
-|---------------------|---------------------|
-| Includes wrapper element with ID | `outerHTML` |
-| Is content for a container | `innerHTML` |
-| Is a new item to add to a list | `beforeend` or `afterbegin` |
-| Triggers events only (no content) | `none` |
+| If your response...               | Use swap strategy...        |
+|-----------------------------------|-----------------------------|
+| Includes wrapper element with ID  | `outerHTML`                 |
+| Is content for a container        | `innerHTML`                 |
+| Is a new item to add to a list    | `beforeend` or `afterbegin` |
+| Triggers events only (no content) | `none`                      |
 
 ---
 
@@ -1518,14 +1518,14 @@ This enables:
 
 ### Common Issues
 
-| Problem | Likely Cause | Solution |
-|---------|--------------|----------|
-| Modal doesn't open | Missing Bootstrap JS | Ensure Bootstrap JS is loaded |
-| Modal opens but content is stale | Wrong swap strategy | Use `innerHTML` for modal body |
-| URL doesn't update | Missing `hx-push-url` | Add `hx-push-url="true"` |
-| Back button doesn't work | Initial page doesn't handle params | Ensure `OnGet` reads query params |
-| Filter doesn't preserve on pagination | Missing `q=@Model.Query` | Include query in pagination links |
-| Delete fails silently | Missing `hx-confirm` handling | Check browser console for errors |
+| Problem                               | Likely Cause                       | Solution                          |
+|---------------------------------------|------------------------------------|-----------------------------------|
+| Modal doesn't open                    | Missing Bootstrap JS               | Ensure Bootstrap JS is loaded     |
+| Modal opens but content is stale      | Wrong swap strategy                | Use `innerHTML` for modal body    |
+| URL doesn't update                    | Missing `hx-push-url`              | Add `hx-push-url="true"`          |
+| Back button doesn't work              | Initial page doesn't handle params | Ensure `OnGet` reads query params |
+| Filter doesn't preserve on pagination | Missing `q=@Model.Query`           | Include query in pagination links |
+| Delete fails silently                 | Missing `hx-confirm` handling      | Check browser console for errors  |
 
 ### Debug Tips
 

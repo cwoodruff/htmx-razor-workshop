@@ -34,13 +34,13 @@ Traditional server-rendered applications return full pages on every interaction.
 
 By the end of this lab, you will have:
 
-| Outcome | Description |
-|---------|-------------|
-| **Working Razor Pages app** | An application you can run and debug locally |
-| **Simple domain model** | A "Tasks" domain with in-memory storage |
-| **Three fragment boundaries** | List region, form region, and message region |
-| **Three partial views** | `_TaskList.cshtml`, `_TaskForm.cshtml`, `_Messages.cshtml` |
-| **Stable target element IDs** | `#task-list`, `#task-form`, `#messages` |
+| Outcome                       | Description                                                |
+|-------------------------------|------------------------------------------------------------|
+| **Working Razor Pages app**   | An application you can run and debug locally               |
+| **Simple domain model**       | A "Tasks" domain with in-memory storage                    |
+| **Three fragment boundaries** | List region, form region, and message region               |
+| **Three partial views**       | `_TaskList.cshtml`, `_TaskForm.cshtml`, `_Messages.cshtml` |
+| **Stable target element IDs** | `#task-list`, `#task-form`, `#messages`                    |
 
 This becomes the "frame" for all htmx work in subsequent labs.
 
@@ -361,13 +361,13 @@ public class IndexModel : PageModel
 
 **Key concepts explained:**
 
-| Concept | Purpose |
-|---------|---------|
+| Concept          | Purpose                                                |
+|------------------|--------------------------------------------------------|
 | `[BindProperty]` | Automatically populates `Input` from form data on POST |
-| `[TempData]` | Stores data that survives exactly one redirect |
-| `OnGet()` | Handles HTTP GET requests |
-| `OnPostCreate()` | Handles HTTP POST to `?handler=Create` |
-| PRG Pattern | Post-Redirect-Get prevents duplicate form submissions |
+| `[TempData]`     | Stores data that survives exactly one redirect         |
+| `OnGet()`        | Handles HTTP GET requests                              |
+| `OnPostCreate()` | Handles HTTP POST to `?handler=Create`                 |
+| PRG Pattern      | Post-Redirect-Get prevents duplicate form submissions  |
 
 ### 3.3 Create the Razor Page (Initial Version)
 
@@ -752,10 +752,10 @@ The `<partial>` tag helper is the recommended way to render partials in ASP.NET 
 <partial name="Partials/_Messages" model="Model.FlashMessage" />
 ````
 
-| Attribute | Purpose |
-|-----------|---------|
-| `name` | Path to the partial view (relative to current page folder) |
-| `model` | Data to pass to the partial's `@model` |
+| Attribute | Purpose                                                    |
+|-----------|------------------------------------------------------------|
+| `name`    | Path to the partial view (relative to current page folder) |
+| `model`   | Data to pass to the partial's `@model`                     |
 
 **Path resolution:**
 - `"Partials/_Messages"` looks for `Pages/Tasks/Partials/_Messages.cshtml`
@@ -849,13 +849,13 @@ The "Fragment First" architecture you built in this lab makes all of that possib
 
 ### Common Issues and Solutions
 
-| Problem | Solution |
-|---------|----------|
-| **Page not found at /Tasks** | Ensure `Index.cshtml` is in `Pages/Tasks/` folder |
-| **Partial not found error** | Check the path in `<partial name="...">` matches actual file location |
-| **Tasks disappear on restart** | Expected behavior—data is in-memory only |
-| **Validation messages don't show** | Ensure `@section Scripts` includes `_ValidationScriptsPartial` |
-| **Model binding not working** | Verify `[BindProperty]` attribute on `Input` property |
+| Problem                            | Solution                                                              |
+|------------------------------------|-----------------------------------------------------------------------|
+| **Page not found at /Tasks**       | Ensure `Index.cshtml` is in `Pages/Tasks/` folder                     |
+| **Partial not found error**        | Check the path in `<partial name="...">` matches actual file location |
+| **Tasks disappear on restart**     | Expected behavior—data is in-memory only                              |
+| **Validation messages don't show** | Ensure `@section Scripts` includes `_ValidationScriptsPartial`        |
+| **Model binding not working**      | Verify `[BindProperty]` attribute on `Input` property                 |
 
 ### Debug Tips
 

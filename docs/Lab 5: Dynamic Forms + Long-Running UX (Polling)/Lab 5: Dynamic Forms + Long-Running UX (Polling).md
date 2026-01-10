@@ -18,12 +18,12 @@ These patterns appear constantly in real applications—order line items, tag ma
 
 Both patterns share a common theme: **the server controls the UI state**.
 
-| Scenario | Traditional Approach | htmx Approach |
-|----------|---------------------|---------------|
-| Add form row | JavaScript clones DOM, manages indexes | Server renders new row fragment |
-| Dependent dropdown | JavaScript fetches JSON, builds options | Server renders options fragment |
-| Long-running job | WebSocket or complex polling library | `hx-trigger="every 1s"` + status endpoint |
-| Multiple updates | Custom event system | `hx-swap-oob` for out-of-band swaps |
+| Scenario           | Traditional Approach                    | htmx Approach                             |
+|--------------------|-----------------------------------------|-------------------------------------------|
+| Add form row       | JavaScript clones DOM, manages indexes  | Server renders new row fragment           |
+| Dependent dropdown | JavaScript fetches JSON, builds options | Server renders options fragment           |
+| Long-running job   | WebSocket or complex polling library    | `hx-trigger="every 1s"` + status endpoint |
+| Multiple updates   | Custom event system                     | `hx-swap-oob` for out-of-band swaps       |
 
 ---
 
@@ -31,13 +31,13 @@ Both patterns share a common theme: **the server controls the UI state**.
 
 By the end of Lab 5, you will be able to:
 
-| Outcome | Description |
-|---------|-------------|
-| **Add/Remove rows** | Dynamic sub-collections (tags, line items) via fragment endpoints |
-| **Dependent dropdowns** | Cascading selects (Category → Subcategory) |
-| **Polling** | Long-running operations with `hx-trigger="every Xs"` |
-| **Out-of-band swaps** | Update multiple page regions from a single response |
-| **Conditional polling** | Start/stop polling based on job status |
+| Outcome                 | Description                                                       |
+|-------------------------|-------------------------------------------------------------------|
+| **Add/Remove rows**     | Dynamic sub-collections (tags, line items) via fragment endpoints |
+| **Dependent dropdowns** | Cascading selects (Category → Subcategory)                        |
+| **Polling**             | Long-running operations with `hx-trigger="every Xs"`              |
+| **Out-of-band swaps**   | Update multiple page regions from a single response               |
+| **Conditional polling** | Start/stop polling based on job status                            |
 
 ---
 
@@ -146,11 +146,11 @@ This fragment renders a single tag input with its remove button:
         hx-swap="delete">
 ```
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
-| `hx-get` | `"?handler=RemoveTag&index=..."` | Request to remove handler |
-| `hx-target` | `"#tag-row-@Model.Index"` | Target this specific row |
-| `hx-swap` | `"delete"` | Remove the target from DOM |
+| Attribute   | Value                            | Purpose                    |
+|-------------|----------------------------------|----------------------------|
+| `hx-get`    | `"?handler=RemoveTag&index=..."` | Request to remove handler  |
+| `hx-target` | `"#tag-row-@Model.Index"`        | Target this specific row   |
+| `hx-swap`   | `"delete"`                       | Remove the target from DOM |
 
 **Why `hx-swap="delete"`?**
 
@@ -224,12 +224,12 @@ This fragment wraps all tag rows and includes the "Add Tag" button:
         hx-swap="beforeend">
 ```
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
-| `hx-get` | `"?handler=AddTag"` | Request new tag row |
-| `hx-vals` | `'{"nextIndex": @Model.Count}'` | Pass the next available index |
-| `hx-target` | `"#tags-list"` | Append to the tags list |
-| `hx-swap` | `"beforeend"` | Insert as last child |
+| Attribute   | Value                           | Purpose                       |
+|-------------|---------------------------------|-------------------------------|
+| `hx-get`    | `"?handler=AddTag"`             | Request new tag row           |
+| `hx-vals`   | `'{"nextIndex": @Model.Count}'` | Pass the next available index |
+| `hx-target` | `"#tags-list"`                  | Append to the tags list       |
+| `hx-swap`   | `"beforeend"`                   | Insert as last child          |
 
 **Why pass `nextIndex`?**
 
@@ -562,12 +562,12 @@ public IActionResult OnGetSubcategories(string? category)
         hx-include="[name='Input.Category']">
 ```
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
-| `hx-get` | `"?handler=Subcategories"` | Fetch new options |
-| `hx-target` | `"#subcategory-container"` | Replace subcategory dropdown |
-| `hx-swap` | `"outerHTML"` | Replace entire container |
-| `hx-include` | `"[name='Input.Category']"` | Include this select's value |
+| Attribute    | Value                       | Purpose                      |
+|--------------|-----------------------------|------------------------------|
+| `hx-get`     | `"?handler=Subcategories"`  | Fetch new options            |
+| `hx-target`  | `"#subcategory-container"`  | Replace subcategory dropdown |
+| `hx-swap`    | `"outerHTML"`               | Replace entire container     |
+| `hx-include` | `"[name='Input.Category']"` | Include this select's value  |
 
 **Default Trigger:**
 
@@ -863,12 +863,12 @@ The key to this pattern is that **polling is defined in the fragment itself**:
      hx-swap="outerHTML">
 ```
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
-| `hx-get` | `"?handler=JobStatus&jobId=..."` | Poll status endpoint |
-| `hx-trigger` | `"every 1s"` | Fire every 1 second |
-| `hx-target` | `"#job-status"` | Replace this fragment |
-| `hx-swap` | `"outerHTML"` | Replace entire element |
+| Attribute    | Value                            | Purpose                |
+|--------------|----------------------------------|------------------------|
+| `hx-get`     | `"?handler=JobStatus&jobId=..."` | Poll status endpoint   |
+| `hx-trigger` | `"every 1s"`                     | Fire every 1 second    |
+| `hx-target`  | `"#job-status"`                  | Replace this fragment  |
+| `hx-swap`    | `"outerHTML"`                    | Replace entire element |
 
 **How Polling Stops:**
 
@@ -1191,13 +1191,13 @@ public IActionResult OnGetJobStatus(string jobId)
 
 You can customize how OOB content is swapped:
 
-| Syntax | Behavior |
-|--------|----------|
-| `hx-swap-oob="true"` | Default: `outerHTML` swap |
-| `hx-swap-oob="innerHTML"` | Replace target's children |
-| `hx-swap-oob="beforeend"` | Append to target |
-| `hx-swap-oob="afterbegin"` | Prepend to target |
-| `hx-swap-oob="outerHTML:#custom-id"` | Swap into different ID |
+| Syntax                               | Behavior                  |
+|--------------------------------------|---------------------------|
+| `hx-swap-oob="true"`                 | Default: `outerHTML` swap |
+| `hx-swap-oob="innerHTML"`            | Replace target's children |
+| `hx-swap-oob="beforeend"`            | Append to target          |
+| `hx-swap-oob="afterbegin"`           | Prepend to target         |
+| `hx-swap-oob="outerHTML:#custom-id"` | Swap into different ID    |
 
 **Example: Append to Activity Log**
 
@@ -1293,14 +1293,14 @@ public IActionResult OnGetResetJob()
 
 ### Handler Inventory (Lab 5)
 
-| Handler | Verb | Returns | Purpose |
-|---------|------|---------|---------|
-| `OnGetAddTag` | GET | `_TagRow` | Add new tag input |
-| `OnGetRemoveTag` | GET | Empty | Remove tag (delete swap) |
-| `OnGetSubcategories` | GET | `_SubcategorySelect` | Update subcategory dropdown |
-| `OnPostStartJob` | POST | `_JobStatus` | Start background job |
-| `OnGetJobStatus` | GET | `_JobStatus` or `_JobStatusWithOob` | Poll job progress |
-| `OnGetResetJob` | GET | `_JobStatus` (null) | Reset job UI |
+| Handler              | Verb | Returns                             | Purpose                     |
+|----------------------|------|-------------------------------------|-----------------------------|
+| `OnGetAddTag`        | GET  | `_TagRow`                           | Add new tag input           |
+| `OnGetRemoveTag`     | GET  | Empty                               | Remove tag (delete swap)    |
+| `OnGetSubcategories` | GET  | `_SubcategorySelect`                | Update subcategory dropdown |
+| `OnPostStartJob`     | POST | `_JobStatus`                        | Start background job        |
+| `OnGetJobStatus`     | GET  | `_JobStatus` or `_JobStatusWithOob` | Poll job progress           |
+| `OnGetResetJob`      | GET  | `_JobStatus` (null)                 | Reset job UI                |
 
 ---
 
@@ -1343,12 +1343,12 @@ Before completing the workshop, verify these behaviors:
 
 ### Pattern Summary
 
-| Pattern | Key Technique | When to Use |
-|---------|---------------|-------------|
-| **Add/Remove Rows** | `hx-swap="beforeend"` + `hx-swap="delete"` | Dynamic sub-collections |
-| **Dependent Dropdowns** | `hx-get` on change + `hx-include` | Cascading selections |
-| **Polling** | `hx-trigger="every Xs"` in fragment | Long-running operations |
-| **OOB Swaps** | `hx-swap-oob="true"` on additional fragments | Multi-region updates |
+| Pattern                 | Key Technique                                | When to Use             |
+|-------------------------|----------------------------------------------|-------------------------|
+| **Add/Remove Rows**     | `hx-swap="beforeend"` + `hx-swap="delete"`   | Dynamic sub-collections |
+| **Dependent Dropdowns** | `hx-get` on change + `hx-include`            | Cascading selections    |
+| **Polling**             | `hx-trigger="every Xs"` in fragment          | Long-running operations |
+| **OOB Swaps**           | `hx-swap-oob="true"` on additional fragments | Multi-region updates    |
 
 ### The Server Controls Everything
 
@@ -1363,21 +1363,21 @@ This is the power of hypermedia: the server remains in control of application st
 
 ### Polling Best Practices
 
-| Practice | Reason |
-|----------|--------|
-| Use 1-2 second intervals | Balances responsiveness with server load |
-| Stop polling on completion | Prevent unnecessary requests |
-| Include job ID in requests | Enable multiple concurrent jobs |
-| Show progress feedback | Keep users informed |
-| Handle failures gracefully | Display errors, offer retry |
+| Practice                   | Reason                                   |
+|----------------------------|------------------------------------------|
+| Use 1-2 second intervals   | Balances responsiveness with server load |
+| Stop polling on completion | Prevent unnecessary requests             |
+| Include job ID in requests | Enable multiple concurrent jobs          |
+| Show progress feedback     | Keep users informed                      |
+| Handle failures gracefully | Display errors, offer retry              |
 
 ### OOB Swap Guidelines
 
-| Guideline | Reason |
-|-----------|--------|
-| Use sparingly | Too many OOB swaps become hard to track |
-| Document OOB targets | Others need to know what updates |
-| Keep OOB content small | Large OOB swaps can be jarring |
+| Guideline               | Reason                                  |
+|-------------------------|-----------------------------------------|
+| Use sparingly           | Too many OOB swaps become hard to track |
+| Document OOB targets    | Others need to know what updates        |
+| Keep OOB content small  | Large OOB swaps can be jarring          |
 | Consider events instead | `HX-Trigger` + listeners may be cleaner |
 
 ---
@@ -1386,14 +1386,14 @@ This is the power of hypermedia: the server remains in control of application st
 
 ### Common Issues
 
-| Problem | Likely Cause | Solution |
-|---------|--------------|----------|
-| Tags not binding | Index mismatch | Ensure indexes are sequential |
-| Remove button doesn't work | Missing hx-target | Add target to specific row |
-| Dropdown doesn't update | Missing hx-include | Include the select's value |
-| Polling doesn't stop | Trigger in completed state | Remove trigger when done |
-| OOB swap fails | Target ID doesn't exist | Ensure target element exists |
-| OOB replaces wrong element | Duplicate IDs | Ensure unique IDs |
+| Problem                    | Likely Cause               | Solution                      |
+|----------------------------|----------------------------|-------------------------------|
+| Tags not binding           | Index mismatch             | Ensure indexes are sequential |
+| Remove button doesn't work | Missing hx-target          | Add target to specific row    |
+| Dropdown doesn't update    | Missing hx-include         | Include the select's value    |
+| Polling doesn't stop       | Trigger in completed state | Remove trigger when done      |
+| OOB swap fails             | Target ID doesn't exist    | Ensure target element exists  |
+| OOB replaces wrong element | Duplicate IDs              | Ensure unique IDs             |
 
 ### Debug Tips
 
@@ -1411,13 +1411,13 @@ Congratulations! You've completed all five labs and two checkpoints. You now hav
 
 ### Skills Acquired
 
-| Lab | Skills |
-|-----|--------|
-| **Lab 1** | Fragment boundaries, partial views, stable IDs |
+| Lab       | Skills                                                   |
+|-----------|----------------------------------------------------------|
+| **Lab 1** | Fragment boundaries, partial views, stable IDs           |
 | **Lab 2** | `hx-get`, `hx-post`, `hx-target`, `hx-swap`, retargeting |
-| **Lab 3** | Real-time validation, debouncing, antiforgery |
-| **Lab 4** | Modals, confirm dialogs, URL state, pagination |
-| **Lab 5** | Dynamic forms, dependent selects, polling, OOB swaps |
+| **Lab 3** | Real-time validation, debouncing, antiforgery            |
+| **Lab 4** | Modals, confirm dialogs, URL state, pagination           |
+| **Lab 5** | Dynamic forms, dependent selects, polling, OOB swaps     |
 
 ### Patterns to Apply
 

@@ -11,12 +11,12 @@ This capstone session transforms your workshop labs into a **repeatable blueprin
 
 ### Session Goals
 
-| Goal | Description |
-|------|-------------|
-| **Consolidate** | Clean up code, remove duplication, standardize patterns |
-| **Document** | Create a convention checklist for your team |
-| **Extend** | Explore advanced patterns (inline edit, optimistic UI, SSE) |
-| **Adopt** | Understand how to introduce htmx to existing applications |
+| Goal            | Description                                                 |
+|-----------------|-------------------------------------------------------------|
+| **Consolidate** | Clean up code, remove duplication, standardize patterns     |
+| **Document**    | Create a convention checklist for your team                 |
+| **Extend**      | Explore advanced patterns (inline edit, optimistic UI, SSE) |
+| **Adopt**       | Understand how to introduce htmx to existing applications   |
 
 ### Time Estimate
 
@@ -34,19 +34,19 @@ Review your `Pages/Tasks/Partials/` folder and ensure each fragment has a single
 
 **Current Fragment Inventory:**
 
-| Fragment | Purpose | Model |
-|----------|---------|-------|
-| `_TaskList.cshtml` | List with pagination | `TaskListVm` |
-| `_TaskForm.cshtml` | Create/edit form | `IndexModel` |
-| `_Messages.cshtml` | Success/error messages | `string?` |
-| `_TaskDetails.cshtml` | Detail view (panel/modal) | `TaskItem?` |
-| `_TitleValidation.cshtml` | Field-level validation | `string?` |
-| `_TagRow.cshtml` | Single tag input | `(int, string)` |
-| `_TagsContainer.cshtml` | Tags section with add button | `List<string>` |
-| `_SubcategorySelect.cshtml` | Dependent dropdown | `(IReadOnlyList<string>, string?)` |
-| `_JobStatus.cshtml` | Polling job status | `JobStatus?` |
-| `_JobStatusWithOob.cshtml` | Job status + OOB message | `(JobStatus, string, string)` |
-| `_Error.cshtml` | Generic error display | `string` |
+| Fragment                    | Purpose                      | Model                              |
+|-----------------------------|------------------------------|------------------------------------|
+| `_TaskList.cshtml`          | List with pagination         | `TaskListVm`                       |
+| `_TaskForm.cshtml`          | Create/edit form             | `IndexModel`                       |
+| `_Messages.cshtml`          | Success/error messages       | `string?`                          |
+| `_TaskDetails.cshtml`       | Detail view (panel/modal)    | `TaskItem?`                        |
+| `_TitleValidation.cshtml`   | Field-level validation       | `string?`                          |
+| `_TagRow.cshtml`            | Single tag input             | `(int, string)`                    |
+| `_TagsContainer.cshtml`     | Tags section with add button | `List<string>`                     |
+| `_SubcategorySelect.cshtml` | Dependent dropdown           | `(IReadOnlyList<string>, string?)` |
+| `_JobStatus.cshtml`         | Polling job status           | `JobStatus?`                       |
+| `_JobStatusWithOob.cshtml`  | Job status + OOB message     | `(JobStatus, string, string)`      |
+| `_Error.cshtml`             | Generic error display        | `string`                           |
 
 ### 1.2 Remove Duplication
 
@@ -236,14 +236,14 @@ Save this as `HTMX_CONVENTIONS.md` in your project root:
 
 ### When to return what
 
-| Scenario | Response |
-|----------|----------|
-| Initial page load | `Page()` |
-| Non-htmx form submit | `RedirectToPage()` |
-| htmx success | `Fragment("...", model)` |
-| htmx validation error | `Fragment("_Form", this)` + retarget |
-| htmx not found | `Fragment("_Messages", msg)` + retarget |
-| htmx server error | `Fragment("_Error", msg)` + retarget |
+| Scenario              | Response                                |
+|-----------------------|-----------------------------------------|
+| Initial page load     | `Page()`                                |
+| Non-htmx form submit  | `RedirectToPage()`                      |
+| htmx success          | `Fragment("...", model)`                |
+| htmx validation error | `Fragment("_Form", this)` + retarget    |
+| htmx not found        | `Fragment("_Messages", msg)` + retarget |
+| htmx server error     | `Fragment("_Error", msg)` + retarget    |
 
 ### Status Codes
 - 200: Success
@@ -251,14 +251,14 @@ Save this as `HTMX_CONVENTIONS.md` in your project root:
 
 ## Swap Strategies
 
-| Strategy | Use When |
-|----------|----------|
-| `outerHTML` | Fragment includes its wrapper (default) |
-| `innerHTML` | Swapping content inside a container |
-| `beforeend` | Appending to a list |
-| `afterbegin` | Prepending to a list |
-| `delete` | Removing an element |
-| `none` | Side effects only (triggers) |
+| Strategy     | Use When                                |
+|--------------|-----------------------------------------|
+| `outerHTML`  | Fragment includes its wrapper (default) |
+| `innerHTML`  | Swapping content inside a container     |
+| `beforeend`  | Appending to a list                     |
+| `afterbegin` | Prepending to a list                    |
+| `delete`     | Removing an element                     |
+| `none`       | Side effects only (triggers)            |
 
 ## htmx Attributes Quick Reference
 
@@ -1160,14 +1160,14 @@ You've completed the htmx + ASP.NET Core Workshop!
 
 ### What You've Learned
 
-| Lab | Key Skills |
-|-----|------------|
-| **Lab 1** | Fragment boundaries, partial views, stable IDs |
-| **Lab 2** | `hx-get`, `hx-post`, targeting, swapping, retargeting |
-| **Lab 3** | Real-time validation, debouncing, antiforgery |
-| **Lab 4** | Modals, confirm dialogs, URL state, pagination |
-| **Lab 5** | Dynamic forms, dependent selects, polling, OOB swaps |
-| **Capstone** | Conventions, hardening, advanced extensions |
+| Lab          | Key Skills                                            |
+|--------------|-------------------------------------------------------|
+| **Lab 1**    | Fragment boundaries, partial views, stable IDs        |
+| **Lab 2**    | `hx-get`, `hx-post`, targeting, swapping, retargeting |
+| **Lab 3**    | Real-time validation, debouncing, antiforgery         |
+| **Lab 4**    | Modals, confirm dialogs, URL state, pagination        |
+| **Lab 5**    | Dynamic forms, dependent selects, polling, OOB swaps  |
+| **Capstone** | Conventions, hardening, advanced extensions           |
 
 ### The htmx Philosophy
 
@@ -1190,22 +1190,22 @@ Share your htmx projects and questions:
 
 For reference, here's a complete handler inventory from all labs:
 
-| Handler | Verb | Fragment | Purpose |
-|---------|------|----------|---------|
-| `OnGet` | GET | (Page) | Initial page load |
-| `OnGetList` | GET | `_TaskList` | Fetch/refresh list |
-| `OnGetDetails` | GET | `_TaskDetails` | Load item details |
-| `OnGetMessages` | GET | `_Messages` | Fetch messages |
-| `OnGetEmptyForm` | GET | `_TaskForm` | Reset form |
-| `OnGetAddTag` | GET | `_TagRow` | Add tag input |
-| `OnGetRemoveTag` | GET | (empty) | Remove tag |
-| `OnGetSubcategories` | GET | `_SubcategorySelect` | Update dropdown |
-| `OnGetJobStatus` | GET | `_JobStatus` | Poll job progress |
-| `OnGetResetJob` | GET | `_JobStatus` | Reset job UI |
-| `OnGetEditRow` | GET | `_TaskRowEdit` | Edit mode (extension) |
-| `OnGetCancelEdit` | GET | `_TaskRow` | Cancel edit (extension) |
-| `OnPostCreate` | POST | `_TaskList` | Create item |
-| `OnPostDelete` | POST | `_TaskList` | Delete item |
-| `OnPostValidateTitle` | POST | `_TitleValidation` | Validate field |
-| `OnPostStartJob` | POST | `_JobStatus` | Start background job |
-| `OnPostUpdateRow` | POST | `_TaskRow` | Update item (extension) |
+| Handler               | Verb | Fragment             | Purpose                 |
+|-----------------------|------|----------------------|-------------------------|
+| `OnGet`               | GET  | (Page)               | Initial page load       |
+| `OnGetList`           | GET  | `_TaskList`          | Fetch/refresh list      |
+| `OnGetDetails`        | GET  | `_TaskDetails`       | Load item details       |
+| `OnGetMessages`       | GET  | `_Messages`          | Fetch messages          |
+| `OnGetEmptyForm`      | GET  | `_TaskForm`          | Reset form              |
+| `OnGetAddTag`         | GET  | `_TagRow`            | Add tag input           |
+| `OnGetRemoveTag`      | GET  | (empty)              | Remove tag              |
+| `OnGetSubcategories`  | GET  | `_SubcategorySelect` | Update dropdown         |
+| `OnGetJobStatus`      | GET  | `_JobStatus`         | Poll job progress       |
+| `OnGetResetJob`       | GET  | `_JobStatus`         | Reset job UI            |
+| `OnGetEditRow`        | GET  | `_TaskRowEdit`       | Edit mode (extension)   |
+| `OnGetCancelEdit`     | GET  | `_TaskRow`           | Cancel edit (extension) |
+| `OnPostCreate`        | POST | `_TaskList`          | Create item             |
+| `OnPostDelete`        | POST | `_TaskList`          | Delete item             |
+| `OnPostValidateTitle` | POST | `_TitleValidation`   | Validate field          |
+| `OnPostStartJob`      | POST | `_JobStatus`         | Start background job    |
+| `OnPostUpdateRow`     | POST | `_TaskRow`           | Update item (extension) |

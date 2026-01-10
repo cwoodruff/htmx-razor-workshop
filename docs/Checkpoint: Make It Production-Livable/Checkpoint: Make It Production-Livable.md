@@ -26,13 +26,13 @@ Production-livable means your code is:
 
 By the end of this checkpoint, you will have:
 
-| Outcome | Description |
-|---------|-------------|
-| **Folder conventions** | Clear structure for partials and handlers |
-| **Handler naming** | Predictable, discoverable method names |
-| **Response rules** | Consistent patterns for fragments vs pages vs errors |
-| **Reusable helpers** | Standard utilities you can copy to real projects |
-| **Fragment inventory** | Documentation of your htmx contracts |
+| Outcome                | Description                                          |
+|------------------------|------------------------------------------------------|
+| **Folder conventions** | Clear structure for partials and handlers            |
+| **Handler naming**     | Predictable, discoverable method names               |
+| **Response rules**     | Consistent patterns for fragments vs pages vs errors |
+| **Reusable helpers**   | Standard utilities you can copy to real projects     |
+| **Fragment inventory** | Documentation of your htmx contracts                 |
 
 ---
 
@@ -65,25 +65,25 @@ Data/
 
 ### 1.2 Why This Structure Works
 
-| Aspect | Benefit |
-|--------|---------|
-| **Co-location** | Partials live next to the page that owns them |
-| **Discoverability** | File paths mirror the mental model |
-| **Ownership** | Fragment boundaries are "owned" by a specific feature |
-| **Scalability** | Easy to add new features following the same pattern |
+| Aspect              | Benefit                                               |
+|---------------------|-------------------------------------------------------|
+| **Co-location**     | Partials live next to the page that owns them         |
+| **Discoverability** | File paths mirror the mental model                    |
+| **Ownership**       | Fragment boundaries are "owned" by a specific feature |
+| **Scalability**     | Easy to add new features following the same pattern   |
 
 ### 1.3 Understanding Fragment Boundaries
 
 Each partial represents a **fragment boundary**—a swappable region of the UI:
 
-| Partial | Fragment ID | Purpose |
-|---------|-------------|---------|
-| `_TaskList.cshtml` | `#task-list` | List of tasks (paginated, filtered) |
-| `_TaskForm.cshtml` | `#task-form` | Create/edit form |
-| `_Messages.cshtml` | `#messages` | Success/error messages |
-| `_TaskDetails.cshtml` | `#task-details` | Detail panel/modal content |
-| `_TitleValidation.cshtml` | `#title-validation` | Field-level validation |
-| `_Error.cshtml` | (targets `#messages`) | Error display |
+| Partial                   | Fragment ID           | Purpose                             |
+|---------------------------|-----------------------|-------------------------------------|
+| `_TaskList.cshtml`        | `#task-list`          | List of tasks (paginated, filtered) |
+| `_TaskForm.cshtml`        | `#task-form`          | Create/edit form                    |
+| `_Messages.cshtml`        | `#messages`           | Success/error messages              |
+| `_TaskDetails.cshtml`     | `#task-details`       | Detail panel/modal content          |
+| `_TitleValidation.cshtml` | `#title-validation`   | Field-level validation              |
+| `_Error.cshtml`           | (targets `#messages`) | Error display                       |
 
 ### 1.4 Handler Placement Rule
 
@@ -130,21 +130,21 @@ Use **resource + intent** naming aligned with HTTP verbs:
 
 #### GET Fragment Handlers
 
-| Handler | Returns | Purpose |
-|---------|---------|---------|
-| `OnGetList(...)` | `_TaskList` | Fetch the list fragment |
-| `OnGetDetails(int id)` | `_TaskDetails` | Fetch details for one item |
-| `OnGetMessages()` | `_Messages` | Fetch messages fragment |
-| `OnGetEmptyForm()` | `_TaskForm` (reset) | Fetch a clean form |
+| Handler                | Returns             | Purpose                    |
+|------------------------|---------------------|----------------------------|
+| `OnGetList(...)`       | `_TaskList`         | Fetch the list fragment    |
+| `OnGetDetails(int id)` | `_TaskDetails`      | Fetch details for one item |
+| `OnGetMessages()`      | `_Messages`         | Fetch messages fragment    |
+| `OnGetEmptyForm()`     | `_TaskForm` (reset) | Fetch a clean form         |
 
 #### POST Action Handlers
 
-| Handler | Returns | Purpose |
-|---------|---------|---------|
-| `OnPostCreate()` | `_TaskList` (success) | Create new item |
-| `OnPostDelete(int id)` | `_TaskList` | Delete an item |
-| `OnPostValidateTitle()` | `_TitleValidation` | Validate a single field |
-| `OnPostUpdate(int id)` | `_TaskList` or `_TaskDetails` | Update an item |
+| Handler                 | Returns                       | Purpose                 |
+|-------------------------|-------------------------------|-------------------------|
+| `OnPostCreate()`        | `_TaskList` (success)         | Create new item         |
+| `OnPostDelete(int id)`  | `_TaskList`                   | Delete an item          |
+| `OnPostValidateTitle()` | `_TitleValidation`            | Validate a single field |
+| `OnPostUpdate(int id)`  | `_TaskList` or `_TaskDetails` | Update an item          |
 
 ### 2.2 The Naming Rule
 
@@ -273,11 +273,11 @@ if (IsHtmx())
 
 **Critical Rule**: If you use `hx-swap="outerHTML"`, the fragment **must** include its wrapper with the correct ID.
 
-| Fragment | Must Return |
-|----------|-------------|
-| `_TaskList` | `<div id="task-list">...</div>` |
-| `_TaskForm` | `<div id="task-form">...</div>` |
-| `_Messages` | `<div id="messages">...</div>` |
+| Fragment       | Must Return                        |
+|----------------|------------------------------------|
+| `_TaskList`    | `<div id="task-list">...</div>`    |
+| `_TaskForm`    | `<div id="task-form">...</div>`    |
+| `_Messages`    | `<div id="messages">...</div>`     |
 | `_TaskDetails` | `<div id="task-details">...</div>` |
 
 **Why This Matters:**
@@ -350,14 +350,14 @@ throw new InvalidOperationException("Server error.");
 
 ### 3.5 Response Rules Summary Table
 
-| Scenario | Status | Response | Target |
-|----------|--------|----------|--------|
-| Initial page load | 200 | `Page()` | Full page |
-| Non-htmx form submit | 302 | `RedirectToPage()` | Full page |
-| htmx success | 200 | `Fragment("...", model)` | Original `hx-target` |
-| htmx validation error | 200 | `Fragment("_TaskForm", this)` | Retarget to `#task-form` |
-| htmx not found | 200 | `Fragment("_Messages", msg)` | Retarget to `#messages` |
-| htmx server error | 200 | `Fragment("_Error", msg)` | Retarget to `#messages` |
+| Scenario              | Status | Response                      | Target                   |
+|-----------------------|--------|-------------------------------|--------------------------|
+| Initial page load     | 200    | `Page()`                      | Full page                |
+| Non-htmx form submit  | 302    | `RedirectToPage()`            | Full page                |
+| htmx success          | 200    | `Fragment("...", model)`      | Original `hx-target`     |
+| htmx validation error | 200    | `Fragment("_TaskForm", this)` | Retarget to `#task-form` |
+| htmx not found        | 200    | `Fragment("_Messages", msg)`  | Retarget to `#messages`  |
+| htmx server error     | 200    | `Fragment("_Error", msg)`     | Retarget to `#messages`  |
 
 ### 3.6 When to Use Retargeting
 
@@ -521,12 +521,12 @@ public class IndexModel : PageModel
 
 ### 5.2 Why Document Fragment Contracts?
 
-| Benefit | Description |
-|---------|-------------|
-| **Prevents ID drift** | Team knows which IDs are "reserved" |
-| **Debugging aid** | Quick reference for which handler returns what |
-| **Onboarding** | New developers understand the page structure |
-| **Maintenance** | Safely rename/refactor with full visibility |
+| Benefit               | Description                                    |
+|-----------------------|------------------------------------------------|
+| **Prevents ID drift** | Team knows which IDs are "reserved"            |
+| **Debugging aid**     | Quick reference for which handler returns what |
+| **Onboarding**        | New developers understand the page structure   |
+| **Maintenance**       | Safely rename/refactor with full visibility    |
 
 ### 5.3 URL State Policy (If Using Filtering/Pagination)
 
@@ -559,30 +559,30 @@ Is this an htmx request? (HX-Request: true)
 
 ### Handler Naming Quick Reference
 
-| Pattern | Example | Returns |
-|---------|---------|---------|
-| `OnGet{Resource}` | `OnGetList()` | `_TaskList` |
-| `OnGet{Resource}` | `OnGetDetails(int id)` | `_TaskDetails` |
-| `OnPost{Action}` | `OnPostCreate()` | `_TaskList` (success) |
-| `OnPost{Action}` | `OnPostDelete(int id)` | `_TaskList` |
-| `OnPostValidate{Field}` | `OnPostValidateTitle()` | `_TitleValidation` |
+| Pattern                 | Example                 | Returns               |
+|-------------------------|-------------------------|-----------------------|
+| `OnGet{Resource}`       | `OnGetList()`           | `_TaskList`           |
+| `OnGet{Resource}`       | `OnGetDetails(int id)`  | `_TaskDetails`        |
+| `OnPost{Action}`        | `OnPostCreate()`        | `_TaskList` (success) |
+| `OnPost{Action}`        | `OnPostDelete(int id)`  | `_TaskList`           |
+| `OnPostValidate{Field}` | `OnPostValidateTitle()` | `_TitleValidation`    |
 
 ### Status Codes Quick Reference
 
-| Status | Meaning | Use Case |
-|--------|---------|----------|
-| 200 | OK | Successful response |
-| 302 | Redirect | Non-htmx form submit |
+| Status | Meaning  | Use Case             |
+|--------|----------|----------------------|
+| 200    | OK       | Successful response  |
+| 302    | Redirect | Non-htmx form submit |
 
 ### htmx Headers Quick Reference
 
-| Header | Direction | Purpose |
-|--------|-----------|---------|
-| `HX-Request` | Request | Identifies htmx request |
-| `HX-Trigger` | Response | Fire client-side events |
-| `HX-Retarget` | Response | Override hx-target |
-| `HX-Reswap` | Response | Override hx-swap |
-| `HX-Push-Url` | Response | Update browser URL |
+| Header        | Direction | Purpose                 |
+|---------------|-----------|-------------------------|
+| `HX-Request`  | Request   | Identifies htmx request |
+| `HX-Trigger`  | Response  | Fire client-side events |
+| `HX-Retarget` | Response  | Override hx-target      |
+| `HX-Reswap`   | Response  | Override hx-swap        |
+| `HX-Push-Url` | Response  | Update browser URL      |
 
 ---
 
@@ -650,22 +650,22 @@ The discipline is maintaining these patterns consistently across your codebase.
 
 ### What Makes Code "Production-Livable"
 
-| Attribute | How to Achieve It |
-|-----------|-------------------|
+| Attribute        | How to Achieve It                                  |
+|------------------|----------------------------------------------------|
 | **Discoverable** | Co-locate partials with features, use clear naming |
-| **Predictable** | Follow response rules, name handlers consistently |
-| **Debuggable** | URL matches handler, fragment matches ID |
-| **Maintainable** | Document contracts, use helpers |
+| **Predictable**  | Follow response rules, name handlers consistently  |
+| **Debuggable**   | URL matches handler, fragment matches ID           |
+| **Maintainable** | Document contracts, use helpers                    |
 
 ### The Anti-Patterns to Avoid
 
-| Anti-Pattern | Why It's Bad | Better Approach |
-|--------------|--------------|-----------------|
-| Random hx-targets | Hard to debug | Explicit fragment boundaries |
-| Inconsistent naming | Can't find handlers | Verb + resource pattern |
-| Mixed response types | Unpredictable behavior | Clear response rules |
-| Magic strings | Hard to refactor | Use helpers |
-| Undocumented fragments | ID drift, broken swaps | Fragment inventory |
+| Anti-Pattern           | Why It's Bad           | Better Approach              |
+|------------------------|------------------------|------------------------------|
+| Random hx-targets      | Hard to debug          | Explicit fragment boundaries |
+| Inconsistent naming    | Can't find handlers    | Verb + resource pattern      |
+| Mixed response types   | Unpredictable behavior | Clear response rules         |
+| Magic strings          | Hard to refactor       | Use helpers                  |
+| Undocumented fragments | ID drift, broken swaps | Fragment inventory           |
 
 ---
 

@@ -29,13 +29,13 @@ This is "HTML over the wire"—the server remains the source of truth for your U
 
 ### Why This Approach?
 
-| Traditional SPA | htmx Approach |
-|-----------------|---------------|
-| Server returns JSON | Server returns HTML |
-| Client renders UI | Server renders UI |
-| Complex client state | Simple request/response |
-| Heavy JavaScript | Minimal JavaScript |
-| Separate API contracts | HTML is the contract |
+| Traditional SPA        | htmx Approach           |
+|------------------------|-------------------------|
+| Server returns JSON    | Server returns HTML     |
+| Client renders UI      | Server renders UI       |
+| Complex client state   | Simple request/response |
+| Heavy JavaScript       | Minimal JavaScript      |
+| Separate API contracts | HTML is the contract    |
 
 ---
 
@@ -43,15 +43,15 @@ This is "HTML over the wire"—the server remains the source of truth for your U
 
 By the end of Lab 2, you will be able to:
 
-| Outcome | Description |
-|---------|-------------|
-| **Submit via hx-post** | Create form submits without page reload |
-| **Target specific regions** | Update only `#task-list` using `hx-target` |
-| **Swap strategies** | Use `hx-swap="outerHTML"` to replace fragments |
-| **Refresh via hx-get** | Add a button that fetches fresh data |
-| **Pass parameters** | Use `hx-vals` to send additional data |
-| **Loading indicators** | Show feedback during requests with `hx-indicator` |
-| **Error handling** | Use response headers to retarget error responses |
+| Outcome                     | Description                                       |
+|-----------------------------|---------------------------------------------------|
+| **Submit via hx-post**      | Create form submits without page reload           |
+| **Target specific regions** | Update only `#task-list` using `hx-target`        |
+| **Swap strategies**         | Use `hx-swap="outerHTML"` to replace fragments    |
+| **Refresh via hx-get**      | Add a button that fetches fresh data              |
+| **Pass parameters**         | Use `hx-vals` to send additional data             |
+| **Loading indicators**      | Show feedback during requests with `hx-indicator` |
+| **Error handling**          | Use response headers to retarget error responses  |
 
 ---
 
@@ -166,11 +166,11 @@ Edit `Pages/Tasks/Partials/_TaskForm.cshtml` to add htmx attributes:
 
 ### 1.3 Understanding the htmx Attributes
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
-| `hx-post` | `"?handler=Create"` | Send a POST request to this URL when form submits |
-| `hx-target` | `"#task-list"` | Put the response into the element with id="task-list" |
-| `hx-swap` | `"outerHTML"` | Replace the entire target element (not just its contents) |
+| Attribute   | Value               | Purpose                                                   |
+|-------------|---------------------|-----------------------------------------------------------|
+| `hx-post`   | `"?handler=Create"` | Send a POST request to this URL when form submits         |
+| `hx-target` | `"#task-list"`      | Put the response into the element with id="task-list"     |
+| `hx-swap`   | `"outerHTML"`       | Replace the entire target element (not just its contents) |
 
 **Why keep `method="post"` and `asp-page-handler`?**
 
@@ -180,14 +180,14 @@ These provide **progressive enhancement**. If JavaScript is disabled or htmx fai
 
 There are several swap strategies:
 
-| Strategy | Behavior |
-|----------|----------|
-| `innerHTML` | Replace target's children only |
-| `outerHTML` | Replace the entire target element |
-| `beforebegin` | Insert before the target |
-| `afterend` | Insert after the target |
-| `beforeend` | Append inside target |
-| `afterbegin` | Prepend inside target |
+| Strategy      | Behavior                          |
+|---------------|-----------------------------------|
+| `innerHTML`   | Replace target's children only    |
+| `outerHTML`   | Replace the entire target element |
+| `beforebegin` | Insert before the target          |
+| `afterend`    | Insert after the target           |
+| `beforeend`   | Append inside target              |
+| `afterbegin`  | Prepend inside target             |
 
 We use `outerHTML` because our partials return the complete wrapper element:
 
@@ -373,9 +373,9 @@ This is more complex. When validation fails:
 
 The form's `hx-target` is `#task-list` (for successful creates). But on validation failure, we want to update the form instead (to show errors). Response headers let us override the target per-response:
 
-| Scenario | Target | Response |
-|----------|--------|----------|
-| Success | `#task-list` | `_TaskList` partial |
+| Scenario         | Target                    | Response                        |
+|------------------|---------------------------|---------------------------------|
+| Success          | `#task-list`              | `_TaskList` partial             |
 | Validation error | `#task-form` (retargeted) | `_TaskForm` partial with errors |
 
 ### 2.5 Test the Implementation
@@ -474,11 +474,11 @@ Update `Pages/Tasks/Index.cshtml` to add a refresh button near the list:
 
 ### 3.3 Understanding hx-get
 
-| Attribute | Value | Purpose |
-|-----------|-------|---------|
-| `hx-get` | `"?handler=List"` | Send GET request to this URL when clicked |
-| `hx-target` | `"#task-list"` | Put the response into #task-list |
-| `hx-swap` | `"outerHTML"` | Replace the entire element |
+| Attribute   | Value             | Purpose                                   |
+|-------------|-------------------|-------------------------------------------|
+| `hx-get`    | `"?handler=List"` | Send GET request to this URL when clicked |
+| `hx-target` | `"#task-list"`    | Put the response into #task-list          |
+| `hx-swap`   | `"outerHTML"`     | Replace the entire element                |
 
 This is the canonical "fetch and swap" pattern:
 
@@ -541,10 +541,10 @@ Let's add a button that shows only the top 5 tasks:
 hx-vals='{"take": 5}'
 ```
 
-| Aspect | Detail |
-|--------|--------|
-| **Format** | JSON object as a string |
-| **Quotes** | Use single quotes for the attribute, double quotes inside JSON |
+| Aspect     | Detail                                                              |
+|------------|---------------------------------------------------------------------|
+| **Format** | JSON object as a string                                             |
+| **Quotes** | Use single quotes for the attribute, double quotes inside JSON      |
 | **Result** | Adds `?take=5` to the request URL (for GET) or form data (for POST) |
 
 The `OnGetList(int? take)` handler already accepts this parameter, so the server will limit results to 5 tasks.
@@ -676,11 +676,11 @@ Add to `wwwroot/css/site.css`:
 
 ### 5.4 Understanding hx-indicator
 
-| Aspect | Detail |
-|--------|--------|
-| `hx-indicator` | CSS selector for the indicator element |
+| Aspect                 | Detail                                               |
+|------------------------|------------------------------------------------------|
+| `hx-indicator`         | CSS selector for the indicator element               |
 | `htmx-indicator` class | Added to indicator elements; CSS hides it by default |
-| `htmx-request` class | Added to the triggering element during requests |
+| `htmx-request` class   | Added to the triggering element during requests      |
 
 htmx's built-in behavior:
 
@@ -862,11 +862,11 @@ if (IsHtmx())
 
 ### 6.5 Understanding HX-Trigger
 
-| Aspect | Detail |
-|--------|--------|
-| `HX-Trigger` header | Tells htmx to fire a custom event |
-| `hx-trigger="clearForm from:body"` | Listen for "clearForm" event on body |
-| Flow | Response includes header → htmx fires event → listener catches it → makes new request |
+| Aspect                             | Detail                                                                                |
+|------------------------------------|---------------------------------------------------------------------------------------|
+| `HX-Trigger` header                | Tells htmx to fire a custom event                                                     |
+| `hx-trigger="clearForm from:body"` | Listen for "clearForm" event on body                                                  |
+| Flow                               | Response includes header → htmx fires event → listener catches it → makes new request |
 
 This pattern keeps your markup clean—the form itself doesn't need to know about clearing. The server controls the behavior through headers.
 
@@ -913,14 +913,14 @@ Before moving to Lab 3, verify these behaviors:
 
 ### Patterns You've Learned
 
-| Pattern | Usage |
-|---------|-------|
-| `hx-post` with `hx-target` | Submit form, update specific region |
-| `hx-get` for refresh | Fetch fresh data on demand |
-| `hx-vals` | Pass parameters without forms |
-| `hx-indicator` | Show loading feedback |
-| `HX-Retarget` | Route responses to different targets |
-| `HX-Trigger` | Fire events for secondary actions |
+| Pattern                    | Usage                                |
+|----------------------------|--------------------------------------|
+| `hx-post` with `hx-target` | Submit form, update specific region  |
+| `hx-get` for refresh       | Fetch fresh data on demand           |
+| `hx-vals`                  | Pass parameters without forms        |
+| `hx-indicator`             | Show loading feedback                |
+| `HX-Retarget`              | Route responses to different targets |
+| `HX-Trigger`               | Fire events for secondary actions    |
 
 ### What Comes Next
 
@@ -937,15 +937,15 @@ In **Lab 3**, you'll implement:
 
 ### Common Issues and Solutions
 
-| Problem | Likely Cause | Solution |
-|---------|--------------|----------|
-| Nothing happens on submit | htmx not loaded | Check console for htmx object |
-| Full page reloads | htmx not intercepting | Verify `hx-post` attribute is present |
-| Wrong content swapped in | Incorrect `hx-target` | Check selector matches element ID |
-| Nested duplicate elements | Using `innerHTML` with wrapper | Change to `outerHTML` |
-| Validation errors don't show | Retarget headers missing | Add `HX-Retarget` and `HX-Reswap` |
-| Indicator doesn't show | CSS missing | Add `.htmx-indicator` and `.htmx-request` rules |
-| 400 Bad Request | Antiforgery token issue | Ensure token is in form (we'll fix properly in Lab 3) |
+| Problem                      | Likely Cause                   | Solution                                              |
+|------------------------------|--------------------------------|-------------------------------------------------------|
+| Nothing happens on submit    | htmx not loaded                | Check console for htmx object                         |
+| Full page reloads            | htmx not intercepting          | Verify `hx-post` attribute is present                 |
+| Wrong content swapped in     | Incorrect `hx-target`          | Check selector matches element ID                     |
+| Nested duplicate elements    | Using `innerHTML` with wrapper | Change to `outerHTML`                                 |
+| Validation errors don't show | Retarget headers missing       | Add `HX-Retarget` and `HX-Reswap`                     |
+| Indicator doesn't show       | CSS missing                    | Add `.htmx-indicator` and `.htmx-request` rules       |
+| 400 Bad Request              | Antiforgery token issue        | Ensure token is in form (we'll fix properly in Lab 3) |
 
 ### Debug Tips
 
