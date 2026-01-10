@@ -24,8 +24,8 @@
             @if (!string.IsNullOrWhiteSpace(Model.Query))
             {
                 <p class="mb-2">No tasks match "<strong>@Model.Query</strong>"</p>
-                <a href="?handler=List" 
-                   hx-get="?handler=List"
+                <a href="?" 
+                   hx-get="?"
                    hx-target="#task-list"
                    hx-swap="outerHTML"
                    hx-push-url="true"
@@ -63,12 +63,11 @@
                         }
                         
                         <div class="btn-group btn-group-sm">
-                            @* Details button - loads into side panel *@
+                            @* Details button - loads into modal *@
                             <button type="button" 
                                     class="btn btn-outline-secondary"
                                     hx-get="?handler=Details&id=@task.Id"
-                                    hx-target="#task-details"
-                                    hx-swap="outerHTML"
+                                    hx-target="#task-modal-container"
                                     hx-indicator="#task-loading">
                                 Details
                             </button>
@@ -77,7 +76,7 @@
                             <button type="button"
                                     class="btn btn-outline-danger"
                                     hx-post="?handler=Delete"
-                                    hx-vals='{"id": @task.Id}'
+                                    hx-vals='{"id": @task.Id, "q": "@Model.Query", "page": @Model.Page, "pageSize": @Model.PageSize}'
                                     hx-confirm="Delete this task? This cannot be undone."
                                     hx-target="#task-list"
                                     hx-swap="outerHTML"
@@ -99,9 +98,13 @@
                     <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
                         @if (Model.HasPreviousPage)
                         {
+                            var prevPage = Model.Page - 1;
+                            var prevUrl = string.IsNullOrWhiteSpace(Model.Query)
+                                ? $"?page={prevPage}&pageSize={Model.PageSize}"
+                                : $"?q={Uri.EscapeDataString(Model.Query)}&page={prevPage}&pageSize={Model.PageSize}";
                             <a class="page-link"
-                               href="?handler=List&q=@Model.Query&page=@(Model.Page - 1)&pageSize=@Model.PageSize"
-                               hx-get="?handler=List&q=@Model.Query&page=@(Model.Page - 1)&pageSize=@Model.PageSize"
+                               href="@prevUrl"
+                               hx-get="@prevUrl"
                                hx-target="#task-list"
                                hx-swap="outerHTML"
                                hx-push-url="true"
@@ -114,7 +117,7 @@
                             <span class="page-link" tabindex="-1" aria-disabled="true">Previous</span>
                         }
                     </li>
-                    
+
                     @* Page numbers *@
                     @for (var p = 1; p <= Model.TotalPages; p++)
                     {
@@ -126,9 +129,12 @@
                             }
                             else
                             {
+                                var pageUrl = string.IsNullOrWhiteSpace(Model.Query)
+                                    ? $"?page={p}&pageSize={Model.PageSize}"
+                                    : $"?q={Uri.EscapeDataString(Model.Query)}&page={p}&pageSize={Model.PageSize}";
                                 <a class="page-link"
-                                   href="?handler=List&q=@Model.Query&page=@p&pageSize=@Model.PageSize"
-                                   hx-get="?handler=List&q=@Model.Query&page=@p&pageSize=@Model.PageSize"
+                                   href="@pageUrl"
+                                   hx-get="@pageUrl"
                                    hx-target="#task-list"
                                    hx-swap="outerHTML"
                                    hx-push-url="true"
@@ -138,14 +144,18 @@
                             }
                         </li>
                     }
-                    
+
                     @* Next button *@
                     <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
                         @if (Model.HasNextPage)
                         {
+                            var nextPage = Model.Page + 1;
+                            var nextUrl = string.IsNullOrWhiteSpace(Model.Query)
+                                ? $"?page={nextPage}&pageSize={Model.PageSize}"
+                                : $"?q={Uri.EscapeDataString(Model.Query)}&page={nextPage}&pageSize={Model.PageSize}";
                             <a class="page-link"
-                               href="?handler=List&q=@Model.Query&page=@(Model.Page + 1)&pageSize=@Model.PageSize"
-                               hx-get="?handler=List&q=@Model.Query&page=@(Model.Page + 1)&pageSize=@Model.PageSize"
+                               href="@nextUrl"
+                               hx-get="@nextUrl"
                                hx-target="#task-list"
                                hx-swap="outerHTML"
                                hx-push-url="true"

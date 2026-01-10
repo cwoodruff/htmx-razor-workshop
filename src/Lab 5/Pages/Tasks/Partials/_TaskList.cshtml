@@ -24,8 +24,8 @@
             @if (!string.IsNullOrWhiteSpace(Model.Query))
             {
                 <p class="mb-2">No tasks match "<strong>@Model.Query</strong>"</p>
-                <a href="?handler=List" 
-                   hx-get="?handler=List"
+                <a href="?" 
+                   hx-get="?"
                    hx-target="#task-list"
                    hx-swap="outerHTML"
                    hx-push-url="true"
@@ -63,12 +63,11 @@
                         }
                         
                         <div class="btn-group btn-group-sm">
-                            @* Details button - loads into side panel *@
+                            @* Details button - loads into modal *@
                             <button type="button" 
                                     class="btn btn-outline-secondary"
                                     hx-get="?handler=Details&id=@task.Id"
-                                    hx-target="#task-details"
-                                    hx-swap="outerHTML"
+                                    hx-target="#task-modal-container"
                                     hx-indicator="#task-loading">
                                 Details
                             </button>
@@ -100,8 +99,8 @@
                         @if (Model.HasPreviousPage)
                         {
                             <a class="page-link"
-                               href="?handler=List&q=@Model.Query&page=@(Model.Page - 1)&pageSize=@Model.PageSize"
-                               hx-get="?handler=List&q=@Model.Query&page=@(Model.Page - 1)&pageSize=@Model.PageSize"
+                               href="?q=@Model.Query&page=@(Model.Page - 1)&pageSize=@Model.PageSize"
+                               hx-get="?q=@Model.Query&page=@(Model.Page - 1)&pageSize=@Model.PageSize"
                                hx-target="#task-list"
                                hx-swap="outerHTML"
                                hx-push-url="true"
@@ -127,8 +126,8 @@
                             else
                             {
                                 <a class="page-link"
-                                   href="?handler=List&q=@Model.Query&page=@p&pageSize=@Model.PageSize"
-                                   hx-get="?handler=List&q=@Model.Query&page=@p&pageSize=@Model.PageSize"
+                                   href="?q=@Model.Query&page=@p&pageSize=@Model.PageSize"
+                                   hx-get="?q=@Model.Query&page=@p&pageSize=@Model.PageSize"
                                    hx-target="#task-list"
                                    hx-swap="outerHTML"
                                    hx-push-url="true"
@@ -144,8 +143,8 @@
                         @if (Model.HasNextPage)
                         {
                             <a class="page-link"
-                               href="?handler=List&q=@Model.Query&page=@(Model.Page + 1)&pageSize=@Model.PageSize"
-                               hx-get="?handler=List&q=@Model.Query&page=@(Model.Page + 1)&pageSize=@Model.PageSize"
+                               href="?q=@Model.Query&page=@(Model.Page + 1)&pageSize=@Model.PageSize"
+                               hx-get="?q=@Model.Query&page=@(Model.Page + 1)&pageSize=@Model.PageSize"
                                hx-target="#task-list"
                                hx-swap="outerHTML"
                                hx-push-url="true"

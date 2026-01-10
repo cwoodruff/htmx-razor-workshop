@@ -70,7 +70,7 @@
                                name="q"
                                placeholder="Filter tasks..."
                                value="@Model.Query"
-                               hx-get="?handler=List"
+                               hx-get="?"
                                hx-trigger="keyup changed delay:400ms"
                                hx-target="#task-list"
                                hx-swap="outerHTML"
@@ -86,35 +86,13 @@
 </div>
 
 @*
-    Details Panel
-    =============
+    Details Modal Placeholder
+    =========================
     
-    Fragment boundary: #task-details
-    Purpose: Display detailed information about a selected task
-    
-    Design notes:
-    - Always renders the wrapper for consistent swapping
-    - Default state shows placeholder text
-    - Loaded via hx-get from task row buttons
+    Target ID: #task-modal-container
+    Purpose: Hosts the dynamic modal content
 *@
-<div class="card workshop-card mt-4">
-    <div class="card-body">
-        <div class="workshop-kicker">Fragment boundary</div>
-        <h2 class="h5 mb-3">Task Details</h2>
-        <div id="task-details" class="text-muted">
-            Select a task to view details.
-        </div>
-    </div>
-</div>
-
-@*
-    Event Listeners
-    ===============
-    
-    These invisible elements respond to HX-Trigger events from the server.
-    When the server sends "HX-Trigger: showMessage,clearForm", these listeners
-    fire their respective requests.
-*@
+<div id="task-modal-container"></div>
 
 @* Listener: Refresh messages when showMessage event fires *@
 <div hx-get="?handler=Messages"
@@ -129,6 +107,18 @@
      hx-target="#task-form"
      hx-swap="outerHTML">
 </div>
+
+<script>
+    document.addEventListener('htmx:afterOnLoad', function (evt) {
+        if (evt.detail.target.id === 'task-modal-container') {
+            const modalEl = document.getElementById('task-modal');
+            if (modalEl) {
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            }
+        }
+    });
+</script>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

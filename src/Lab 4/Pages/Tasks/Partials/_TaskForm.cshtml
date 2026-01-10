@@ -28,8 +28,13 @@
           hx-swap="outerHTML"
           hx-indicator="#task-loading"
           class="vstack gap-3">
-        
+
         @Html.AntiForgeryToken()
+
+        @* Hidden inputs to preserve pagination state *@
+        <input type="hidden" name="q" value="@Model.Query" />
+        <input type="hidden" name="page" value="@Model.CurrentPage" />
+        <input type="hidden" name="pageSize" value="@Model.PageSize" />
         
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
         

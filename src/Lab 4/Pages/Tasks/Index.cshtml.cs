@@ -40,14 +40,14 @@ public class IndexModel : PageModel
         new()
         {
             ViewName = partialName,
-            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+            ViewData = new ViewDataDictionary(MetadataProvider, ModelState) { Model = model }
         };
 
     #endregion
 
     #region Page Handlers
 
-    public void OnGet(string? q, int page = 1, int pageSize = 5)
+    public IActionResult OnGet(string? q, int page = 1, int pageSize = 5)
     {
         Query = q;
         CurrentPage = Math.Max(1, page);
@@ -67,6 +67,21 @@ public class IndexModel : PageModel
             .Skip((CurrentPage - 1) * PageSize)
             .Take(PageSize)
             .ToList();
+
+        if (IsHtmx())
+        {
+            var vm = new TaskListVm
+            {
+                Items = Tasks,
+                Page = CurrentPage,
+                PageSize = PageSize,
+                Total = TotalTasks,
+                Query = Query
+            };
+            return Fragment("Partials/_TaskList", vm);
+        }
+
+        return Page();
     }
 
     /// <summary>
@@ -162,7 +177,7 @@ public class IndexModel : PageModel
 
     #region Action Handlers
 
-    public IActionResult OnPostCreate()
+    public IActionResult OnPostCreate(string? q, int page = 1, int pageSize = 5)
     {
         if (!TryValidateModel(Input, nameof(Input)))
         {
@@ -198,14 +213,31 @@ public class IndexModel : PageModel
             FlashMessage = "Task added successfully!";
             Response.Headers["HX-Trigger"] = "showMessage,clearForm";
 
+            page = Math.Max(1, page);
+            pageSize = Math.Clamp(pageSize, 1, 50);
+
             var all = InMemoryTaskStore.All();
+
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                all = all
+                    .Where(t => t.Title.Contains(q, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            var total = all.Count;
+            var items = all
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
             var vm = new TaskListVm
             {
-                Items = all.Take(5).ToList(),
-                Page = 1,
-                PageSize = 5,
-                Total = all.Count,
-                Query = null
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                Total = total,
+                Query = q
             };
 
             return Fragment("Partials/_TaskList", vm);
@@ -218,12 +250,12 @@ public class IndexModel : PageModel
     /// <summary>
     /// Deletes a task and returns the updated list fragment.
     /// Uses hx-confirm on the client for confirmation.
-    /// 
+    ///
     /// Response behavior:
     /// - Success: Returns updated _TaskList + triggers showMessage
     /// - Not found: Returns error message to #messages
     /// </summary>
-    public IActionResult OnPostDelete(int id)
+    public IActionResult OnPostDelete(int id, string? q, int page = 1, int pageSize = 5)
     {
         var removed = InMemoryTaskStore.Delete(id);
         Tasks = InMemoryTaskStore.All();
@@ -240,14 +272,39 @@ public class IndexModel : PageModel
             FlashMessage = "Task deleted.";
             Response.Headers["HX-Trigger"] = "showMessage";
 
+            page = Math.Max(1, page);
+            pageSize = Math.Clamp(pageSize, 1, 50);
+
             var all = InMemoryTaskStore.All();
+
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                all = all
+                    .Where(t => t.Title.Contains(q, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            var total = all.Count;
+
+            // Adjust page number if it becomes invalid after deletion
+            var totalPages = (int)Math.Ceiling(total / (double)pageSize);
+            if (page > totalPages && totalPages > 0)
+            {
+                page = totalPages;
+            }
+
+            var items = all
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
             var vm = new TaskListVm
             {
-                Items = all.Take(5).ToList(),
-                Page = 1,
-                PageSize = 5,
-                Total = all.Count,
-                Query = null
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                Total = total,
+                Query = q
             };
 
             return Fragment("Partials/_TaskList", vm);

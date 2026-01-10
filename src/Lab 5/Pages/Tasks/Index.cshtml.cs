@@ -40,14 +40,14 @@ public class IndexModel : PageModel
         new()
         {
             ViewName = partialName,
-            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+            ViewData = new ViewDataDictionary(MetadataProvider, ModelState) { Model = model }
         };
 
     #endregion
 
     #region Page Handlers
 
-    public void OnGet(string? q, int page = 1, int pageSize = 5)
+    public IActionResult OnGet(string? q, int page = 1, int pageSize = 5)
     {
         Query = q;
         CurrentPage = Math.Max(1, page);
@@ -67,6 +67,21 @@ public class IndexModel : PageModel
             .Skip((CurrentPage - 1) * PageSize)
             .Take(PageSize)
             .ToList();
+
+        if (IsHtmx())
+        {
+            var vm = new TaskListVm
+            {
+                Items = Tasks,
+                Page = CurrentPage,
+                PageSize = PageSize,
+                Total = TotalTasks,
+                Query = Query
+            };
+            return Fragment("Partials/_TaskList", vm);
+        }
+
+        return Page();
     }
 
     /// <summary>

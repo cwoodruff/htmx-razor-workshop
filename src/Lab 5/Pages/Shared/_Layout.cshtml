@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/bootstrap.min.css" />
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @Html.AntiForgeryToken()
 </head>
 <body class="workshop-body">
 
@@ -61,6 +62,15 @@
 
 <!-- htmx (Local) -->
 <script src="~/lib/htmx/htmx.min.js"></script>
+
+<script>
+    document.body.addEventListener('htmx:configRequest', (evt) => {
+        let antiforgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        if (antiforgeryToken) {
+            evt.detail.headers['RequestVerificationToken'] = antiforgeryToken;
+        }
+    });
+</script>
 
 <script src="~/lib/bootstrap/bootstrap.bundle.min.js"></script>
 
