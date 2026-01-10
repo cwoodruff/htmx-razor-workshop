@@ -24,7 +24,7 @@
             @if (!string.IsNullOrWhiteSpace(Model.Query))
             {
                 <p class="mb-2">No tasks match "<strong>@Model.Query</strong>"</p>
-                <a href="?" 
+                <a href="?"
                    hx-get="?"
                    hx-target="#task-list"
                    hx-swap="outerHTML"
@@ -41,133 +41,108 @@
     }
     else
     {
-        <ul class="list-group list-group-flush">
-            @foreach (var task in Model.Items)
-            {
-                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                    <div class="d-flex flex-column">
-                        <strong>@task.Title</strong>
-                        <span class="small text-muted">
+    <ul class="list-group list-group-flush">
+        @foreach (var task in Model.Items)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                <div class="d-flex flex-column">
+                    <strong>@task.Title</strong>
+                    <span class="small text-muted">
                             Created @task.CreatedUtc.ToLocalTime().ToString("g")
                         </span>
-                    </div>
-                    
-                    <div class="d-flex align-items-center gap-2">
-                        @if (task.IsDone)
-                        {
-                            <span class="badge text-bg-success">Done</span>
-                        }
-                        else
-                        {
-                            <span class="badge text-bg-secondary">Open</span>
-                        }
-                        
-                        <div class="btn-group btn-group-sm">
-                            @* Details button - loads into modal *@
-                            <button type="button" 
-                                    class="btn btn-outline-secondary"
-                                    hx-get="?handler=Details&id=@task.Id"
-                                    hx-target="#task-modal-container"
-                                    hx-indicator="#task-loading">
-                                Details
-                            </button>
-                            
-                            @* Delete button with confirmation *@
-                            <button type="button"
-                                    class="btn btn-outline-danger"
-                                    hx-post="?handler=Delete"
-                                    hx-vals='{"id": @task.Id}'
-                                    hx-confirm="Delete this task? This cannot be undone."
-                                    hx-target="#task-list"
-                                    hx-swap="outerHTML"
-                                    hx-indicator="#task-loading">
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                </li>
-            }
-        </ul>
+                </div>
 
+                <div class="d-flex align-items-center gap-2">
+                    @if (task.IsDone)
+                    {
+                        <span class="badge text-bg-success">Done</span>
+                    }
+                    else
+                    {
+                        <span class="badge text-bg-secondary">Open</span>
+                    }
+
+                    <div class="btn-group btn-group-sm">
+                        @* Details button - loads into modal *@
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                hx-get="?handler=Details&id=@task.Id"
+                                hx-target="#task-modal-container"
+                                hx-indicator="#task-loading">
+                            Details
+                        </button>
+
+                        @* Delete button with confirmation *@
+                        <button type="button"
+                                class="btn btn-outline-danger"
+                                hx-post="?handler=Delete"
+                                hx-vals='{"id": @task.Id, "Q": "@(Model.Query ?? "")", "PageNum": @Model.Page, "Size": @Model.PageSize}'
+                                hx-confirm="Delete this task? This cannot be undone."
+                                hx-target="#task-list"
+                                hx-swap="outerHTML"
+                                hx-indicator="#task-loading">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </li>
+        }
+        </ul>
+        
         @* Pagination Controls *@
         @if (Model.TotalPages > 1)
         {
-            <nav class="mt-3" aria-label="Task list pagination">
-                <ul class="pagination pagination-sm justify-content-center mb-0">
-                    @* Previous button *@
-                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-                        @if (Model.HasPreviousPage)
-                        {
-                            <a class="page-link"
-                               href="?q=@Model.Query&page=@(Model.Page - 1)&pageSize=@Model.PageSize"
-                               hx-get="?q=@Model.Query&page=@(Model.Page - 1)&pageSize=@Model.PageSize"
+            <div class="card-footer d-flex justify-content-between align-items-center bg-transparent border-top-0 pt-4">
+                <div class="small text-muted">
+                    Showing <strong>@((Model.Page - 1) * Model.PageSize + 1)</strong> to 
+                    <strong>@(Math.Min(Model.Page * Model.PageSize, Model.Total))</strong> of 
+                    <strong>@Model.Total</strong> tasks
+                </div>
+                
+                <nav aria-label="Task list pagination">
+                    <ul class="pagination pagination-sm mb-0">
+                        @* Previous Page *@
+                        <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                            <a hx-get="?Q=@(Model.Query ?? "")&PageNum=@(Model.Page - 1)&Size=@Model.PageSize"
                                hx-target="#task-list"
                                hx-swap="outerHTML"
                                hx-push-url="true"
-                               hx-indicator="#task-loading">
-                                Previous
+                               class="page-link" 
+                               style="cursor: pointer;"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
                             </a>
-                        }
-                        else
+                        </li>
+
+                        @* Page Numbers *@
+                        @for (int i = 1; i <= Model.TotalPages; i++)
                         {
-                            <span class="page-link" tabindex="-1" aria-disabled="true">Previous</span>
-                        }
-                    </li>
-                    
-                    @* Page numbers *@
-                    @for (var p = 1; p <= Model.TotalPages; p++)
-                    {
-                        var isActive = p == Model.Page;
-                        <li class="page-item @(isActive ? "active" : "")">
-                            @if (isActive)
-                            {
-                                <span class="page-link" aria-current="page">@p</span>
-                            }
-                            else
-                            {
+                            <li class="page-item @(i == Model.Page ? "active" : "")" @(i == Model.Page ? "aria-current='page'" : "")>
                                 <a class="page-link"
-                                   href="?q=@Model.Query&page=@p&pageSize=@Model.PageSize"
-                                   hx-get="?q=@Model.Query&page=@p&pageSize=@Model.PageSize"
+                                   style="cursor: pointer;"
+                                   hx-get="?Q=@(Model.Query ?? "")&PageNum=@i&Size=@Model.PageSize"
                                    hx-target="#task-list"
                                    hx-swap="outerHTML"
-                                   hx-push-url="true"
-                                   hx-indicator="#task-loading">
-                                    @p
+                                   hx-push-url="true">
+                                    @i
                                 </a>
-                            }
-                        </li>
-                    }
-                    
-                    @* Next button *@
-                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-                        @if (Model.HasNextPage)
-                        {
+                            </li>
+                        }
+
+                        @* Next Page *@
+                        <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
                             <a class="page-link"
-                               href="?q=@Model.Query&page=@(Model.Page + 1)&pageSize=@Model.PageSize"
-                               hx-get="?q=@Model.Query&page=@(Model.Page + 1)&pageSize=@Model.PageSize"
+                               style="cursor: pointer;"
+                               hx-get="?Q=@(Model.Query ?? "")&PageNum=@(Model.Page + 1)&Size=@Model.PageSize"
                                hx-target="#task-list"
                                hx-swap="outerHTML"
                                hx-push-url="true"
-                               hx-indicator="#task-loading">
-                                Next
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
                             </a>
-                        }
-                        else
-                        {
-                            <span class="page-link" tabindex="-1" aria-disabled="true">Next</span>
-                        }
-                    </li>
-                </ul>
-            </nav>
-            
-            <div class="text-center text-muted small mt-2">
-                Showing @((Model.Page - 1) * Model.PageSize + 1)–@(Math.Min(Model.Page * Model.PageSize, Model.Total)) of @Model.Total tasks
-            </div>
-        }
-        else
-        {
-            <div class="text-center text-muted small mt-2">
-                @Model.Total task@(Model.Total == 1 ? "" : "s")
+                        </li>
+                    </ul>
+                </nav>
             </div>
         }
     }

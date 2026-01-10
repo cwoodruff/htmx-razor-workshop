@@ -76,7 +76,7 @@
                             <button type="button"
                                     class="btn btn-outline-danger"
                                     hx-post="?handler=Delete"
-                                    hx-vals='{"id": @task.Id, "q": "@Model.Query", "page": @Model.Page, "pageSize": @Model.PageSize}'
+                                    hx-vals='{"id": @task.Id, "Q": "@(Model.Query ?? "")", "PageNum": @Model.Page, "Size": @Model.PageSize}'
                                     hx-confirm="Delete this task? This cannot be undone."
                                     hx-target="#task-list"
                                     hx-swap="outerHTML"
@@ -88,97 +88,61 @@
                 </li>
             }
         </ul>
-
+        
         @* Pagination Controls *@
         @if (Model.TotalPages > 1)
         {
-            <nav class="mt-3" aria-label="Task list pagination">
-                <ul class="pagination pagination-sm justify-content-center mb-0">
-                    @* Previous button *@
-                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-                        @if (Model.HasPreviousPage)
-                        {
-                            var prevPage = Model.Page - 1;
-                            var prevUrl = string.IsNullOrWhiteSpace(Model.Query)
-                                ? $"?page={prevPage}&pageSize={Model.PageSize}"
-                                : $"?q={Uri.EscapeDataString(Model.Query)}&page={prevPage}&pageSize={Model.PageSize}";
-                            <a class="page-link"
-                               href="@prevUrl"
-                               hx-get="@prevUrl"
+            <div class="card-footer d-flex justify-content-between align-items-center bg-transparent border-top-0 pt-4">
+                <div class="small text-muted">
+                    Showing <strong>@((Model.Page - 1) * Model.PageSize + 1)</strong> to 
+                    <strong>@(Math.Min(Model.Page * Model.PageSize, Model.Total))</strong> of 
+                    <strong>@Model.Total</strong> tasks
+                </div>
+                
+                <nav aria-label="Task list pagination">
+                    <ul class="pagination pagination-sm mb-0">
+                        @* Previous Page *@
+                        <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                            <a hx-get="?Q=@(Model.Query ?? "")&PageNum=@(Model.Page - 1)&Size=@Model.PageSize"
                                hx-target="#task-list"
                                hx-swap="outerHTML"
                                hx-push-url="true"
-                               hx-indicator="#task-loading">
-                                Previous
+                               class="page-link" 
+                               style="cursor: pointer;"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
                             </a>
-                        }
-                        else
-                        {
-                            <span class="page-link" tabindex="-1" aria-disabled="true">Previous</span>
-                        }
-                    </li>
+                        </li>
 
-                    @* Page numbers *@
-                    @for (var p = 1; p <= Model.TotalPages; p++)
-                    {
-                        var isActive = p == Model.Page;
-                        <li class="page-item @(isActive ? "active" : "")">
-                            @if (isActive)
-                            {
-                                <span class="page-link" aria-current="page">@p</span>
-                            }
-                            else
-                            {
-                                var pageUrl = string.IsNullOrWhiteSpace(Model.Query)
-                                    ? $"?page={p}&pageSize={Model.PageSize}"
-                                    : $"?q={Uri.EscapeDataString(Model.Query)}&page={p}&pageSize={Model.PageSize}";
+                        @* Page Numbers *@
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.Page ? "active" : "")" @(i == Model.Page ? "aria-current='page'" : "")>
                                 <a class="page-link"
-                                   href="@pageUrl"
-                                   hx-get="@pageUrl"
+                                   style="cursor: pointer;"
+                                   hx-get="?Q=@(Model.Query ?? "")&PageNum=@i&Size=@Model.PageSize"
                                    hx-target="#task-list"
                                    hx-swap="outerHTML"
-                                   hx-push-url="true"
-                                   hx-indicator="#task-loading">
-                                    @p
+                                   hx-push-url="true">
+                                    @i
                                 </a>
-                            }
-                        </li>
-                    }
+                            </li>
+                        }
 
-                    @* Next button *@
-                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-                        @if (Model.HasNextPage)
-                        {
-                            var nextPage = Model.Page + 1;
-                            var nextUrl = string.IsNullOrWhiteSpace(Model.Query)
-                                ? $"?page={nextPage}&pageSize={Model.PageSize}"
-                                : $"?q={Uri.EscapeDataString(Model.Query)}&page={nextPage}&pageSize={Model.PageSize}";
+                        @* Next Page *@
+                        <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
                             <a class="page-link"
-                               href="@nextUrl"
-                               hx-get="@nextUrl"
+                               style="cursor: pointer;"
+                               hx-get="?Q=@(Model.Query ?? "")&PageNum=@(Model.Page + 1)&Size=@Model.PageSize"
                                hx-target="#task-list"
                                hx-swap="outerHTML"
                                hx-push-url="true"
-                               hx-indicator="#task-loading">
-                                Next
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
                             </a>
-                        }
-                        else
-                        {
-                            <span class="page-link" tabindex="-1" aria-disabled="true">Next</span>
-                        }
-                    </li>
-                </ul>
-            </nav>
-            
-            <div class="text-center text-muted small mt-2">
-                Showing @((Model.Page - 1) * Model.PageSize + 1)–@(Math.Min(Model.Page * Model.PageSize, Model.Total)) of @Model.Total tasks
-            </div>
-        }
-        else
-        {
-            <div class="text-center text-muted small mt-2">
-                @Model.Total task@(Model.Total == 1 ? "" : "s")
+                        </li>
+                    </ul>
+                </nav>
             </div>
         }
     }

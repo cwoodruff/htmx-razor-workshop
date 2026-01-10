@@ -17,7 +17,15 @@ public class IndexModel : PageModel
     [TempData]
     public string? FlashMessage { get; set; }
 
-    // Filter/pagination state for initial render
+    [BindProperty(SupportsGet = true)]
+    public string? Q { get; set; }
+
+    [BindProperty(SupportsGet = true)]
+    public int PageNum { get; set; } = 1;
+
+    [BindProperty(SupportsGet = true)]
+    public int Size { get; set; } = 5;
+
     public string? Query { get; set; }
     public int CurrentPage { get; set; } = 1;
     public int PageSize { get; set; } = 5;
@@ -47,18 +55,18 @@ public class IndexModel : PageModel
 
     #region Page Handlers
 
-    public IActionResult OnGet(string? q, int page = 1, int pageSize = 5)
+    public IActionResult OnGet()
     {
-        Query = q;
-        CurrentPage = Math.Max(1, page);
-        PageSize = Math.Clamp(pageSize, 1, 50);
+        Query = Q;
+        CurrentPage = Math.Max(1, PageNum);
+        PageSize = Math.Clamp(Size, 1, 50);
 
         var all = InMemoryTaskStore.All();
 
-        if (!string.IsNullOrWhiteSpace(q))
+        if (!string.IsNullOrWhiteSpace(Q))
         {
             all = all
-                .Where(t => t.Title.Contains(q, StringComparison.OrdinalIgnoreCase))
+                .Where(t => t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
@@ -88,33 +96,33 @@ public class IndexModel : PageModel
     /// Returns the task list fragment with optional filtering and pagination.
     /// Supports query parameter (q) for filtering and page/pageSize for pagination.
     /// </summary>
-    public IActionResult OnGetList(string? q, int page = 1, int pageSize = 5)
+    public IActionResult OnGetList()
     {
-        page = Math.Max(1, page);
-        pageSize = Math.Clamp(pageSize, 1, 50);
+        CurrentPage = Math.Max(1, PageNum);
+        PageSize = Math.Clamp(Size, 1, 50);
 
         var all = InMemoryTaskStore.All();
 
-        if (!string.IsNullOrWhiteSpace(q))
+        if (!string.IsNullOrWhiteSpace(Q))
         {
             all = all
-                .Where(t => t.Title.Contains(q, StringComparison.OrdinalIgnoreCase))
+                .Where(t => t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
         var total = all.Count;
         var items = all
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
+            .Skip((CurrentPage - 1) * PageSize)
+            .Take(PageSize)
             .ToList();
 
         var vm = new TaskListVm
         {
             Items = items,
-            Page = page,
-            PageSize = pageSize,
+            Page = CurrentPage,
+            PageSize = PageSize,
             Total = total,
-            Query = q
+            Query = Q
         };
 
         return Fragment("Partials/_TaskList", vm);
@@ -177,7 +185,7 @@ public class IndexModel : PageModel
 
     #region Action Handlers
 
-    public IActionResult OnPostCreate(string? q, int page = 1, int pageSize = 5)
+    public IActionResult OnPostCreate()
     {
         if (!TryValidateModel(Input, nameof(Input)))
         {
@@ -213,31 +221,31 @@ public class IndexModel : PageModel
             FlashMessage = "Task added successfully!";
             Response.Headers["HX-Trigger"] = "showMessage,clearForm";
 
-            page = Math.Max(1, page);
-            pageSize = Math.Clamp(pageSize, 1, 50);
+            CurrentPage = Math.Max(1, PageNum);
+            PageSize = Math.Clamp(Size, 1, 50);
 
             var all = InMemoryTaskStore.All();
 
-            if (!string.IsNullOrWhiteSpace(q))
+            if (!string.IsNullOrWhiteSpace(Q))
             {
                 all = all
-                    .Where(t => t.Title.Contains(q, StringComparison.OrdinalIgnoreCase))
+                    .Where(t => t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
             var total = all.Count;
             var items = all
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize)
                 .ToList();
 
             var vm = new TaskListVm
             {
                 Items = items,
-                Page = page,
-                PageSize = pageSize,
+                Page = CurrentPage,
+                PageSize = PageSize,
                 Total = total,
-                Query = q
+                Query = Q
             };
 
             return Fragment("Partials/_TaskList", vm);
@@ -255,7 +263,7 @@ public class IndexModel : PageModel
     /// - Success: Returns updated _TaskList + triggers showMessage
     /// - Not found: Returns error message to #messages
     /// </summary>
-    public IActionResult OnPostDelete(int id, string? q, int page = 1, int pageSize = 5)
+    public IActionResult OnPostDelete(int id)
     {
         var removed = InMemoryTaskStore.Delete(id);
         Tasks = InMemoryTaskStore.All();
@@ -272,39 +280,39 @@ public class IndexModel : PageModel
             FlashMessage = "Task deleted.";
             Response.Headers["HX-Trigger"] = "showMessage";
 
-            page = Math.Max(1, page);
-            pageSize = Math.Clamp(pageSize, 1, 50);
+            CurrentPage = Math.Max(1, PageNum);
+            PageSize = Math.Clamp(Size, 1, 50);
 
             var all = InMemoryTaskStore.All();
 
-            if (!string.IsNullOrWhiteSpace(q))
+            if (!string.IsNullOrWhiteSpace(Q))
             {
                 all = all
-                    .Where(t => t.Title.Contains(q, StringComparison.OrdinalIgnoreCase))
+                    .Where(t => t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
             var total = all.Count;
 
             // Adjust page number if it becomes invalid after deletion
-            var totalPages = (int)Math.Ceiling(total / (double)pageSize);
-            if (page > totalPages && totalPages > 0)
+            var totalPages = (int)Math.Ceiling(total / (double)PageSize);
+            if (CurrentPage > totalPages && totalPages > 0)
             {
-                page = totalPages;
+                CurrentPage = totalPages;
             }
 
             var items = all
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize)
                 .ToList();
 
             var vm = new TaskListVm
             {
                 Items = items,
-                Page = page,
-                PageSize = pageSize,
+                Page = CurrentPage,
+                PageSize = PageSize,
                 Total = total,
-                Query = q
+                Query = Q
             };
 
             return Fragment("Partials/_TaskList", vm);

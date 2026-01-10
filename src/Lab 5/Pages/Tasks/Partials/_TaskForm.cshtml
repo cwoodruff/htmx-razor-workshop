@@ -22,6 +22,11 @@
           class="vstack gap-3">
         
         @Html.AntiForgeryToken()
+
+        @* Hidden inputs to preserve pagination state *@
+        <input type="hidden" name="Q" value="@Model.Query" />
+        <input type="hidden" name="PageNum" value="@Model.CurrentPage" />
+        <input type="hidden" name="Size" value="@Model.PageSize" />
         
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
         
