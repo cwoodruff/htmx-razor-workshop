@@ -66,7 +66,7 @@ Open browser DevTools → **Network** tab and perform these actions:
 | Request URL | Contains `?handler=Create` |
 | Request Headers | Includes `HX-Request: true` |
 | Response Body | HTML fragment starting with `<div id="task-list">` |
-| Response Status | `200` (success) or `422` (validation error) |
+| Response Status | `200` (success and validation error) |
 
 **Example Request Headers:**
 
@@ -91,7 +91,7 @@ Content-Type: application/x-www-form-urlencoded
 
 | Check | Expected Value |
 |-------|----------------|
-| Response Status | `422` (Unprocessable Entity) |
+| Response Status | `200` (Unprocessable Entity) |
 | Response Headers | `HX-Retarget: #task-form` and `HX-Reswap: outerHTML` |
 | Response Body | HTML fragment: `<div id="task-form">...</div>` with error messages |
 
@@ -224,7 +224,7 @@ Ensure your partial returns the complete wrapper:
 
 ---
 
-### Gotcha C: 404 / Handler Not Found / Wrong Handler Invoked
+### Gotcha C: Handler Not Found / Wrong Handler Invoked
 
 **Symptoms:**
 
@@ -284,7 +284,6 @@ public IActionResult OnPostCreate() { ... }
 
 **Symptoms:**
 
-- Server returns 500 error
 - Exception message: "The partial view '...' was not found"
 - Or: Wrong partial renders
 
@@ -538,7 +537,6 @@ if (!ModelState.IsValid)
     if (IsHtmx())
     {
         // Retarget from #task-list to #task-form
-        Response.StatusCode = 422;
         Response.Headers["HX-Retarget"] = "#task-form";
         Response.Headers["HX-Reswap"] = "outerHTML";
         return Fragment("Partials/_TaskForm", this);
@@ -569,7 +567,7 @@ Complete these checks before proceeding to Lab 3.
 
 1. Submit an empty form
 2. Confirm:
-   - Response status is `422`
+   - Response status is `200`
    - Response headers include `HX-Retarget: #task-form`
    - Form fragment replaces `#task-form` with error message
 
@@ -680,8 +678,8 @@ Add this comment to the top of your `Pages/Tasks/Index.cshtml`:
     Response Rules:
     - Non-htmx → Page() or RedirectToPage()
     - htmx → Fragment("...", model)
-    - Validation error → 422 + HX-Retarget to form
-    - Server error → 500 + HX-Retarget to messages
+    - Validation error → HX-Retarget to form
+    - Server error → 200 + HX-Retarget to messages
 *@
 ```
 

@@ -469,7 +469,6 @@ public IActionResult OnPostDelete(int id)
         if (!removed)
         {
             // Task was already deleted or never existed
-            Response.StatusCode = 404;
             Response.Headers["HX-Retarget"] = "#messages";
             Response.Headers["HX-Reswap"] = "outerHTML";
             return Fragment("Partials/_Messages", "Task not found (already deleted?).");
@@ -564,7 +563,7 @@ The handler covers these scenarios:
 | Scenario | Response | Status | Target |
 |----------|----------|--------|--------|
 | Task found and deleted | `_TaskList` | 200 | `#task-list` |
-| Task not found | `_Messages` | 404 | `#messages` (retargeted) |
+| Task not found | `_Messages` | 200 | `#messages` (retargeted) |
 | Non-htmx request | Redirect | 302 | Full page |
 
 ---
@@ -1296,7 +1295,6 @@ public class IndexModel : PageModel
 
             if (IsHtmx())
             {
-                Response.StatusCode = 422;
                 Response.Headers["HX-Retarget"] = "#task-form";
                 Response.Headers["HX-Reswap"] = "outerHTML";
                 return Fragment("Partials/_TaskForm", this);
@@ -1309,7 +1307,6 @@ public class IndexModel : PageModel
         {
             if (IsHtmx())
             {
-                Response.StatusCode = 500;
                 Response.Headers["HX-Retarget"] = "#messages";
                 Response.Headers["HX-Reswap"] = "innerHTML";
                 return Fragment("Partials/_Error",
@@ -1352,7 +1349,6 @@ public class IndexModel : PageModel
         {
             if (!removed)
             {
-                Response.StatusCode = 404;
                 Response.Headers["HX-Retarget"] = "#messages";
                 Response.Headers["HX-Reswap"] = "outerHTML";
                 return Fragment("Partials/_Messages", "Task not found (already deleted?).");

@@ -327,7 +327,6 @@ public IActionResult OnPostCreate()
 
         if (IsHtmx())
         {
-            Response.StatusCode = 422;
             Response.Headers["HX-Retarget"] = "#task-form";
             Response.Headers["HX-Reswap"] = "outerHTML";
             return Fragment("Partials/_TaskForm", this);

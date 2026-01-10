@@ -343,7 +343,6 @@ public class IndexModel : PageModel
         {
             if (!removed)
             {
-                Response.StatusCode = 404;
                 Response.Headers["HX-Retarget"] = "#messages";
                 Response.Headers["HX-Reswap"] = "outerHTML";
                 return Fragment("Partials/_Messages", "Task not found (already deleted?).");

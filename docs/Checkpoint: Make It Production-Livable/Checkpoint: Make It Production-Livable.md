@@ -300,7 +300,7 @@ If the fragment doesn't include the wrapper, htmx won't find the element to swap
 
 Have a consistent error handling strategy:
 
-#### Validation Errors (422 Unprocessable Entity)
+#### Validation Errors
 
 ```csharp
 if (!TryValidateModel(Input, nameof(Input)))
@@ -309,7 +309,6 @@ if (!TryValidateModel(Input, nameof(Input)))
 
     if (IsHtmx())
     {
-        Response.StatusCode = 422;
         Response.Headers["HX-Retarget"] = "#task-form";
         Response.Headers["HX-Reswap"] = "outerHTML";
         return Fragment("Partials/_TaskForm", this);
@@ -319,14 +318,13 @@ if (!TryValidateModel(Input, nameof(Input)))
 }
 ```
 
-#### Not Found Errors (404)
+#### Not Found Errors
 
 ```csharp
 if (!removed)
 {
     if (IsHtmx())
     {
-        Response.StatusCode = 404;
         Response.Headers["HX-Retarget"] = "#messages";
         Response.Headers["HX-Reswap"] = "outerHTML";
         return Fragment("Partials/_Messages", "Task not found.");
@@ -337,12 +335,11 @@ if (!removed)
 }
 ```
 
-#### Server Errors (500)
+#### Server Errors
 
 ```csharp
 if (IsHtmx())
 {
-    Response.StatusCode = 500;
     Response.Headers["HX-Retarget"] = "#messages";
     Response.Headers["HX-Reswap"] = "innerHTML";
     return Fragment("Partials/_Error", "An unexpected error occurred.");
@@ -358,9 +355,9 @@ throw new InvalidOperationException("Server error.");
 | Initial page load | 200 | `Page()` | Full page |
 | Non-htmx form submit | 302 | `RedirectToPage()` | Full page |
 | htmx success | 200 | `Fragment("...", model)` | Original `hx-target` |
-| htmx validation error | 422 | `Fragment("_TaskForm", this)` | Retarget to `#task-form` |
-| htmx not found | 404 | `Fragment("_Messages", msg)` | Retarget to `#messages` |
-| htmx server error | 500 | `Fragment("_Error", msg)` | Retarget to `#messages` |
+| htmx validation error | 200 | `Fragment("_TaskForm", this)` | Retarget to `#task-form` |
+| htmx not found | 200 | `Fragment("_Messages", msg)` | Retarget to `#messages` |
+| htmx server error | 200 | `Fragment("_Error", msg)` | Retarget to `#messages` |
 
 ### 3.6 When to Use Retargeting
 
@@ -498,8 +495,8 @@ Add a comment block to your page's Razor file or PageModel:
 
     Response Rules:
     - Success responses target original hx-target
-    - Validation errors (422) retarget to #task-form
-    - Not found (404) and server errors (500) retarget to #messages
+    - Validation errors retarget to #task-form
+    - Not found and server errors retarget to #messages
 *@
 ```
 
@@ -556,8 +553,8 @@ Is this an htmx request? (HX-Request: true)
 ├── NO → Return Page() or RedirectToPage()
 └── YES
     ├── Success? → Return Fragment() to original hx-target
-    ├── Validation error? → 422 + Retarget to form fragment
-    └── Server error? → 500 + Retarget to messages
+    ├── Validation error? → Retarget to form fragment
+    └── Server error? → Retarget to messages
 ```
 
 ### Handler Naming Quick Reference
@@ -576,9 +573,6 @@ Is this an htmx request? (HX-Request: true)
 |--------|---------|----------|
 | 200 | OK | Successful response |
 | 302 | Redirect | Non-htmx form submit |
-| 422 | Unprocessable Entity | Validation errors |
-| 404 | Not Found | Resource doesn't exist |
-| 500 | Server Error | Unexpected failures |
 
 ### htmx Headers Quick Reference
 
@@ -612,7 +606,6 @@ Before moving to Lab 5, verify these items:
 
 - [ ] Non-htmx requests return `Page()` or `RedirectToPage()`
 - [ ] htmx requests return `Fragment()`
-- [ ] Validation errors use 422 status
 - [ ] Error responses retarget to `#messages`
 
 ### Helpers

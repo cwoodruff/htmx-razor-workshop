@@ -241,16 +241,13 @@ Save this as `HTMX_CONVENTIONS.md` in your project root:
 | Initial page load | `Page()` |
 | Non-htmx form submit | `RedirectToPage()` |
 | htmx success | `Fragment("...", model)` |
-| htmx validation error | `Fragment("_Form", this)` + 422 + retarget |
-| htmx not found | `Fragment("_Messages", msg)` + 404 + retarget |
-| htmx server error | `Fragment("_Error", msg)` + 500 + retarget |
+| htmx validation error | `Fragment("_Form", this)` + retarget |
+| htmx not found | `Fragment("_Messages", msg)` + retarget |
+| htmx server error | `Fragment("_Error", msg)` + retarget |
 
 ### Status Codes
 - 200: Success
 - 302: Redirect (non-htmx)
-- 422: Validation error
-- 404: Not found
-- 500: Server error
 
 ## Swap Strategies
 
@@ -312,14 +309,13 @@ Save this as `HTMX_CONVENTIONS.md` in your project root:
       hx-swap="outerHTML">
 ```
 
-On validation failure: 422 + retarget to form.
+On validation failure: retarget to form.
 
 ## Error Handling Pattern
 
 ```csharp
 if (IsHtmx())
 {
-    Response.StatusCode = 422; // or 404, 500
     Response.Headers["HX-Retarget"] = "#messages";
     Response.Headers["HX-Reswap"] = "outerHTML";
     return Fragment("Partials/_Messages", errorMessage);
@@ -526,7 +522,6 @@ public IActionResult OnGetEditRow(int id)
     var task = InMemoryTaskStore.Find(id);
     if (task is null)
     {
-        Response.StatusCode = 404;
         return Content("<li class='list-group-item text-danger'>Task not found</li>", "text/html");
     }
 
@@ -541,14 +536,12 @@ public IActionResult OnPostUpdateRow(int id, string title)
     var task = InMemoryTaskStore.Find(id);
     if (task is null)
     {
-        Response.StatusCode = 404;
         return Content("<li class='list-group-item text-danger'>Task not found</li>", "text/html");
     }
 
     if (string.IsNullOrWhiteSpace(title) || title.Length < 3)
     {
         // Return edit form with error
-        Response.StatusCode = 422;
         return Fragment("Partials/_TaskRowEdit", task);
     }
 
@@ -567,7 +560,6 @@ public IActionResult OnGetCancelEdit(int id)
     var task = InMemoryTaskStore.Find(id);
     if (task is null)
     {
-        Response.StatusCode = 404;
         return Content("<li class='list-group-item text-danger'>Task not found</li>", "text/html");
     }
 

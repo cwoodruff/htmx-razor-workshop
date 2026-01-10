@@ -221,7 +221,7 @@ public class IndexModel : PageModel
     /// 
     /// Response behavior:
     /// - Success: Returns updated _TaskList + triggers showMessage
-    /// - Not found: Returns 404 + error message to #messages
+    /// - Not found: Returns error message to #messages
     /// </summary>
     public IActionResult OnPostDelete(int id)
     {
@@ -232,7 +232,6 @@ public class IndexModel : PageModel
         {
             if (!removed)
             {
-                Response.StatusCode = 404;
                 Response.Headers["HX-Retarget"] = "#messages";
                 Response.Headers["HX-Reswap"] = "outerHTML";
                 return Fragment("Partials/_Messages", "Task not found (already deleted?).");
