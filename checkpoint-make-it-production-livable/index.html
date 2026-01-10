@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821364522321">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821365541675">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -35,12 +35,12 @@
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.821364522321" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821365541675" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821364522321" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821365541675" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821364522321" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821364522321" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821365541675" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821365541675" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -735,10 +735,10 @@ if (IsHtmx())
     </h3>
 </doc-anchor-target>
 <p>Have a consistent error handling strategy:</p>
-<doc-anchor-target id="validation-errors-422-unprocessable-entity">
+<doc-anchor-target id="validation-errors">
     <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#validation-errors-422-unprocessable-entity">#</doc-anchor-trigger>
-        <span>Validation Errors (422 Unprocessable Entity)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#validation-errors">#</doc-anchor-trigger>
+        <span>Validation Errors</span>
     </h4>
 </doc-anchor-target>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -748,7 +748,6 @@ if (IsHtmx())
 
     if (IsHtmx())
     {
-        Response.StatusCode = 422;
         Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
         Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
         return Fragment(&quot;Partials/_TaskForm&quot;, this);
@@ -757,10 +756,10 @@ if (IsHtmx())
     return Page();
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="not-found-errors-404">
+<doc-anchor-target id="not-found-errors">
     <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#not-found-errors-404">#</doc-anchor-trigger>
-        <span>Not Found Errors (404)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#not-found-errors">#</doc-anchor-trigger>
+        <span>Not Found Errors</span>
     </h4>
 </doc-anchor-target>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -768,7 +767,6 @@ if (IsHtmx())
 {
     if (IsHtmx())
     {
-        Response.StatusCode = 404;
         Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
         Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
         return Fragment(&quot;Partials/_Messages&quot;, &quot;Task not found.&quot;);
@@ -778,16 +776,15 @@ if (IsHtmx())
     return RedirectToPage();
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="server-errors-500">
+<doc-anchor-target id="server-errors">
     <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#server-errors-500">#</doc-anchor-trigger>
-        <span>Server Errors (500)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#server-errors">#</doc-anchor-trigger>
+        <span>Server Errors</span>
     </h4>
 </doc-anchor-target>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-csharp"><code v-pre class="language-csharp">if (IsHtmx())
 {
-    Response.StatusCode = 500;
     Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
     Response.Headers[&quot;HX-Reswap&quot;] = &quot;innerHTML&quot;;
     return Fragment(&quot;Partials/_Error&quot;, &quot;An unexpected error occurred.&quot;);
@@ -832,19 +829,19 @@ throw new InvalidOperationException(&quot;Server error.&quot;);</code></pre>
 </tr>
 <tr>
 <td>htmx validation error</td>
-<td>422</td>
+<td>200</td>
 <td><code v-pre>Fragment(&quot;_TaskForm&quot;, this)</code></td>
 <td>Retarget to <code v-pre>#task-form</code></td>
 </tr>
 <tr>
 <td>htmx not found</td>
-<td>404</td>
+<td>200</td>
 <td><code v-pre>Fragment(&quot;_Messages&quot;, msg)</code></td>
 <td>Retarget to <code v-pre>#messages</code></td>
 </tr>
 <tr>
 <td>htmx server error</td>
-<td>500</td>
+<td>200</td>
 <td><code v-pre>Fragment(&quot;_Error&quot;, msg)</code></td>
 <td>Retarget to <code v-pre>#messages</code></td>
 </tr>
@@ -1010,8 +1007,8 @@ private PartialViewResult Fragment(string partialName, object model) =&gt;
 
     Response Rules:
     - Success responses target original hx-target
-    - Validation errors (422) retarget to #task-form
-    - Not found (404) and server errors (500) retarget to #messages
+    - Validation errors retarget to #task-form
+    - Not found and server errors retarget to #messages
 *@</code></pre>
 </doc-codeblock></div>
 <p><strong>Option B: In Index.cshtml.cs</strong></p>
@@ -1099,8 +1096,8 @@ public class IndexModel : PageModel
 ├── NO → Return Page() or RedirectToPage()
 └── YES
     ├── Success? → Return Fragment() to original hx-target
-    ├── Validation error? → 422 + Retarget to form fragment
-    └── Server error? → 500 + Retarget to messages</code></pre>
+    ├── Validation error? → Retarget to form fragment
+    └── Server error? → Retarget to messages</code></pre>
 </doc-codeblock></div>
 <doc-anchor-target id="handler-naming-quick-reference">
     <h3>
@@ -1171,21 +1168,6 @@ public class IndexModel : PageModel
 <td>302</td>
 <td>Redirect</td>
 <td>Non-htmx form submit</td>
-</tr>
-<tr>
-<td>422</td>
-<td>Unprocessable Entity</td>
-<td>Validation errors</td>
-</tr>
-<tr>
-<td>404</td>
-<td>Not Found</td>
-<td>Resource doesn&#x27;t exist</td>
-</tr>
-<tr>
-<td>500</td>
-<td>Server Error</td>
-<td>Unexpected failures</td>
 </tr>
 </tbody>
 </table>
@@ -1273,7 +1255,6 @@ public class IndexModel : PageModel
 <ul class="contains-task-list">
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Non-htmx requests return <code v-pre>Page()</code> or <code v-pre>RedirectToPage()</code></li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> htmx requests return <code v-pre>Fragment()</code></li>
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Validation errors use 422 status</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Error responses retarget to <code v-pre>#messages</code></li>
 </ul>
 <doc-anchor-target id="helpers">

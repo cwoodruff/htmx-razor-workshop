@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821364522321">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821365541675">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -35,12 +35,12 @@
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.821364522321" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821365541675" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821364522321" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821365541675" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821364522321" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821364522321" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821365541675" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821365541675" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -356,7 +356,7 @@
 </tr>
 <tr>
 <td>Response Status</td>
-<td><code v-pre>200</code> (success) or <code v-pre>422</code> (validation error)</td>
+<td><code v-pre>200</code> (success and validation error)</td>
 </tr>
 </tbody>
 </table>
@@ -420,7 +420,7 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <tbody>
 <tr>
 <td>Response Status</td>
-<td><code v-pre>422</code> (Unprocessable Entity)</td>
+<td><code v-pre>200</code> (Unprocessable Entity)</td>
 </tr>
 <tr>
 <td>Response Headers</td>
@@ -592,10 +592,10 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 }</code></pre>
 </doc-codeblock></div>
 <hr>
-<doc-anchor-target id="gotcha-c-404--handler-not-found--wrong-handler-invoked">
+<doc-anchor-target id="gotcha-c-handler-not-found--wrong-handler-invoked">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#gotcha-c-404--handler-not-found--wrong-handler-invoked">#</doc-anchor-trigger>
-        <span>Gotcha C: 404 / Handler Not Found / Wrong Handler Invoked</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#gotcha-c-handler-not-found--wrong-handler-invoked">#</doc-anchor-trigger>
+        <span>Gotcha C: Handler Not Found / Wrong Handler Invoked</span>
     </h3>
 </doc-anchor-target>
 <p><strong>Symptoms:</strong></p>
@@ -690,7 +690,6 @@ public IActionResult OnPostCreate() { ... }</code></pre>
 </doc-anchor-target>
 <p><strong>Symptoms:</strong></p>
 <ul>
-<li>Server returns 500 error</li>
 <li>Exception message: &quot;The partial view &#x27;...&#x27; was not found&quot;</li>
 <li>Or: Wrong partial renders</li>
 </ul>
@@ -1089,7 +1088,6 @@ private PartialViewResult Fragment(string partialName, object model) =&gt;
     if (IsHtmx())
     {
         // Retarget from #task-list to #task-form
-        Response.StatusCode = 422;
         Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
         Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
         return Fragment(&quot;Partials/_TaskForm&quot;, this);
@@ -1129,7 +1127,7 @@ private PartialViewResult Fragment(string partialName, object model) =&gt;
 <li>Submit an empty form</li>
 <li>Confirm:
 <ul>
-<li>Response status is <code v-pre>422</code></li>
+<li>Response status is <code v-pre>200</code></li>
 <li>Response headers include <code v-pre>HX-Retarget: #task-form</code></li>
 <li>Form fragment replaces <code v-pre>#task-form</code> with error message</li>
 </ul>
@@ -1309,8 +1307,8 @@ htmx.trigger(document.querySelector('#refresh-btn'), 'click')</code></pre>
     Response Rules:
     - Non-htmx → Page() or RedirectToPage()
     - htmx → Fragment(&quot;...&quot;, model)
-    - Validation error → 422 + HX-Retarget to form
-    - Server error → 500 + HX-Retarget to messages
+    - Validation error → HX-Retarget to form
+    - Server error → 200 + HX-Retarget to messages
 *@</code></pre>
 </doc-codeblock></div>
 <p>This inventory prevents &quot;where does this fragment come from?&quot; confusion and documents your htmx contracts.</p>

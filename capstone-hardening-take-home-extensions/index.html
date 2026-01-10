@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821364522321">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821365541675">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -35,12 +35,12 @@
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.821364522321" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821365541675" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821364522321" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821365541675" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821364522321" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821364522321" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821365541675" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821365541675" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -596,15 +596,15 @@ return Fragment(&quot;Partials/_TaskList&quot;, tasks);</code></pre>
 </tr>
 <tr>
 <td>htmx validation error</td>
-<td><code v-pre>Fragment(&quot;_Form&quot;, this)</code> + 422 + retarget</td>
+<td><code v-pre>Fragment(&quot;_Form&quot;, this)</code> + retarget</td>
 </tr>
 <tr>
 <td>htmx not found</td>
-<td><code v-pre>Fragment(&quot;_Messages&quot;, msg)</code> + 404 + retarget</td>
+<td><code v-pre>Fragment(&quot;_Messages&quot;, msg)</code> + retarget</td>
 </tr>
 <tr>
 <td>htmx server error</td>
-<td><code v-pre>Fragment(&quot;_Error&quot;, msg)</code> + 500 + retarget</td>
+<td><code v-pre>Fragment(&quot;_Error&quot;, msg)</code> + retarget</td>
 </tr>
 </tbody>
 </table>
@@ -618,9 +618,6 @@ return Fragment(&quot;Partials/_TaskList&quot;, tasks);</code></pre>
 <ul>
 <li>200: Success</li>
 <li>302: Redirect (non-htmx)</li>
-<li>422: Validation error</li>
-<li>404: Not found</li>
-<li>500: Server error</li>
 </ul>
 <doc-anchor-target id="swap-strategies">
     <h2>
@@ -763,7 +760,7 @@ return Fragment(&quot;Partials/_TaskList&quot;, tasks);</code></pre>
       hx-target=&quot;#list&quot;
       hx-swap=&quot;outerHTML&quot;&gt;</code></pre>
 </doc-codeblock></div>
-<p>On validation failure: 422 + retarget to form.</p>
+<p>On validation failure: retarget to form.</p>
 <doc-anchor-target id="error-handling-pattern">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#error-handling-pattern">#</doc-anchor-trigger>
@@ -773,7 +770,6 @@ return Fragment(&quot;Partials/_TaskList&quot;, tasks);</code></pre>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-csharp"><code v-pre class="language-csharp">if (IsHtmx())
 {
-    Response.StatusCode = 422; // or 404, 500
     Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
     Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
     return Fragment(&quot;Partials/_Messages&quot;, errorMessage);
@@ -984,7 +980,6 @@ public IActionResult OnGetEditRow(int id)
     var task = InMemoryTaskStore.Find(id);
     if (task is null)
     {
-        Response.StatusCode = 404;
         return Content(&quot;&lt;li class='list-group-item text-danger'&gt;Task not found&lt;/li&gt;&quot;, &quot;text/html&quot;);
     }
 
@@ -999,14 +994,12 @@ public IActionResult OnPostUpdateRow(int id, string title)
     var task = InMemoryTaskStore.Find(id);
     if (task is null)
     {
-        Response.StatusCode = 404;
         return Content(&quot;&lt;li class='list-group-item text-danger'&gt;Task not found&lt;/li&gt;&quot;, &quot;text/html&quot;);
     }
 
     if (string.IsNullOrWhiteSpace(title) || title.Length &lt; 3)
     {
         // Return edit form with error
-        Response.StatusCode = 422;
         return Fragment(&quot;Partials/_TaskRowEdit&quot;, task);
     }
 
@@ -1025,7 +1018,6 @@ public IActionResult OnGetCancelEdit(int id)
     var task = InMemoryTaskStore.Find(id);
     if (task is null)
     {
-        Response.StatusCode = 404;
         return Content(&quot;&lt;li class='list-group-item text-danger'&gt;Task not found&lt;/li&gt;&quot;, &quot;text/html&quot;);
     }
 
