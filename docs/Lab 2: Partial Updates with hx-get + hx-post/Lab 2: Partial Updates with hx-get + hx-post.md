@@ -74,14 +74,10 @@ Before adding htmx attributes, let's confirm everything is in place.
 
 Open `Pages/Shared/_Layout.cshtml` and ensure htmx is included. If not present, add it before the closing `</body>` tag:
 
-**Add to `_Layout.cshtml` (if not already present):**
-
 ```html
 <!-- htmx library -->
-<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+<script src="~/lib/htmx/htmx.min.js"></script>
 ```
-
-> **Note**: You can also use a specific CDN or download htmx locally. The unpkg CDN is convenient for workshops.
 
 ### 0.2 Verify Fragment Structure
 
@@ -291,7 +287,6 @@ public class IndexModel : PageModel
             {
                 // For htmx: return the form fragment with validation errors
                 // Use response headers to retarget the swap to the form
-                Response.StatusCode = 422; // Unprocessable Entity
                 Response.Headers["HX-Retarget"] = "#task-form";
                 Response.Headers["HX-Reswap"] = "outerHTML";
                 return Fragment("Partials/_TaskForm", this);
@@ -362,7 +357,6 @@ When htmx submits successfully, we return just the `_TaskList` partial. htmx swa
 ```csharp
 if (IsHtmx())
 {
-    Response.StatusCode = 422;
     Response.Headers["HX-Retarget"] = "#task-form";
     Response.Headers["HX-Reswap"] = "outerHTML";
     return Fragment("Partials/_TaskForm", this);
@@ -371,10 +365,9 @@ if (IsHtmx())
 
 This is more complex. When validation fails:
 
-1. **Status 422**: Signals "validation error" (Unprocessable Entity)
-2. **HX-Retarget**: Overrides the original `hx-target`; swap into `#task-form` instead
-3. **HX-Reswap**: Specifies the swap strategy for this response
-4. **Return form**: The form fragment includes validation error messages
+1. **HX-Retarget**: Overrides the original `hx-target`; swap into `#task-form` instead
+2. **HX-Reswap**: Specifies the swap strategy for this response
+3. **Return form**: The form fragment includes validation error messages
 
 ### 2.4 Why Retargeting?
 
@@ -397,7 +390,6 @@ The form's `hx-target` is `#task-list` (for successful creates). But on validati
    - Only `#task-list` updates; no page flash
 6. **Submit empty form**
 7. **Observe**:
-   - Response has status 422
    - Form updates with validation error
    - List remains unchanged
 
@@ -744,7 +736,6 @@ public IActionResult OnPostCreate()
 
         if (IsHtmx())
         {
-            Response.StatusCode = 422;
             Response.Headers["HX-Retarget"] = "#task-form";
             Response.Headers["HX-Reswap"] = "outerHTML";
             return Fragment("Partials/_TaskForm", this);
@@ -759,7 +750,6 @@ public IActionResult OnPostCreate()
     {
         if (IsHtmx())
         {
-            Response.StatusCode = 500;
             Response.Headers["HX-Retarget"] = "#messages";
             Response.Headers["HX-Reswap"] = "innerHTML";
             return Fragment("Partials/_Error",
@@ -783,23 +773,13 @@ public IActionResult OnPostCreate()
 }
 ```
 
-### 5.7 Understanding Error Handling
-
-The error handling demonstrates several htmx patterns:
-
-| Scenario | Status | Retarget | Fragment |
-|----------|--------|----------|----------|
-| Success | 200 | (none) | `_TaskList` → `#task-list` |
-| Validation error | 422 | `#task-form` | `_TaskForm` with errors |
-| Server error | 500 | `#messages` | `_Error` message |
-
 **Key Points:**
 
 1. **htmx treats non-2xx responses as valid**: You can still return HTML and swap it
 2. **HX-Retarget changes where content goes**: Lets you route errors to a different location
 3. **HX-Reswap changes how content is swapped**: `innerHTML` here because we want to put content inside `#messages`, not replace it
 
-### 5.8 Test Everything
+### 5.7 Test Everything
 
 **Test the loading indicator:**
 
@@ -913,8 +893,6 @@ Before moving to Lab 3, verify these behaviors:
 
 - [ ] Requests include `HX-Request: true` header
 - [ ] Responses are HTML fragments (not full pages)
-- [ ] Validation errors return status 422
-- [ ] Server errors return status 500
 
 ### DOM Verification
 
@@ -1049,7 +1027,6 @@ public class IndexModel : PageModel
 
             if (IsHtmx())
             {
-                Response.StatusCode = 422;
                 Response.Headers["HX-Retarget"] = "#task-form";
                 Response.Headers["HX-Reswap"] = "outerHTML";
                 return Fragment("Partials/_TaskForm", this);
@@ -1062,7 +1039,6 @@ public class IndexModel : PageModel
         {
             if (IsHtmx())
             {
-                Response.StatusCode = 500;
                 Response.Headers["HX-Retarget"] = "#messages";
                 Response.Headers["HX-Reswap"] = "innerHTML";
                 return Fragment("Partials/_Error",

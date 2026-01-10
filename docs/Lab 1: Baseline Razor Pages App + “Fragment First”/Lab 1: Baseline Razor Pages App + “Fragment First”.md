@@ -97,9 +97,7 @@ RazorHtmxWorkshop/
 │   └── launchSettings.json
 ├── wwwroot/
 │   ├── css/
-│   ├── js/
-│   ├── lib/
-│   └── favicon.ico
+│   └── lib/
 ├── appsettings.json
 ├── appsettings.Development.json
 ├── Program.cs

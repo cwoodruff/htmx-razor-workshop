@@ -37,7 +37,7 @@ public class IndexModel : PageModel
         new()
         {
             ViewName = partialName,
-            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+            ViewData = new ViewDataDictionary(MetadataProvider, ModelState) { Model = model }
         };
 
     // ═══════════════════════════════════════════════════════════
@@ -107,7 +107,6 @@ public class IndexModel : PageModel
             {
                 // For htmx: return the form fragment with validation errors
                 // Use response headers to retarget the swap to the form
-                Response.StatusCode = 422; // Unprocessable Entity
                 Response.Headers["HX-Retarget"] = "#task-form";
                 Response.Headers["HX-Reswap"] = "outerHTML";
                 return Fragment("Partials/_TaskForm", this);
@@ -123,7 +122,6 @@ public class IndexModel : PageModel
         {
             if (IsHtmx())
             {
-                Response.StatusCode = 500;
                 Response.Headers["HX-Retarget"] = "#messages";
                 Response.Headers["HX-Reswap"] = "innerHTML";
                 return Fragment("Partials/_Error",
