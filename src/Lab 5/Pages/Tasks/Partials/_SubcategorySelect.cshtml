@@ -17,7 +17,7 @@
     <select class="form-select"
             name="Input.Subcategory"
             id="subcategory"
-            @(Model.Options.Count == 0 ? "disabled" : "")>
+            disabled="@(Model.Options.Count == 0)">
         
         @if (Model.Options.Count == 0)
         {
@@ -28,8 +28,7 @@
             <option value="">Select subcategory...</option>
             @foreach (var option in Model.Options)
             {
-                var selected = option == Model.Selected ? "selected" : "";
-                <option value="@option" @selected>@option</option>
+                <option value="@option" selected="@(option == Model.Selected)">@option</option>
             }
         }
     </select>
