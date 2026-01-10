@@ -1,0 +1,55 @@
+@using RazorPagesHtmxWorkshop.Models
+@model TaskItem?
+
+@*
+    Task Details Fragment
+    =====================
+    
+    Target ID: #task-details
+    Swap: outerHTML
+    Returned by: OnGetDetails
+    
+    Purpose: Display detailed information about a single task
+    Model: TaskItem? (null if not found)
+*@
+
+<div id="task-details">
+    @if (Model is null)
+    {
+        <div class="text-muted">Task not found.</div>
+    }
+    else
+    {
+        <div class="vstack gap-3">
+            <div>
+                <label class="form-label text-muted small mb-0">Title</label>
+                <div class="fw-semibold fs-5">@Model.Title</div>
+            </div>
+            
+            <div class="row">
+                <div class="col-6">
+                    <label class="form-label text-muted small mb-0">Status</label>
+                    <div>
+                        @if (Model.IsDone)
+                        {
+                            <span class="badge text-bg-success">Done</span>
+                        }
+                        else
+                        {
+                            <span class="badge text-bg-secondary">Open</span>
+                        }
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label class="form-label text-muted small mb-0">ID</label>
+                    <div class="text-muted">@Model.Id</div>
+                </div>
+            </div>
+            
+            <div>
+                <label class="form-label text-muted small mb-0">Created</label>
+                <div>@Model.CreatedUtc.ToLocalTime().ToString("F")</div>
+            </div>
+        </div>
+    }
+</div>

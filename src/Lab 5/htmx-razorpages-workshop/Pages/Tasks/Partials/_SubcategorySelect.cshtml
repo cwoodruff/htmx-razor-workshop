@@ -1,0 +1,36 @@
+@model (IReadOnlyList<string> Options, string? Selected)
+
+@*
+    Subcategory Select Fragment
+    ===========================
+    
+    Purpose: Dropdown for subcategory selection
+    Model: (Options list, Selected value)
+    
+    Design notes:
+    - Wrapper div has stable ID for swapping
+    - Select is disabled when no options available
+    - Options include a placeholder prompt
+*@
+
+<div id="subcategory-container">
+    <select class="form-select"
+            name="Input.Subcategory"
+            id="subcategory"
+            @(Model.Options.Count == 0 ? "disabled" : "")>
+        
+        @if (Model.Options.Count == 0)
+        {
+            <option value="">Select a category first</option>
+        }
+        else
+        {
+            <option value="">Select subcategory...</option>
+            @foreach (var option in Model.Options)
+            {
+                var selected = option == Model.Selected ? "selected" : "";
+                <option value="@option" @selected>@option</option>
+            }
+        }
+    </select>
+</div>

@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPagesHtmxWorkshop", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPagesHtmxWorkshop", "Lab 4\RazorPagesHtmxWorkshop.csproj", "{7C764FE1-1571-4A44-9E40-E4C7C9924108}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorPagesHtmxWorkshop", "Lab 5\htmx-razorpages-workshop\RazorPagesHtmxWorkshop.csproj", "{EC4A23A2-A2F8-444C-94A5-764C63769C21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,7 @@ Global
 		{ACBC2C64-1E07-4251-B3FC-BFD84B3ACEEB} = {3E1A645A-613A-46F7-94B0-826547CF1D23}
 		{D12EFB1F-3EB4-453D-877E-510041D88EB5} = {48D29E40-3AA8-48EA-AE14-DA5EC185021F}
 		{7C764FE1-1571-4A44-9E40-E4C7C9924108} = {9BEB47F4-E485-4A07-9D47-8789514F70D6}
+		{EC4A23A2-A2F8-444C-94A5-764C63769C21} = {4F245375-CB94-40C2-902D-AC697D124515}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{3C0246BC-E83B-4224-9088-02467381EA74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -46,5 +49,9 @@ Global
 		{7C764FE1-1571-4A44-9E40-E4C7C9924108}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C764FE1-1571-4A44-9E40-E4C7C9924108}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C764FE1-1571-4A44-9E40-E4C7C9924108}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC4A23A2-A2F8-444C-94A5-764C63769C21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC4A23A2-A2F8-444C-94A5-764C63769C21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC4A23A2-A2F8-444C-94A5-764C63769C21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC4A23A2-A2F8-444C-94A5-764C63769C21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

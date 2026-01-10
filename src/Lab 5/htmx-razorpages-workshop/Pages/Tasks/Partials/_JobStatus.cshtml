@@ -1,0 +1,108 @@
+@using RazorPagesHtmxWorkshop.Data
+@model JobSimulator.JobStatus?
+
+@*
+    Job Status Fragment
+    ===================
+    
+    Purpose: Display job progress and result
+    Model: JobStatus (or null if no job)
+    
+    Design notes:
+    - Fragment contains polling trigger when job is running
+    - Polling stops automatically when job completes/fails
+    - Uses hx-trigger="every 1s" for active polling
+    - Conditional rendering based on job state
+*@
+
+<div id="job-status">
+    @if (Model is null)
+    {
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Generate Report</h5>
+                <p class="card-text text-muted">
+                    Click the button to generate a sample report. 
+                    This simulates a long-running operation.
+                </p>
+                <button type="button"
+                        class="btn btn-primary"
+                        hx-post="?handler=StartJob"
+                        hx-target="#job-status"
+                        hx-swap="outerHTML">
+                    Start Report Generation
+                </button>
+            </div>
+        </div>
+    }
+    else if (Model.State == "running")
+    {
+        @* Active job - include polling trigger *@
+        <div class="card border-primary"
+             hx-get="?handler=JobStatus&jobId=@Model.JobId"
+             hx-trigger="every 1s"
+             hx-target="#job-status"
+             hx-swap="outerHTML">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    Generating Report...
+                </h5>
+                <div class="progress mb-3" style="height: 25px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                         role="progressbar"
+                         style="width: @Model.Progress%"
+                         aria-valuenow="@Model.Progress"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                        @Model.Progress%
+                    </div>
+                </div>
+                <p class="card-text text-muted small mb-0">
+                    Job ID: @Model.JobId | Started: @Model.StartedAt.ToLocalTime().ToString("HH:mm:ss")
+                </p>
+            </div>
+        </div>
+    }
+    else if (Model.State == "completed")
+    {
+        @* Completed - no polling *@
+        <div class="card border-success">
+            <div class="card-body">
+                <h5 class="card-title text-success">
+                    <span class="me-2">✓</span> Report Complete
+                </h5>
+                <p class="card-text">@Model.Result</p>
+                <p class="card-text text-muted small">
+                    Completed in @((Model.CompletedAt!.Value - Model.StartedAt).TotalSeconds.ToString("F1")) seconds
+                </p>
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        hx-get="?handler=ResetJob"
+                        hx-target="#job-status"
+                        hx-swap="outerHTML">
+                    Generate Another Report
+                </button>
+            </div>
+        </div>
+    }
+    else if (Model.State == "failed")
+    {
+        @* Failed - no polling *@
+        <div class="card border-danger">
+            <div class="card-body">
+                <h5 class="card-title text-danger">
+                    <span class="me-2">✗</span> Report Failed
+                </h5>
+                <p class="card-text text-danger">@Model.Error</p>
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        hx-get="?handler=ResetJob"
+                        hx-target="#job-status"
+                        hx-swap="outerHTML">
+                    Try Again
+                </button>
+            </div>
+        </div>
+    }
+</div>

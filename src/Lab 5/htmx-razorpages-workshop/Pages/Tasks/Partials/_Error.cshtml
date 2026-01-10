@@ -1,0 +1,15 @@
+@model string
+
+@*
+    Error Fragment
+    ==============
+    
+    Purpose:
+    - Displays error messages in a consistent format
+    - Used for server errors, not found conditions, etc.
+    - Typically swapped into #messages via HX-Retarget
+*@
+
+<div class="alert alert-danger workshop-alert" role="alert">
+    <strong>Error:</strong> @Model
+</div>

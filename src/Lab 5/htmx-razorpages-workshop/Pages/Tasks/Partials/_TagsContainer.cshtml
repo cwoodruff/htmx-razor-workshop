@@ -1,0 +1,36 @@
+@model List<string>
+
+@*
+    Tags Container Fragment
+    =======================
+    
+    Purpose: Container for all tag rows + Add button
+    Model: List<string> - current tags
+    
+    Design notes:
+    - Container has stable ID #tags-container
+    - Add button appends new rows via hx-swap="beforeend"
+    - Server tracks next available index via hx-vals
+*@
+
+<div id="tags-container" class="mb-3">
+    <label class="form-label">Tags</label>
+    
+    <div id="tags-list">
+        @for (var i = 0; i < Model.Count; i++)
+        {
+            <partial name="Partials/_TagRow" model="(i, Model[i])" />
+        }
+    </div>
+    
+    <button type="button"
+            class="btn btn-sm btn-outline-secondary mt-2"
+            hx-get="?handler=AddTag"
+            hx-vals='{"nextIndex": @Model.Count}'
+            hx-target="#tags-list"
+            hx-swap="beforeend">
+        <span aria-hidden="true">+</span> Add Tag
+    </button>
+    
+    <div class="form-text">Add tags to categorize your task.</div>
+</div>

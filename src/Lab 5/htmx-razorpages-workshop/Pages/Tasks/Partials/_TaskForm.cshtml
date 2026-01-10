@@ -1,0 +1,89 @@
+@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
+
+@*
+    Task Form Fragment (Lab 5: with tags and category dropdowns)
+    =============================================================
+    
+    Target ID: #task-form
+    Swap: outerHTML
+    Returned by: OnGetEmptyForm, OnPostCreate (on validation error)
+    
+    Lab 5 additions:
+    - Dynamic tags section (add/remove rows)
+    - Category and Subcategory dropdowns (dependent selection)
+*@
+
+<div id="task-form">
+    <form method="post" asp-page-handler="Create"
+          hx-post="?handler=Create"
+          hx-target="#task-list"
+          hx-swap="outerHTML"
+          hx-indicator="#task-loading"
+          class="vstack gap-3">
+        
+        @Html.AntiForgeryToken()
+        
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        
+        @* Title field with real-time validation *@
+        <div>
+            <label class="form-label" for="title">Task Title</label>
+            
+            <input id="title"
+                   class="form-control form-control-lg"
+                   asp-for="Input.Title"
+                   placeholder="e.g., Add htmx to Razor Pages"
+                   autocomplete="off"
+                   hx-post="?handler=ValidateTitle"
+                   hx-trigger="keyup changed delay:500ms"
+                   hx-target="#title-validation"
+                   hx-swap="outerHTML"
+                   hx-include="closest form" />
+            
+            <div class="form-text">Keep it short; we're optimizing for fast feedback loops.</div>
+            
+            <span class="text-danger" asp-validation-for="Input.Title"></span>
+            
+            <partial name="Partials/_TitleValidation" model="@((string?)null)" />
+        </div>
+
+        @* Category and Subcategory dropdowns *@
+        <div class="row">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <label class="form-label" for="category">Category</label>
+                <select class="form-select"
+                        name="Input.Category"
+                        id="category"
+                        asp-for="Input.Category"
+                        hx-get="?handler=Subcategories"
+                        hx-target="#subcategory-container"
+                        hx-swap="outerHTML"
+                        hx-include="[name='Input.Category']">
+                    <option value="">Select category...</option>
+                    @foreach (var cat in RazorPagesHtmxWorkshop.Data.CategoryData.GetCategories())
+                    {
+                        <option value="@cat">@cat</option>
+                    }
+                </select>
+            </div>
+            
+            <div class="col-md-6">
+                <label class="form-label" for="subcategory">Subcategory</label>
+                @{
+                    var currentSubcategories = RazorPagesHtmxWorkshop.Data.CategoryData
+                        .GetSubcategories(Model.Input.Category);
+                }
+                <partial name="Partials/_SubcategorySelect" 
+                         model="(currentSubcategories, Model.Input.Subcategory)" />
+            </div>
+        </div>
+
+        @* Dynamic Tags section *@
+        <partial name="Partials/_TagsContainer" model="Model.Input.Tags" />
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-lg" type="submit">Add task</button>
+            <a class="btn btn-outline-secondary btn-lg" asp-page="/Labs">Back to labs</a>
+        </div>
+    </form>
+</div>

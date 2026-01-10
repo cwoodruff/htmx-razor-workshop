@@ -1,0 +1,36 @@
+@model (int Index, string Value)
+
+@*
+    Tag Row Fragment
+    ================
+    
+    Purpose: Single tag input with remove button
+    Model: (int Index, string Value) - tuple with index and current value
+    
+    Design notes:
+    - Index is used for model binding (Input.Tags[0], Input.Tags[1], etc.)
+    - Remove button removes this row from DOM (no server round-trip needed)
+    - Each row has unique ID based on index for potential targeting
+    
+    Swap strategy:
+    - Added via hx-swap="beforeend" into #tags-list
+    - Removed via hx-swap="delete"
+*@
+
+<div class="tag-row input-group mb-2" id="tag-row-@Model.Index">
+    <input type="text"
+           class="form-control"
+           name="Input.Tags[@Model.Index]"
+           value="@Model.Value"
+           placeholder="Enter tag..." />
+    
+    <button type="button"
+            class="btn btn-outline-danger"
+            hx-get="?handler=RemoveTag&index=@Model.Index"
+            hx-target="#tag-row-@Model.Index"
+            hx-swap="delete"
+            title="Remove tag">
+        <span aria-hidden="true">&times;</span>
+        <span class="visually-hidden">Remove tag</span>
+    </button>
+</div>

@@ -1,0 +1,414 @@
+:root{
+  --wk-bg: #0b1020;
+  --wk-bg2: #0f1730;
+  --wk-card: rgba(255,255,255,.06);
+  --wk-border: rgba(255,255,255,.12);
+  --wk-text: rgba(255,255,255,.92);
+  --wk-muted: rgba(255,255,255,.68);
+  --wk-accent: #7c5cff; /* violet accent */
+  --wk-accent2: #23c8ff; /* cyan accent */
+}
+
+.workshop-body{
+  background:
+    radial-gradient(900px 400px at 10% 10%, rgba(124,92,255,.20), transparent 60%),
+    radial-gradient(900px 400px at 90% 20%, rgba(35,200,255,.16), transparent 60%),
+    linear-gradient(180deg, var(--wk-bg), var(--wk-bg2));
+  color: var(--wk-text);
+  min-height: 100vh;
+}
+
+.workshop-nav{
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(10px);
+}
+
+.navbar .nav-link{
+  color: var(--wk-text);
+  opacity: .85;
+}
+.navbar .nav-link:hover{
+  opacity: 1;
+}
+
+.brand-mark{
+  color: var(--wk-accent2);
+}
+.brand-title{
+  display:block;
+  font-weight: 700;
+  letter-spacing: .2px;
+  line-height: 1.1;
+}
+.brand-subtitle{
+  display:block;
+  font-size: .85rem;
+  color: var(--wk-muted);
+}
+
+.workshop-hero{
+  background: linear-gradient(135deg, rgba(124,92,255,.25), rgba(35,200,255,.12));
+  border: 1px solid var(--wk-border);
+}
+
+.workshop-codecard{
+  background: rgba(0,0,0,.35);
+  border: 1px solid var(--wk-border);
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.workshop-codecard pre, .workshop-codecard code{
+  color: var(--wk-text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: .9rem;
+}
+
+.workshop-card{
+  background: var(--wk-card);
+  border: 1px solid var(--wk-border);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+  color: var(--wk-text);
+}
+
+.workshop-kicker{
+  font-size: .75rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--wk-muted);
+  margin-bottom: .25rem;
+}
+
+.workshop-alert{
+  background: rgba(35,200,255,.12);
+  border: 1px solid rgba(35,200,255,.35);
+  color: var(--wk-text);
+}
+
+/* Success alert variant */
+.alert-success.workshop-alert {
+  background: rgba(25, 135, 84, .15);
+  border: 1px solid rgba(25, 135, 84, .35);
+  color: var(--wk-text);
+}
+
+/* Danger alert variant */
+.alert-danger.workshop-alert {
+  background: rgba(220, 53, 69, .15);
+  border: 1px solid rgba(220, 53, 69, .35);
+  color: var(--wk-text);
+}
+
+.workshop-footer{
+  background: rgba(0,0,0,.18);
+}
+
+a, .btn-link{
+  color: rgba(255,255,255,.92);
+}
+
+.btn-primary{
+  background: linear-gradient(135deg, var(--wk-accent), var(--wk-accent2));
+  border: none;
+}
+.btn-primary:hover{
+  filter: brightness(1.05);
+}
+
+.btn-outline-light{
+  border-color: rgba(255,255,255,.30);
+}
+.btn-outline-light:hover{
+  background: rgba(255,255,255,.08);
+}
+
+.btn-outline-secondary{
+  border-color: rgba(255,255,255,.25);
+  color: var(--wk-text);
+}
+.btn-outline-secondary:hover{
+  background: rgba(255,255,255,.08);
+  color: var(--wk-text);
+}
+
+.btn-outline-danger{
+  border-color: rgba(220, 53, 69, .5);
+  color: rgba(255,255,255,.92);
+}
+.btn-outline-danger:hover{
+  background: rgba(220, 53, 69, .15);
+  border-color: rgba(220, 53, 69, .7);
+  color: var(--wk-text);
+}
+
+.btn-outline-primary{
+  border-color: rgba(124, 92, 255, .5);
+  color: rgba(255,255,255,.92);
+}
+.btn-outline-primary:hover{
+  background: rgba(124, 92, 255, .15);
+  border-color: rgba(124, 92, 255, .7);
+  color: var(--wk-text);
+}
+
+.form-control, .form-control-lg{
+  background: rgba(0,0,0,.22);
+  border: 1px solid rgba(255,255,255,.18);
+  color: var(--wk-text);
+}
+.form-control:focus{
+  background: rgba(0,0,0,.26);
+  border-color: rgba(35,200,255,.55);
+  box-shadow: 0 0 0 .2rem rgba(35,200,255,.16);
+  color: var(--wk-text);
+}
+.form-control::placeholder{
+  color: var(--wk-muted);
+}
+
+.form-select{
+  background-color: rgba(0,0,0,.22);
+  border: 1px solid rgba(255,255,255,.18);
+  color: var(--wk-text);
+}
+.form-select:focus{
+  background-color: rgba(0,0,0,.26);
+  border-color: rgba(35,200,255,.55);
+  box-shadow: 0 0 0 .2rem rgba(35,200,255,.16);
+  color: var(--wk-text);
+}
+.form-select:disabled{
+  opacity: 0.5;
+}
+
+.input-group-text{
+  background: rgba(0,0,0,.22);
+  border: 1px solid rgba(255,255,255,.18);
+  color: var(--wk-muted);
+}
+
+.list-group-item{
+  background: transparent;
+  border-color: rgba(255,255,255,.10);
+  color: var(--wk-text);
+}
+
+/* Pagination styling */
+.pagination .page-link {
+  background: rgba(0,0,0,.22);
+  border-color: rgba(255,255,255,.18);
+  color: var(--wk-text);
+}
+.pagination .page-link:hover {
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.25);
+  color: var(--wk-text);
+}
+.pagination .page-item.active .page-link {
+  background: linear-gradient(135deg, var(--wk-accent), var(--wk-accent2));
+  border-color: transparent;
+  color: white;
+}
+.pagination .page-item.disabled .page-link {
+  background: rgba(0,0,0,.15);
+  border-color: rgba(255,255,255,.10);
+  color: var(--wk-muted);
+  opacity: 0.5;
+}
+
+/* Close button styling for alerts */
+.btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* ==========================================================================
+   Card styling for job status
+   ========================================================================== */
+
+.card {
+  background: var(--wk-card);
+  border-color: var(--wk-border);
+  color: var(--wk-text);
+}
+
+.card-title {
+  color: var(--wk-text);
+}
+
+.card-text.text-muted {
+  color: var(--wk-muted) !important;
+}
+
+.card.border-primary {
+  border-color: var(--wk-accent) !important;
+}
+
+.card.border-success {
+  border-color: rgba(25, 135, 84, .5) !important;
+}
+
+.card.border-danger {
+  border-color: rgba(220, 53, 69, .5) !important;
+}
+
+/* Progress bar styling */
+.progress {
+  background: rgba(0,0,0,.3);
+  border-radius: 0.5rem;
+}
+
+.progress-bar {
+  background: linear-gradient(135deg, var(--wk-accent), var(--wk-accent2));
+}
+
+/* ==========================================================================
+   htmx Loading Indicator Styles
+   ========================================================================== */
+
+/* Hide indicator by default */
+.htmx-indicator {
+    display: none;
+}
+
+/* Show indicator when htmx request is in progress */
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+    display: inline-block;
+}
+
+/* ==========================================================================
+   htmx Transitions
+   ========================================================================== */
+
+/*
+ * Fade transition for task list
+ * Smoothly fade out old content and fade in new content
+ */
+#task-list {
+    transition: opacity 150ms ease-in-out;
+}
+
+#task-list.htmx-swapping {
+    opacity: 0;
+}
+
+#task-list.htmx-settling {
+    opacity: 1;
+}
+
+/*
+ * Fade transition for details panel
+ */
+#task-details {
+    transition: opacity 150ms ease-in-out;
+}
+
+#task-details.htmx-swapping {
+    opacity: 0;
+}
+
+#task-details.htmx-settling {
+    opacity: 1;
+}
+
+/*
+ * Fade transition for job status
+ */
+#job-status {
+    transition: opacity 150ms ease-in-out;
+}
+
+#job-status.htmx-swapping {
+    opacity: 0;
+}
+
+#job-status.htmx-settling {
+    opacity: 1;
+}
+
+/*
+ * Subtle highlight for newly added items
+ */
+.list-group-item.htmx-added {
+    animation: highlight-fade 1s ease-out;
+}
+
+@keyframes highlight-fade {
+    from {
+        background-color: rgba(35, 200, 255, 0.15);
+    }
+    to {
+        background-color: transparent;
+    }
+}
+
+/*
+ * Disabled state during requests
+ * Prevent double-clicks by visually disabling buttons
+ */
+button.htmx-request {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   Real-Time Validation Styles
+   ========================================================================== */
+
+/* Visual feedback during validation request */
+input.htmx-request {
+    border-color: rgba(35, 200, 255, .55) !important;
+}
+
+/* Smooth transition for validation messages */
+#title-validation {
+    transition: all 200ms ease-in-out;
+}
+
+/* Disable form elements during submission */
+.htmx-request input,
+.htmx-request button[type="submit"],
+.htmx-request select,
+.htmx-request textarea {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* ==========================================================================
+   Dynamic Tag Rows Styles (Lab 5)
+   ========================================================================== */
+
+.tag-row {
+    transition: all 200ms ease-in-out;
+}
+
+.tag-row.htmx-added {
+    animation: slide-in 200ms ease-out;
+}
+
+.tag-row.htmx-swapping {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ==========================================================================
+   Subcategory Dropdown Styles (Lab 5)
+   ========================================================================== */
+
+#subcategory-container {
+    transition: opacity 150ms ease-in-out;
+}
+
+#subcategory-container.htmx-request {
+    opacity: 0.5;
+}

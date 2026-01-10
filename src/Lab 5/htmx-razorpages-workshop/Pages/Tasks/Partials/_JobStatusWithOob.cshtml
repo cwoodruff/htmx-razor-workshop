@@ -1,0 +1,66 @@
+@using RazorPagesHtmxWorkshop.Data
+@model (JobSimulator.JobStatus Status, string Message, string AlertClass)
+
+@*
+    Job Status with OOB Message
+    ===========================
+    
+    Purpose: Returns job status + out-of-band message in one response
+    Model: Tuple with status, message text, and Bootstrap alert class
+    
+    Design notes:
+    - Primary content swaps into #job-status (via hx-target)
+    - OOB content swaps into #messages automatically
+    - htmx processes both fragments from single response
+*@
+
+@* Primary fragment - swapped into hx-target *@
+<div id="job-status">
+    @if (Model.Status.State == "completed")
+    {
+        <div class="card border-success">
+            <div class="card-body">
+                <h5 class="card-title text-success">
+                    <span class="me-2">✓</span> Report Complete
+                </h5>
+                <p class="card-text">@Model.Status.Result</p>
+                <p class="card-text text-muted small">
+                    Completed in @((Model.Status.CompletedAt!.Value - Model.Status.StartedAt).TotalSeconds.ToString("F1")) seconds
+                </p>
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        hx-get="?handler=ResetJob"
+                        hx-target="#job-status"
+                        hx-swap="outerHTML">
+                    Generate Another Report
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card border-danger">
+            <div class="card-body">
+                <h5 class="card-title text-danger">
+                    <span class="me-2">✗</span> Report Failed
+                </h5>
+                <p class="card-text text-danger">@Model.Status.Error</p>
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        hx-get="?handler=ResetJob"
+                        hx-target="#job-status"
+                        hx-swap="outerHTML">
+                    Try Again
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+@* Out-of-band fragment - swaps into #messages automatically *@
+<div id="messages" hx-swap-oob="true">
+    <div class="alert alert-@Model.AlertClass alert-dismissible fade show workshop-alert" role="alert">
+        @Model.Message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
