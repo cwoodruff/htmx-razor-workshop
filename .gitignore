@@ -408,3 +408,4 @@ chinook-razor-htmx/.DS_Store
 .DS_Store
 *.xml
 /src/.idea
+/init
