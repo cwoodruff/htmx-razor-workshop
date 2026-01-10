@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821360986284">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821364522321">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -35,12 +35,12 @@
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.821360986284" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821364522321" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821360986284" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821364522321" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821360986284" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821360986284" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821364522321" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821364522321" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -376,14 +376,10 @@
     </h3>
 </doc-anchor-target>
 <p>Open <code v-pre>Pages/Shared/_Layout.cshtml</code> and ensure htmx is included. If not present, add it before the closing <code v-pre>&lt;/body&gt;</code> tag:</p>
-<p><strong>Add to <code v-pre>_Layout.cshtml</code> (if not already present):</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- htmx library --&gt;
-&lt;script src=&quot;https://unpkg.com/htmx.org@1.9.12&quot;&gt;&lt;/script&gt;</code></pre>
+&lt;script src=&quot;~/lib/htmx/htmx.min.js&quot;&gt;&lt;/script&gt;</code></pre>
 </doc-codeblock></div>
-<blockquote>
-<p><strong>Note</strong>: You can also use a specific CDN or download htmx locally. The unpkg CDN is convenient for workshops.</p>
-</blockquote>
 <doc-anchor-target id="02-verify-fragment-structure">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#02-verify-fragment-structure">#</doc-anchor-trigger>
@@ -658,7 +654,6 @@ public class IndexModel : PageModel
             {
                 // For htmx: return the form fragment with validation errors
                 // Use response headers to retarget the swap to the form
-                Response.StatusCode = 422; // Unprocessable Entity
                 Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
                 Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
                 return Fragment(&quot;Partials/_TaskForm&quot;, this);
@@ -742,7 +737,6 @@ public class IndexModel : PageModel
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-csharp"><code v-pre class="language-csharp">if (IsHtmx())
 {
-    Response.StatusCode = 422;
     Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
     Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
     return Fragment(&quot;Partials/_TaskForm&quot;, this);
@@ -750,7 +744,6 @@ public class IndexModel : PageModel
 </doc-codeblock></div>
 <p>This is more complex. When validation fails:</p>
 <ol>
-<li><strong>Status 422</strong>: Signals &quot;validation error&quot; (Unprocessable Entity)</li>
 <li><strong>HX-Retarget</strong>: Overrides the original <code v-pre>hx-target</code>; swap into <code v-pre>#task-form</code> instead</li>
 <li><strong>HX-Reswap</strong>: Specifies the swap strategy for this response</li>
 <li><strong>Return form</strong>: The form fragment includes validation error messages</li>
@@ -806,7 +799,6 @@ public class IndexModel : PageModel
 <li><strong>Submit empty form</strong></li>
 <li><strong>Observe</strong>:
 <ul>
-<li>Response has status 422</li>
 <li>Form updates with validation error</li>
 <li>List remains unchanged</li>
 </ul>
@@ -1251,7 +1243,6 @@ public IActionResult OnGetList(int? take)
 
         if (IsHtmx())
         {
-            Response.StatusCode = 422;
             Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
             Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
             return Fragment(&quot;Partials/_TaskForm&quot;, this);
@@ -1266,7 +1257,6 @@ public IActionResult OnGetList(int? take)
     {
         if (IsHtmx())
         {
-            Response.StatusCode = 500;
             Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
             Response.Headers[&quot;HX-Reswap&quot;] = &quot;innerHTML&quot;;
             return Fragment(&quot;Partials/_Error&quot;,
@@ -1289,55 +1279,16 @@ public IActionResult OnGetList(int? take)
     return RedirectToPage();
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="57-understanding-error-handling">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#57-understanding-error-handling">#</doc-anchor-trigger>
-        <span>5.7 Understanding Error Handling</span>
-    </h3>
-</doc-anchor-target>
-<p>The error handling demonstrates several htmx patterns:</p>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Scenario</th>
-<th>Status</th>
-<th>Retarget</th>
-<th>Fragment</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Success</td>
-<td>200</td>
-<td>(none)</td>
-<td><code v-pre>_TaskList</code> → <code v-pre>#task-list</code></td>
-</tr>
-<tr>
-<td>Validation error</td>
-<td>422</td>
-<td><code v-pre>#task-form</code></td>
-<td><code v-pre>_TaskForm</code> with errors</td>
-</tr>
-<tr>
-<td>Server error</td>
-<td>500</td>
-<td><code v-pre>#messages</code></td>
-<td><code v-pre>_Error</code> message</td>
-</tr>
-</tbody>
-</table>
-</div>
 <p><strong>Key Points:</strong></p>
 <ol>
 <li><strong>htmx treats non-2xx responses as valid</strong>: You can still return HTML and swap it</li>
 <li><strong>HX-Retarget changes where content goes</strong>: Lets you route errors to a different location</li>
 <li><strong>HX-Reswap changes how content is swapped</strong>: <code v-pre>innerHTML</code> here because we want to put content inside <code v-pre>#messages</code>, not replace it</li>
 </ol>
-<doc-anchor-target id="58-test-everything">
+<doc-anchor-target id="57-test-everything">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#58-test-everything">#</doc-anchor-trigger>
-        <span>5.8 Test Everything</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#57-test-everything">#</doc-anchor-trigger>
+        <span>5.7 Test Everything</span>
     </h3>
 </doc-anchor-target>
 <p><strong>Test the loading indicator:</strong></p>
@@ -1501,8 +1452,6 @@ public IActionResult OnGetEmptyForm()
 <ul class="contains-task-list">
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Requests include <code v-pre>HX-Request: true</code> header</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Responses are HTML fragments (not full pages)</li>
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Validation errors return status 422</li>
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Server errors return status 500</li>
 </ul>
 <doc-anchor-target id="dom-verification">
     <h3>
@@ -1742,7 +1691,6 @@ public class IndexModel : PageModel
 
             if (IsHtmx())
             {
-                Response.StatusCode = 422;
                 Response.Headers[&quot;HX-Retarget&quot;] = &quot;#task-form&quot;;
                 Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
                 return Fragment(&quot;Partials/_TaskForm&quot;, this);
@@ -1755,7 +1703,6 @@ public class IndexModel : PageModel
         {
             if (IsHtmx())
             {
-                Response.StatusCode = 500;
                 Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
                 Response.Headers[&quot;HX-Reswap&quot;] = &quot;innerHTML&quot;;
                 return Fragment(&quot;Partials/_Error&quot;,
