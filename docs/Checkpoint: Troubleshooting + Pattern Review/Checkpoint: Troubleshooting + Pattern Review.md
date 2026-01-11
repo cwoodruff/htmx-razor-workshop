@@ -485,7 +485,7 @@ private PartialViewResult Fragment(string partialName, object model) =>
     new()
     {
         ViewName = partialName,
-        ViewData = new ViewDataDictionary(ViewData) { Model = model }
+        ViewData = new ViewDataDictionary(MetadataProvider, ModelState) { Model = model }
     };
 ```
 

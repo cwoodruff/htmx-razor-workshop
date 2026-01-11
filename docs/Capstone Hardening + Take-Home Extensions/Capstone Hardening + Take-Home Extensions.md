@@ -146,9 +146,9 @@ public class IndexModel : PageModel
     // Dynamic Form Handlers
     // ═══════════════════════════════════════════════════════════
 
-    public IActionResult OnGetAddTag(int nextIndex) { }
-    public IActionResult OnGetRemoveTag(int index) { }
-    public IActionResult OnGetSubcategories(string? category) { }
+    public IActionResult OnGetAddTag() { }
+    public IActionResult OnGetRemoveTag() { }
+    public IActionResult OnGetSubcategories([FromQuery(Name = "Input.Category")] string? category) { }
 
     // ═══════════════════════════════════════════════════════════
     // CRUD Handlers
@@ -181,7 +181,7 @@ public class IndexModel : PageModel
         new()
         {
             ViewName = partialName,
-            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+            ViewData = new ViewDataDictionary(MetadataProvider, ModelState) { Model = model }
         };
 }
 ```
@@ -1206,6 +1206,7 @@ For reference, here's a complete handler inventory from all labs:
 | `OnGetCancelEdit`     | GET  | `_TaskRow`           | Cancel edit (extension) |
 | `OnPostCreate`        | POST | `_TaskList`          | Create item             |
 | `OnPostDelete`        | POST | `_TaskList`          | Delete item             |
+| `OnPostReset`         | POST | (Page)               | Reset all tasks         |
 | `OnPostValidateTitle` | POST | `_TitleValidation`   | Validate field          |
 | `OnPostStartJob`      | POST | `_JobStatus`         | Start background job    |
 | `OnPostUpdateRow`     | POST | `_TaskRow`           | Update item (extension) |
