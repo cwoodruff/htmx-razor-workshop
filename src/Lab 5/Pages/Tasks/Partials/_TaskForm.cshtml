@@ -62,8 +62,7 @@
                         asp-for="Input.Category"
                         hx-get="?handler=Subcategories"
                         hx-target="#subcategory-container"
-                        hx-swap="outerHTML"
-                        hx-include="[name='Input.Category']">
+                        hx-swap="outerHTML">
                     <option value="">Select category...</option>
                     @foreach (var cat in RazorPagesHtmxWorkshop.Data.CategoryData.GetCategories())
                     {

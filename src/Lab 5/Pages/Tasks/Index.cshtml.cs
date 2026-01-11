@@ -211,7 +211,7 @@ public class IndexModel : PageModel
     /// Returns the subcategory dropdown options based on selected category.
     /// Called when category dropdown changes.
     /// </summary>
-    public IActionResult OnGetSubcategories(string? category)
+    public IActionResult OnGetSubcategories([FromQuery(Name = "Input.Category")] string? category)
     {
         var subcategories = CategoryData.GetSubcategories(category);
         return Fragment("Partials/_SubcategorySelect", (subcategories, (string?)null));
