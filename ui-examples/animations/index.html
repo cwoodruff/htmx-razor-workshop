@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821487810254">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821490866012">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Animations</title>
     <meta name="title" content="Animations">
+    <meta name="description" content="Animations are essential for creating modern, polished web experiences.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/animations/">
@@ -23,20 +24,22 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/animations/">
     <meta property="og:title" content="Animations">
+    <meta property="og:description" content="Animations are essential for creating modern, polished web experiences.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/ui-examples/animations/">
     <meta property="twitter:title" content="Animations">
+    <meta property="twitter:description" content="Animations are essential for creating modern, polished web experiences.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../../images/favicon.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.11.0.821487810254" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.11.0.821490866012" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.821487810254" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.11.0.821490866012" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.821487810254" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.11.0.821490866012" data-turbo-eval="false" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +232,44 @@
         <span>Animations</span>
     </h1>
 </doc-anchor-target>
+<doc-anchor-target id="implementing-animations-with-htmx-and-aspnet-core">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#implementing-animations-with-htmx-and-aspnet-core">#</doc-anchor-trigger>
+        <span>Implementing Animations with htmx and ASP.NET Core</span>
+    </h3>
+</doc-anchor-target>
+<p>Animations are essential for creating modern, polished web experiences. They provide visual feedback, guide user attention, and make state transitions feel natural rather than jarring. With htmx, you can achieve rich animations without complex JavaScript frameworks—just CSS transitions and a few strategic htmx attributes.</p>
+<p>The key insight is that <strong>htmx swaps are CSS-friendly</strong>. When htmx swaps content, it temporarily adds CSS classes like <code v-pre>htmx-swapping</code> and <code v-pre>htmx-settling</code> to elements, giving you perfect hooks to trigger CSS animations and transitions at exactly the right moments.</p>
+<doc-anchor-target id="why-animations-matter">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#why-animations-matter">#</doc-anchor-trigger>
+        <span>Why Animations Matter</span>
+    </h4>
+</doc-anchor-target>
+<ol>
+<li><strong>Visual Continuity</strong>: Smooth transitions help users understand what changed and where to look next</li>
+<li><strong>Perceived Performance</strong>: Well-timed animations can make your app feel faster by keeping users engaged during updates</li>
+<li><strong>Error Feedback</strong>: Shake animations or color flashes immediately communicate validation errors</li>
+<li><strong>Professional Polish</strong>: Thoughtful animations elevate a functional interface into a delightful user experience</li>
+</ol>
+<doc-anchor-target id="animation-patterns-covered">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#animation-patterns-covered">#</doc-anchor-trigger>
+        <span>Animation Patterns Covered</span>
+    </h4>
+</doc-anchor-target>
+<p>This section demonstrates eight practical animation techniques you can use in your htmx applications:</p>
+<ol>
+<li><strong>Color Change</strong>: Flash background colors to highlight updated content</li>
+<li><strong>Fade Out on Swap</strong>: Smoothly fade out old content before replacing it</li>
+<li><strong>Fade In on Addition</strong>: Gently introduce new elements to the page</li>
+<li><strong>Slide and Expand</strong>: Reveal content with smooth height and opacity transitions</li>
+<li><strong>Crossfade Swap</strong>: Blend between old and new content with overlapping fades</li>
+<li><strong>Validation Shake</strong>: Use attention-grabbing shake effects for form errors</li>
+<li><strong>Indicator Morphing</strong>: Transform loading indicators into final content</li>
+<li><strong>Request in Flight (Settling)</strong>: Animate content during htmx&#x27;s &quot;settling&quot; phase</li>
+</ol>
+<p>Each pattern leverages htmx&#x27;s swap lifecycle and CSS transitions to create smooth, declarative animations with minimal code. You&#x27;ll see how to combine <code v-pre>hx-swap</code> modifiers like <code v-pre>swap:500ms</code> and CSS classes to achieve professional results while keeping your logic server-side in C# and Razor Pages.</p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -257,7 +298,7 @@
                                         <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../chinook-music-store/">
                                             <span>
                                                 <span class="block text-xs font-normal text-right text-base-text-muted">Next</span>
-                                                <span class="block mt-1">Chinook Music Store</span>
+                                                <span class="block mt-1">Chinook Music Store (Work in Progress)</span>
                                             </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         </a>
