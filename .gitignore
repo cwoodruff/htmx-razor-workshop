@@ -410,3 +410,4 @@ chinook-razor-htmx/.DS_Store
 /src/.idea
 **/CLAUDE.md
 /src/.claude
+src/qodana.yaml
