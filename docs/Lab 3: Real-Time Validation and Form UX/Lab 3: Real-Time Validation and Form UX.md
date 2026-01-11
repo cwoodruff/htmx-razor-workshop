@@ -65,7 +65,7 @@ Before starting this lab, ensure you have:
 
 ## Step 1: Add Data Annotations to the Input Model (5–7 minutes)
 
-Currently, validation is handled with manual `if` statements. Let's replace that with data annotations—the standard .NET approach.
+Currently, validation is handled with manual `if` statements in `OnPostCreate`. Let's replace that with data annotations—the standard .NET approach.
 
 ### 1.1 Understanding Data Annotations
 
@@ -79,17 +79,31 @@ Data annotations are attributes that define validation rules declaratively:
 | `[EmailAddress]`      | Valid email format         | `[EmailAddress]`                                  |
 | `[RegularExpression]` | Custom pattern             | `[RegularExpression(@"^[A-Z].*")]`                |
 
-### 1.2 Update the NewTaskInput Class
+### 1.2 Add Required Using Statement
 
-Edit `Pages/Tasks/Index.cshtml.cs` and add annotations to `NewTaskInput`:
+Edit `Pages/Tasks/Index.cshtml.cs` and add the required namespace:
 
 **File: `Pages/Tasks/Index.cshtml.cs`**
 
 ```csharp
-using System.ComponentModel.DataAnnotations;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;  // ← Add this
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using RazorPagesHtmxWorkshop.Data;
+using RazorPagesHtmxWorkshop.Models;
+```
 
-// Inside IndexModel class:
+### 1.3 Update the NewTaskInput Class
 
+Find the `NewTaskInput` class in `Index.cshtml.cs` and add annotations:
+
+**Update the `NewTaskInput` class:**
+
+```csharp
 public class NewTaskInput
 {
     [Required(ErrorMessage = "Title is required.")]
@@ -98,7 +112,7 @@ public class NewTaskInput
 }
 ```
 
-### 1.3 Understanding the Annotations
+### 1.4 Understanding the Annotations
 
 | Annotation                              | Rule                 | Error Message                    |
 |-----------------------------------------|----------------------|----------------------------------|
@@ -112,16 +126,16 @@ public class NewTaskInput
 3. **Client-side validation support**: Can generate JavaScript validation (optional)
 4. **Consistent error messages**: Defined alongside the rule
 
-### 1.4 Update OnPostCreate to Use TryValidateModel
+### 1.5 Update OnPostCreate to Use TryValidateModel
 
-Replace manual validation checks with `TryValidateModel`:
+Replace the manual validation logic in `OnPostCreate` with `TryValidateModel`:
 
 **Update `OnPostCreate` in `Index.cshtml.cs`:**
 
 ```csharp
 public IActionResult OnPostCreate()
 {
-    // TryValidateModel evaluates all data annotations on Input
+    // Validate using data annotations
     if (!TryValidateModel(Input, nameof(Input)))
     {
         Tasks = InMemoryTaskStore.All();
@@ -136,7 +150,8 @@ public IActionResult OnPostCreate()
         return Page();
     }
 
-    // Simulated error (keep from Lab 2 for testing)
+    // Simulated error for testing
+    // Type "boom" as the title to trigger this error
     if (Input.Title.Trim().Equals("boom", StringComparison.OrdinalIgnoreCase))
     {
         if (IsHtmx())
@@ -150,12 +165,16 @@ public IActionResult OnPostCreate()
         throw new InvalidOperationException("Simulated server error.");
     }
 
-    // Success path
+    // Success
     InMemoryTaskStore.Add(Input.Title);
     Tasks = InMemoryTaskStore.All();
 
     if (IsHtmx())
     {
+        FlashMessage = "Task added successfully!";
+        // Trigger events for listeners to handle
+        // Multiple events separated by commas
+        Response.Headers["HX-Trigger"] = "showMessage,clearForm";
         return Fragment("Partials/_TaskList", Tasks);
     }
 
@@ -164,7 +183,7 @@ public IActionResult OnPostCreate()
 }
 ```
 
-### 1.5 Understanding TryValidateModel
+### 1.6 Understanding TryValidateModel
 
 ```csharp
 if (!TryValidateModel(Input, nameof(Input)))
@@ -182,12 +201,17 @@ if (!TryValidateModel(Input, nameof(Input)))
 
 This ensures error keys like `Input.Title` match what Razor's `asp-validation-for` expects. Without it, error messages might not display correctly.
 
-### 1.6 Test the Changes
+### 1.7 Test the Changes
 
-1. **Build and run** the application
-2. **Try submitting** with an empty title → Should see "Title is required."
-3. **Try submitting** with "ab" (2 characters) → Should see "Title must be 3–60 characters."
-4. **Try submitting** with a valid title → Should succeed
+1. **Build and run** the application:
+   ```bash
+   cd "src/Lab 2"
+   dotnet run
+   ```
+2. **Navigate** to `/Tasks` in your browser
+3. **Try submitting** with an empty title → Should see "Title is required."
+4. **Try submitting** with "ab" (2 characters) → Should see "Title must be 3–60 characters."
+5. **Try submitting** with a valid title → Should succeed
 
 ---
 
@@ -205,6 +229,8 @@ The fragment needs:
 
 ### 2.2 Create the Validation Partial
 
+Create a new file in the `Partials` folder:
+
 **File: `Pages/Tasks/Partials/_TitleValidation.cshtml`**
 
 ```cshtml
@@ -214,9 +240,13 @@ The fragment needs:
     Title Field Validation Fragment
     ================================
 
+    Target ID: #title-validation
+    Swap: outerHTML
+    Returned by: OnPostValidateTitle
+
     Purpose:
     - Displays validation error for the Title field
-    - Swapped on every keystroke (debounced)
+    - Swapped on every keystroke (debounced 500ms)
     - Must always render the wrapper div for consistent swapping
 
     Model:
@@ -262,44 +292,48 @@ This is the simplest possible model—just the error message or null. The fragme
 
 Now we'll create a handler specifically for validating the Title field. This handler is intentionally narrow—it validates one field and returns one fragment.
 
-### 3.1 Add the Validation Handler
+### 3.1 Organize Your Code with Regions
+
+In `Index.cshtml.cs`, let's add a new region for validation handlers. Find the comment section after the page handlers and add:
 
 **Add to `Pages/Tasks/Index.cshtml.cs`:**
 
 ```csharp
-/// <summary>
-/// Validates the Title field and returns just the validation fragment.
-/// Called via htmx on keystrokes (debounced).
-///
-/// Design: This handler is intentionally "micro"—one field, one fragment.
-/// It avoids returning the entire form on each keystroke.
-/// </summary>
-public IActionResult OnPostValidateTitle()
-{
-    // Get the current title value (may be null or empty)
-    var title = Input.Title?.Trim() ?? "";
+    #region Validation Handlers
 
-    // Manual validation to match data annotations
-    // (We could use ModelState, but this is clearer for teaching)
-    string? error = null;
+    /// <summary>
+    /// Validates the Title field and returns just the validation fragment.
+    /// Called via htmx on keystrokes (debounced).
+    ///
+    /// Design: This handler is intentionally "micro"—one field, one fragment.
+    /// It avoids returning the entire form on each keystroke.
+    /// </summary>
+    public IActionResult OnPostValidateTitle()
+    {
+        var title = Input.Title?.Trim() ?? "";
 
-    if (string.IsNullOrWhiteSpace(title))
-    {
-        error = "Title is required.";
-    }
-    else if (title.Length < 3)
-    {
-        error = "Title must be at least 3 characters.";
-    }
-    else if (title.Length > 60)
-    {
-        error = "Title must be 60 characters or fewer.";
+        string? error = null;
+
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            error = "Title is required.";
+        }
+        else if (title.Length < 3)
+        {
+            error = "Title must be at least 3 characters.";
+        }
+        else if (title.Length > 60)
+        {
+            error = "Title must be 60 characters or fewer.";
+        }
+
+        return Fragment("Partials/_TitleValidation", error);
     }
 
-    // Return only the tiny validation fragment
-    return Fragment("Partials/_TitleValidation", error);
-}
+    #endregion
 ```
+
+Place this region between your existing page handlers and the `OnPostCreate` method.
 
 ### 3.2 Understanding the Handler Design
 
@@ -363,11 +397,15 @@ Edit `Pages/Tasks/Partials/_TaskForm.cshtml` to add validation attributes and th
 **File: `Pages/Tasks/Partials/_TaskForm.cshtml`**
 
 ```cshtml
-@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
 
 @*
     Task Form Fragment (with real-time validation)
     ==============================================
+
+    Target ID: #task-form
+    Swap: outerHTML
+    Returned by: OnGetEmptyForm, OnPostCreate (on validation error)
 
     htmx attributes on form:
     - hx-post: Submit to Create handler
@@ -391,7 +429,8 @@ Edit `Pages/Tasks/Partials/_TaskForm.cshtml` to add validation attributes and th
           hx-post="?handler=Create"
           hx-target="#task-list"
           hx-swap="outerHTML"
-          hx-indicator="#task-loading">
+          hx-indicator="#task-loading"
+          class="vstack gap-3">
 
         @* Antiforgery token - required for all POST requests *@
         @Html.AntiForgeryToken()
@@ -399,19 +438,22 @@ Edit `Pages/Tasks/Partials/_TaskForm.cshtml` to add validation attributes and th
         @* Validation summary for full-form validation *@
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-        <div class="mb-3">
+        <div>
             <label class="form-label" for="title">Task Title</label>
 
             @* Title input with real-time validation *@
             <input id="title"
-                   class="form-control"
+                   class="form-control form-control-lg"
                    asp-for="Input.Title"
                    placeholder="e.g., Add htmx to Razor Pages"
+                   autocomplete="off"
                    hx-post="?handler=ValidateTitle"
                    hx-trigger="keyup changed delay:500ms"
                    hx-target="#title-validation"
                    hx-swap="outerHTML"
                    hx-include="closest form" />
+
+            <div class="form-text">Keep it short; we're optimizing for fast feedback loops.</div>
 
             @* Standard Razor validation message (shown on full submit) *@
             <span class="text-danger" asp-validation-for="Input.Title"></span>
@@ -420,7 +462,10 @@ Edit `Pages/Tasks/Partials/_TaskForm.cshtml` to add validation attributes and th
             <partial name="Partials/_TitleValidation" model="@((string?)null)" />
         </div>
 
-        <button class="btn btn-primary" type="submit">Add Task</button>
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-lg" type="submit">Add task</button>
+            <a class="btn btn-outline-secondary btn-lg" asp-page="/Labs">Back to labs</a>
+        </div>
     </form>
 </div>
 ```
@@ -474,10 +519,10 @@ Notice we have both:
 
 ```cshtml
 @* Standard Razor validation (full submit) *@
-<span asp-validation-for="Input.Title"></span>
+<span class="text-danger" asp-validation-for="Input.Title"></span>
 
 @* htmx validation (keystrokes) *@
-<partial name="Partials/_TitleValidation" model="..." />
+<partial name="Partials/_TitleValidation" model="@((string?)null)" />
 ```
 
 **Why both?**
@@ -506,139 +551,13 @@ The `asp-validation-for` provides fallback for non-htmx scenarios. The htmx frag
 
 ---
 
-## Step 5: Add Validation Summary to Form Fragment (5–7 minutes)
+## Step 5: Add Success Message Handler (5–7 minutes)
 
-When the full form submits with errors, we want to show a summary at the top of the form.
+After successfully creating a task, we want to show a success message in the `#messages` area.
 
-### 5.1 Understanding the Validation Summary
+### 5.1 Add the Messages Handler
 
-The `asp-validation-summary` tag helper renders a list of all validation errors:
-
-| Mode        | What It Shows                                       |
-|-------------|-----------------------------------------------------|
-| `All`       | All errors (model-level + property-level)           |
-| `ModelOnly` | Only model-level errors (not individual properties) |
-| `None`      | Nothing                                             |
-
-For our form, `ModelOnly` works well because property errors are shown next to each field.
-
-### 5.2 Verify the Summary Is in Place
-
-The form partial should already have:
-
-```cshtml
-<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-```
-
-This renders model-level errors when the form is returned after validation failure.
-
-### 5.3 How Full-Form Validation Works
-
-When you submit an invalid form:
-
-1. `OnPostCreate` calls `TryValidateModel`
-2. Validation fails, `ModelState` is populated with errors
-3. Handler returns the `_TaskForm` fragment (retargeted)
-4. htmx swaps the entire form into `#task-form`
-5. Razor renders error messages from `ModelState`
-
-The form fragment "knows" about errors because we pass `this` (the PageModel) which includes `ModelState`.
-
-### 5.4 Test Full-Form Validation
-
-1. **Submit** with an empty title
-2. **Observe**: Form replaces with error message in `asp-validation-for`
-3. **Submit** with "ab" (too short)
-4. **Observe**: Form replaces with length error
-
----
-
-## Step 6: Ensure Antiforgery Works Correctly (5–7 minutes)
-
-Antiforgery tokens prevent cross-site request forgery (CSRF) attacks. Every POST request in ASP.NET Core requires this token.
-
-### 6.1 Where the Token Comes From
-
-```cshtml
-@Html.AntiForgeryToken()
-```
-
-This renders a hidden input:
-
-```html
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8..." />
-```
-
-### 6.2 How htmx Sends the Token
-
-For the form submit (`hx-post` on `<form>`):
-- htmx automatically serializes form fields, including the token
-
-For the input validation (`hx-post` on `<input>`):
-- htmx only sends the input's value by default
-- `hx-include="closest form"` adds all form fields, including the token
-
-### 6.3 Verify Token Flow
-
-1. **Open Network tab**
-2. **Type in the Title field** (trigger validation)
-3. **Inspect the request payload**:
-
-   ```
-   Input.Title=test&__RequestVerificationToken=CfDJ8...
-   ```
-
-4. **If token is missing**: You'll see a 400 Bad Request or 403 Forbidden
-
-### 6.4 Troubleshooting Antiforgery Issues
-
-| Symptom                             | Cause                           | Fix                                      |
-|-------------------------------------|---------------------------------|------------------------------------------|
-| 400 Bad Request                     | Token missing from request      | Add `hx-include="closest form"`          |
-| 403 Forbidden                       | Token invalid or expired        | Ensure token is in form, refresh page    |
-| Works on submit, fails on keystroke | `hx-include` missing from input | Add `hx-include="closest form"` to input |
-
-### 6.5 Alternative: Global Antiforgery Header
-
-Instead of including the token in every request, you can configure htmx to send it as a header:
-
-```html
-<!-- In _Layout.cshtml -->
-<meta name="csrf-token" content="@Html.AntiForgeryToken()" />
-
-<script>
-    document.body.addEventListener('htmx:configRequest', function(evt) {
-        evt.detail.headers['RequestVerificationToken'] =
-            document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    });
-</script>
-```
-
-This is more complex but useful for larger applications.
-
----
-
-## Step 7: Add Success Message and Form Reset (10–12 minutes)
-
-After successfully creating a task, we should:
-
-1. Show a success message
-2. Optionally clear the form for the next entry
-
-### 7.1 The Strategy: Use HX-Trigger Events
-
-Instead of returning multiple fragments from one response, we'll use `HX-Trigger` to fire events that other elements respond to.
-
-**The Flow:**
-
-1. `OnPostCreate` succeeds → returns `_TaskList` + sets `HX-Trigger: showMessage,clearForm`
-2. htmx swaps `#task-list`
-3. htmx fires `showMessage` event → listener fetches and swaps `#messages`
-4. htmx fires `clearForm` event → listener fetches and swaps `#task-form`
-
-### 7.2 Add the Messages Handler
-
-**Add to `Index.cshtml.cs`:**
+**Add to `Index.cshtml.cs` (in the Page Handlers region):**
 
 ```csharp
 /// <summary>
@@ -651,45 +570,23 @@ public IActionResult OnGetMessages()
 }
 ```
 
-### 7.3 Add the Empty Form Handler
+### 5.2 Update OnPostCreate to Trigger the Message Event
 
-**Add to `Index.cshtml.cs`:**
+The `OnPostCreate` method success path should already trigger events. Verify it looks like this:
 
-```csharp
-/// <summary>
-/// Returns a reset/empty form fragment.
-/// Called by htmx listener when clearForm event fires.
-/// </summary>
-public IActionResult OnGetEmptyForm()
-{
-    // Reset the bound input
-    Input = new NewTaskInput();
-
-    // Clear any lingering validation state
-    ModelState.Clear();
-
-    return Fragment("Partials/_TaskForm", this);
-}
-```
-
-### 7.4 Update OnPostCreate to Trigger Events
-
-**Update the success path in `OnPostCreate`:**
+**Verify this code in `OnPostCreate`:**
 
 ```csharp
-// Success path (inside OnPostCreate)
+// Success
 InMemoryTaskStore.Add(Input.Title);
 Tasks = InMemoryTaskStore.All();
 
 if (IsHtmx())
 {
-    // Set flash message for the messages handler
     FlashMessage = "Task added successfully!";
-
     // Trigger events for listeners to handle
     // Multiple events separated by commas
     Response.Headers["HX-Trigger"] = "showMessage,clearForm";
-
     return Fragment("Partials/_TaskList", Tasks);
 }
 
@@ -697,9 +594,13 @@ FlashMessage = "Task added.";
 return RedirectToPage();
 ```
 
-### 7.5 Add Listener Elements to the Page
+---
 
-These invisible elements respond to triggered events:
+## Step 6: Add Event Listeners to the Page (8–10 minutes)
+
+These invisible elements respond to triggered events from the server.
+
+### 6.1 Add Listener Elements
 
 **Add to `Pages/Tasks/Index.cshtml` (at the bottom, before `@section Scripts`):**
 
@@ -731,9 +632,13 @@ These invisible elements respond to triggered events:
      hx-target="#task-form"
      hx-swap="outerHTML">
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 ```
 
-### 7.6 Understanding the Listeners
+### 6.2 Understanding the Listeners
 
 ```html
 <div hx-get="?handler=Messages"
@@ -758,39 +663,20 @@ These invisible elements respond to triggered events:
 4. Listener fires its `hx-get` request
 5. Response swaps into `#messages`
 
-### 7.7 Update the Messages Partial
+### 6.3 The Complete Flow
 
-Ensure `_Messages.cshtml` always renders its wrapper:
+**When a task is successfully created:**
 
-**File: `Pages/Tasks/Partials/_Messages.cshtml`**
+1. `OnPostCreate` succeeds → returns `_TaskList` + sets `HX-Trigger: showMessage,clearForm`
+2. htmx swaps `#task-list` with the updated list
+3. htmx fires `showMessage` event → listener fetches and swaps `#messages` with success message
+4. htmx fires `clearForm` event → listener fetches and swaps `#task-form` with empty form
 
-```cshtml
-@model string?
+---
 
-@*
-    Messages Fragment
-    =================
+## Step 7: Test the Complete Flow (5 minutes)
 
-    Purpose:
-    - Displays flash/success messages
-    - Must always render wrapper for consistent swapping
-
-    Model:
-    - string? message - The message to display (null if none)
-*@
-
-<div id="messages">
-    @if (!string.IsNullOrWhiteSpace(Model))
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @Model
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-</div>
-```
-
-### 7.8 Test the Complete Flow
+### 7.1 Full Integration Test
 
 1. **Navigate** to `/Tasks`
 2. **Add a valid task** (3+ characters)
@@ -803,9 +689,20 @@ Ensure `_Messages.cshtml` always renders its wrapper:
    - GET to `?handler=Messages` (returns success message)
    - GET to `?handler=EmptyForm` (returns clean form)
 
+### 7.2 Test All Scenarios
+
+| Test Case                       | Expected Result                                         |
+|---------------------------------|---------------------------------------------------------|
+| Type 1-2 characters, wait 500ms | Real-time error: "Title must be at least 3 characters." |
+| Type 3+ characters, wait 500ms  | Real-time error disappears                              |
+| Submit with empty field         | Form reloads with validation error                      |
+| Submit with "ab"                | Form reloads with length error                          |
+| Submit with valid title         | Task added, success message shows, form clears          |
+| Type "boom" and submit          | Error message appears in `#messages`                    |
+
 ---
 
-## Step 8: Complete Code Reference
+## Complete Code Reference
 
 Here is the complete code for all files modified in this lab.
 
@@ -814,14 +711,17 @@ Here is the complete code for all files modified in this lab.
 **File: `Pages/Tasks/Index.cshtml.cs`**
 
 ```csharp
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using RazorHtmxWorkshop.Data;
-using RazorHtmxWorkshop.Models;
+using RazorPagesHtmxWorkshop.Data;
+using RazorPagesHtmxWorkshop.Models;
 
-namespace RazorHtmxWorkshop.Pages.Tasks;
+namespace RazorPagesHtmxWorkshop.Pages.Tasks;
 
 public class IndexModel : PageModel
 {
@@ -837,18 +737,20 @@ public class IndexModel : PageModel
 
     /// <summary>
     /// Checks if the current request was made by htmx.
+    /// htmx sends "HX-Request: true" header with every request.
     /// </summary>
     private bool IsHtmx() =>
         Request.Headers.TryGetValue("HX-Request", out var value) && value == "true";
 
     /// <summary>
     /// Returns a partial view result for fragment responses.
+    /// This helper creates a PartialViewResult with the correct ViewData context.
     /// </summary>
     private PartialViewResult Fragment(string partialName, object model) =>
         new()
         {
             ViewName = partialName,
-            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+            ViewData = new ViewDataDictionary(MetadataProvider, ModelState) { Model = model }
         };
 
     #endregion
@@ -860,6 +762,10 @@ public class IndexModel : PageModel
         Tasks = InMemoryTaskStore.All();
     }
 
+    /// <summary>
+    /// Returns the task list fragment.
+    /// Optional parameter 'take' limits the number of tasks returned.
+    /// </summary>
     public IActionResult OnGetList(int? take)
     {
         var tasks = InMemoryTaskStore.All();
@@ -872,11 +778,19 @@ public class IndexModel : PageModel
         return Fragment("Partials/_TaskList", tasks);
     }
 
+    /// <summary>
+    /// Returns the messages fragment.
+    /// Called by htmx listener when showMessage event fires.
+    /// </summary>
     public IActionResult OnGetMessages()
     {
         return Fragment("Partials/_Messages", FlashMessage);
     }
 
+    /// <summary>
+    /// Returns a reset/empty form fragment.
+    /// Called by htmx listener when clearForm event fires.
+    /// </summary>
     public IActionResult OnGetEmptyForm()
     {
         Input = new NewTaskInput();
@@ -891,6 +805,9 @@ public class IndexModel : PageModel
     /// <summary>
     /// Validates the Title field and returns just the validation fragment.
     /// Called via htmx on keystrokes (debounced).
+    ///
+    /// Design: This handler is intentionally "micro"—one field, one fragment.
+    /// It avoids returning the entire form on each keystroke.
     /// </summary>
     public IActionResult OnPostValidateTitle()
     {
@@ -936,6 +853,7 @@ public class IndexModel : PageModel
         }
 
         // Simulated error for testing
+        // Type "boom" as the title to trigger this error
         if (Input.Title.Trim().Equals("boom", StringComparison.OrdinalIgnoreCase))
         {
             if (IsHtmx())
@@ -956,11 +874,20 @@ public class IndexModel : PageModel
         if (IsHtmx())
         {
             FlashMessage = "Task added successfully!";
+            // Trigger events for listeners to handle
+            // Multiple events separated by commas
             Response.Headers["HX-Trigger"] = "showMessage,clearForm";
             return Fragment("Partials/_TaskList", Tasks);
         }
 
         FlashMessage = "Task added.";
+        return RedirectToPage();
+    }
+
+    public IActionResult OnPostReset()
+    {
+        InMemoryTaskStore.Reset();
+        FlashMessage = "Tasks reset.";
         return RedirectToPage();
     }
 
@@ -984,18 +911,31 @@ public class IndexModel : PageModel
 **File: `Pages/Tasks/Partials/_TaskForm.cshtml`**
 
 ```cshtml
-@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
 
 @*
     Task Form Fragment (with real-time validation)
     ==============================================
 
-    Features:
-    - Real-time validation on Title field (debounced 500ms)
-    - Full form validation on submit
-    - Antiforgery token for security
-    - Loading indicator support
-    - Progressive enhancement (works without JavaScript)
+    Target ID: #task-form
+    Swap: outerHTML
+    Returned by: OnGetEmptyForm, OnPostCreate (on validation error)
+
+    htmx attributes on form:
+    - hx-post: Submit to Create handler
+    - hx-target: Update #task-list on success
+    - hx-swap: Replace entire target element
+    - hx-indicator: Show loading spinner
+
+    htmx attributes on Title input:
+    - hx-post: Validate on keystroke
+    - hx-trigger: Debounced keyup (500ms delay)
+    - hx-target: Update only #title-validation
+    - hx-include: Send form fields (for antiforgery)
+
+    Progressive enhancement:
+    - Form works without JavaScript (method="post" fallback)
+    - htmx adds real-time validation on top
 *@
 
 <div id="task-form">
@@ -1003,17 +943,21 @@ public class IndexModel : PageModel
           hx-post="?handler=Create"
           hx-target="#task-list"
           hx-swap="outerHTML"
-          hx-indicator="#task-loading">
+          hx-indicator="#task-loading"
+          class="vstack gap-3">
 
+        @* Antiforgery token - required for all POST requests *@
         @Html.AntiForgeryToken()
 
+        @* Validation summary for full-form validation *@
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-        <div class="mb-3">
+        <div>
             <label class="form-label" for="title">Task Title</label>
 
+            @* Title input with real-time validation *@
             <input id="title"
-                   class="form-control"
+                   class="form-control form-control-lg"
                    asp-for="Input.Title"
                    placeholder="e.g., Add htmx to Razor Pages"
                    autocomplete="off"
@@ -1023,12 +967,19 @@ public class IndexModel : PageModel
                    hx-swap="outerHTML"
                    hx-include="closest form" />
 
+            <div class="form-text">Keep it short; we're optimizing for fast feedback loops.</div>
+
+            @* Standard Razor validation message (shown on full submit) *@
             <span class="text-danger" asp-validation-for="Input.Title"></span>
 
+            @* htmx validation fragment (shown on keystrokes) *@
             <partial name="Partials/_TitleValidation" model="@((string?)null)" />
         </div>
 
-        <button class="btn btn-primary" type="submit">Add Task</button>
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-lg" type="submit">Add task</button>
+            <a class="btn btn-outline-secondary btn-lg" asp-page="/Labs">Back to labs</a>
+        </div>
     </form>
 </div>
 ```
@@ -1044,10 +995,22 @@ public class IndexModel : PageModel
     Title Field Validation Fragment
     ================================
 
-    Purpose: Display validation error for Title field
-    Model: string? error message (null if valid)
+    Target ID: #title-validation
+    Swap: outerHTML
+    Returned by: OnPostValidateTitle
 
-    Note: Wrapper must always render for consistent htmx swapping
+    Purpose:
+    - Displays validation error for the Title field
+    - Swapped on every keystroke (debounced 500ms)
+    - Must always render the wrapper div for consistent swapping
+
+    Model:
+    - string? error - The error message (null if valid)
+
+    Design notes:
+    - Wrapper div renders even when empty (htmx needs stable target)
+    - Error styling matches Bootstrap conventions
+    - Kept intentionally minimal for fast responses
 *@
 
 <div id="title-validation">
@@ -1058,52 +1021,33 @@ public class IndexModel : PageModel
 </div>
 ```
 
-### _Messages.cshtml (Complete)
+### Index.cshtml (Event Listeners Section)
 
-**File: `Pages/Tasks/Partials/_Messages.cshtml`**
-
-```cshtml
-@model string?
-
-@*
-    Messages Fragment
-    =================
-
-    Purpose: Display flash/success/info messages
-    Model: string? message (null if none)
-
-    Note: Wrapper must always render for consistent htmx swapping
-*@
-
-<div id="messages">
-    @if (!string.IsNullOrWhiteSpace(Model))
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @Model
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-</div>
-```
-
-### Index.cshtml (Updated Sections)
-
-**Add at the bottom of `Pages/Tasks/Index.cshtml` (before `@section Scripts`):**
+**Add to `Pages/Tasks/Index.cshtml` (at the bottom, before `@section Scripts`):**
 
 ```cshtml
 @*
     Event Listeners
     ===============
 
-    Invisible elements that respond to HX-Trigger events
+    These invisible elements respond to HX-Trigger events from the server.
+    When the server sends "HX-Trigger: showMessage,clearForm", these listeners
+    fire their respective requests.
+
+    Pattern benefits:
+    - Keeps markup clean (form doesn't need to know about messages)
+    - Server controls behavior through headers
+    - Each concern is handled independently
 *@
 
+@* Listener: Refresh messages when showMessage event fires *@
 <div hx-get="?handler=Messages"
      hx-trigger="showMessage from:body"
      hx-target="#messages"
      hx-swap="outerHTML">
 </div>
 
+@* Listener: Reset form when clearForm event fires *@
 <div hx-get="?handler=EmptyForm"
      hx-trigger="clearForm from:body"
      hx-target="#task-form"

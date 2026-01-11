@@ -72,12 +72,16 @@ Before adding htmx attributes, let's confirm everything is in place.
 
 ### 0.1 Verify htmx is Loaded
 
-Open `Pages/Shared/_Layout.cshtml` and ensure htmx is included. If not present, add it before the closing `</body>` tag:
+Open `Pages/Shared/_Layout.cshtml` and ensure htmx is included. You should see this near the bottom of the file (before the closing `</body>` tag):
+
+**File: `Pages/Shared/_Layout.cshtml`**
 
 ```html
-<!-- htmx library -->
+<!-- htmx (Local) -->
 <script src="~/lib/htmx/htmx.min.js"></script>
 ```
+
+> **Note**: This workshop uses htmx from local files (located in `wwwroot/lib/htmx/`) for offline workshop environments. In production, you can use a CDN like `https://unpkg.com/htmx.org@2.0.0` or install via npm.
 
 ### 0.2 Verify Fragment Structure
 
@@ -129,48 +133,67 @@ Edit `Pages/Tasks/Partials/_TaskForm.cshtml` to add htmx attributes:
 **File: `Pages/Tasks/Partials/_TaskForm.cshtml`**
 
 ```cshtml
-@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
 
 @*
     Task Form Fragment (htmx-enhanced)
     ===================================
 
-    htmx attributes added:
+    Target ID: #task-form
+    Swap: outerHTML
+    Returned by: OnGetEmptyForm, OnPostCreate (on validation error)
+
+    htmx attributes:
     - hx-post: Send POST request to this URL
-    - hx-target: Where to swap the response
+    - hx-target: Where to swap the response (#task-list on success)
     - hx-swap: How to swap (outerHTML replaces the entire target element)
+    - hx-indicator: Show loading spinner during request
 
     On successful submit:
     - Server returns _TaskList partial
     - htmx swaps it into #task-list
-    - Only the list updates; form and page stay intact
+    - Server sends HX-Trigger: clearForm
+    - Listener fetches empty form and swaps into #task-form
+
+    On validation error:
+    - Server returns _TaskForm partial with errors (this file)
+    - Server sends HX-Retarget: #task-form
+    - htmx swaps form with validation errors displayed
 *@
 
 <div id="task-form">
     <form method="post" asp-page-handler="Create"
           hx-post="?handler=Create"
           hx-target="#task-list"
-          hx-swap="outerHTML">
-        <div class="mb-3">
-            <label class="form-label" for="title">Task Title</label>
+          hx-swap="outerHTML"
+          hx-indicator="#task-loading"
+          class="vstack gap-3">
+        <div>
+            <label class="form-label" for="title">Task title</label>
             <input id="title"
-                   class="form-control"
+                   class="form-control form-control-lg"
                    asp-for="Input.Title"
                    placeholder="e.g., Add htmx to Razor Pages" />
+            <div class="form-text">Keep it short; we're optimizing for fast feedback loops.</div>
             <span class="text-danger" asp-validation-for="Input.Title"></span>
         </div>
-        <button class="btn btn-primary" type="submit">Add Task</button>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-lg" type="submit">Add task</button>
+            <a class="btn btn-outline-secondary btn-lg" asp-page="/Labs">Back to labs</a>
+        </div>
     </form>
 </div>
 ```
 
 ### 1.3 Understanding the htmx Attributes
 
-| Attribute   | Value               | Purpose                                                   |
-|-------------|---------------------|-----------------------------------------------------------|
-| `hx-post`   | `"?handler=Create"` | Send a POST request to this URL when form submits         |
-| `hx-target` | `"#task-list"`      | Put the response into the element with id="task-list"     |
-| `hx-swap`   | `"outerHTML"`       | Replace the entire target element (not just its contents) |
+| Attribute      | Value               | Purpose                                                   |
+|----------------|---------------------|-----------------------------------------------------------|
+| `hx-post`      | `"?handler=Create"` | Send a POST request to this URL when form submits         |
+| `hx-target`    | `"#task-list"`      | Put the response into the element with id="task-list"     |
+| `hx-swap`      | `"outerHTML"`       | Replace the entire target element (not just its contents) |
+| `hx-indicator` | `"#task-loading"`   | Show this element as loading indicator during request     |
 
 **Why keep `method="post"` and `asp-page-handler`?**
 
@@ -231,10 +254,10 @@ Update `Pages/Tasks/Index.cshtml.cs` with these additions:
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using RazorHtmxWorkshop.Data;
-using RazorHtmxWorkshop.Models;
+using RazorPagesHtmxWorkshop.Data;
+using RazorPagesHtmxWorkshop.Models;
 
-namespace RazorHtmxWorkshop.Pages.Tasks;
+namespace RazorPagesHtmxWorkshop.Pages.Tasks;
 
 public class IndexModel : PageModel
 {
@@ -245,6 +268,10 @@ public class IndexModel : PageModel
 
     [TempData]
     public string? FlashMessage { get; set; }
+
+    // ═══════════════════════════════════════════════════════════
+    // Helper Methods
+    // ═══════════════════════════════════════════════════════════
 
     /// <summary>
     /// Checks if the current request was made by htmx.
@@ -263,13 +290,59 @@ public class IndexModel : PageModel
         new()
         {
             ViewName = partialName,
-            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+            ViewData = new ViewDataDictionary(MetadataProvider, ModelState) { Model = model }
         };
+
+    // ═══════════════════════════════════════════════════════════
+    // Page Lifecycle
+    // ═══════════════════════════════════════════════════════════
 
     public void OnGet()
     {
         Tasks = InMemoryTaskStore.All();
     }
+
+    // ═══════════════════════════════════════════════════════════
+    // List Fragment Handlers
+    // ═══════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Handles GET requests to /Tasks?handler=List.
+    /// Returns just the task list fragment for htmx to swap.
+    ///
+    /// Optional parameter 'take' limits the number of tasks returned.
+    /// </summary>
+    /// <param name="take">Optional: limit results to this many tasks</param>
+    public IActionResult OnGetList(int? take)
+    {
+        var tasks = InMemoryTaskStore.All();
+
+        if (take is > 0)
+        {
+            tasks = tasks.Take(take.Value).ToList();
+        }
+
+        return Fragment("Partials/_TaskList", tasks);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // Form Fragment Handlers
+    // ═══════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Returns an empty form fragment.
+    /// Called via htmx trigger after successful task creation.
+    /// </summary>
+    public IActionResult OnGetEmptyForm()
+    {
+        Input = new NewTaskInput();
+        ModelState.Clear();
+        return Fragment("Partials/_TaskForm", this);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // CRUD Handlers
+    // ═══════════════════════════════════════════════════════════
 
     public IActionResult OnPostCreate()
     {
@@ -292,7 +365,23 @@ public class IndexModel : PageModel
                 return Fragment("Partials/_TaskForm", this);
             }
 
+            FlashMessage = "Please correct the errors and try again.";
             return Page();
+        }
+
+        // Simulated error condition for demonstration
+        // Type "boom" as the title to trigger this error
+        if (Input.Title.Trim().Equals("boom", StringComparison.OrdinalIgnoreCase))
+        {
+            if (IsHtmx())
+            {
+                Response.Headers["HX-Retarget"] = "#messages";
+                Response.Headers["HX-Reswap"] = "innerHTML";
+                return Fragment("Partials/_Error",
+                    "Simulated server error. Try a different title (anything except 'boom').");
+            }
+
+            throw new InvalidOperationException("Simulated server error.");
         }
 
         // Create the task
@@ -301,12 +390,20 @@ public class IndexModel : PageModel
 
         if (IsHtmx())
         {
-            // For htmx: return just the updated list fragment
+            // Trigger form clear after successful creation
+            Response.Headers["HX-Trigger"] = "clearForm";
             return Fragment("Partials/_TaskList", Tasks);
         }
 
         // For traditional requests: redirect (PRG pattern)
         FlashMessage = "Task added.";
+        return RedirectToPage();
+    }
+
+    public IActionResult OnPostReset()
+    {
+        InMemoryTaskStore.Reset();
+        FlashMessage = "Tasks reset.";
         return RedirectToPage();
     }
 
@@ -335,22 +432,23 @@ private PartialViewResult Fragment(string partialName, object model) =>
     new()
     {
         ViewName = partialName,
-        ViewData = new ViewDataDictionary(ViewData) { Model = model }
+        ViewData = new ViewDataDictionary(MetadataProvider, ModelState) { Model = model }
     };
 ```
 
-This creates a `PartialViewResult` that renders just the partial view, not the full page. The `ViewDataDictionary` preserves the context (like ModelState) needed for validation messages.
+This creates a `PartialViewResult` that renders just the partial view, not the full page. The `ViewDataDictionary` constructor uses `MetadataProvider` and `ModelState` to preserve validation context needed for showing error messages.
 
 #### The Success Path
 
 ```csharp
 if (IsHtmx())
 {
+    Response.Headers["HX-Trigger"] = "clearForm";
     return Fragment("Partials/_TaskList", Tasks);
 }
 ```
 
-When htmx submits successfully, we return just the `_TaskList` partial. htmx swaps this into `#task-list` as specified by `hx-target`.
+When htmx submits successfully, we return just the `_TaskList` partial. htmx swaps this into `#task-list` as specified by `hx-target`. We also send the `HX-Trigger` header to fire a custom event that will clear the form.
 
 #### The Validation Error Path
 
@@ -363,7 +461,7 @@ if (IsHtmx())
 }
 ```
 
-This is more complex. When validation fails:
+When validation fails:
 
 1. **HX-Retarget**: Overrides the original `hx-target`; swap into `#task-form` instead
 2. **HX-Reswap**: Specifies the swap strategy for this response
@@ -377,6 +475,7 @@ The form's `hx-target` is `#task-list` (for successful creates). But on validati
 |------------------|---------------------------|---------------------------------|
 | Success          | `#task-list`              | `_TaskList` partial             |
 | Validation error | `#task-form` (retargeted) | `_TaskForm` partial with errors |
+| Server error     | `#messages` (retargeted)  | `_Error` fragment               |
 
 ### 2.5 Test the Implementation
 
@@ -397,193 +496,17 @@ The form's `hx-target` is `#task-list` (for successful creates). But on validati
 
 ## Step 3: Add a "Refresh List" Button Using hx-get (6–8 minutes)
 
-Now let's add a button that fetches fresh data without submitting a form. This demonstrates `hx-get` for read operations.
+Now let's add buttons that fetch fresh data without submitting a form. This demonstrates `hx-get` for read operations.
 
-### 3.1 Add a Handler for List Refresh
+### 3.1 Update the Page with Refresh Buttons
 
-Add this handler to `Pages/Tasks/Index.cshtml.cs`:
+Update `Pages/Tasks/Index.cshtml` to include the loading indicator and refresh buttons:
 
-**Add to `Index.cshtml.cs`:**
-
-```csharp
-/// <summary>
-/// Handles GET requests to /Tasks?handler=List.
-/// Returns just the task list fragment for htmx to swap.
-///
-/// Optional parameter 'take' limits the number of tasks returned.
-/// </summary>
-/// <param name="take">Optional: limit results to this many tasks</param>
-public IActionResult OnGetList(int? take)
-{
-    var tasks = InMemoryTaskStore.All();
-
-    if (take is > 0)
-    {
-        tasks = tasks.Take(take.Value).ToList();
-    }
-
-    return Fragment("Partials/_TaskList", tasks);
-}
-```
-
-### 3.2 Add the Refresh Button to the Page
-
-Update `Pages/Tasks/Index.cshtml` to add a refresh button near the list:
-
-**Update `Pages/Tasks/Index.cshtml`:**
-
-```cshtml
-@page
-@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
-@{
-    ViewData["Title"] = "Tasks";
-}
-
-<h1>Tasks</h1>
-
-<partial name="Partials/_Messages" model="Model.FlashMessage" />
-
-<div class="row">
-    <div class="col-md-5">
-        <h2 class="h5">Add a Task</h2>
-        <partial name="Partials/_TaskForm" model="Model" />
-    </div>
-
-    <div class="col-md-7">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h2 class="h5 mb-0">Current Tasks</h2>
-
-            @* Refresh button using hx-get *@
-            <button type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    hx-get="?handler=List"
-                    hx-target="#task-list"
-                    hx-swap="outerHTML">
-                Refresh List
-            </button>
-        </div>
-
-        <partial name="Partials/_TaskList" model="Model.Tasks" />
-    </div>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
-```
-
-### 3.3 Understanding hx-get
-
-| Attribute   | Value             | Purpose                                   |
-|-------------|-------------------|-------------------------------------------|
-| `hx-get`    | `"?handler=List"` | Send GET request to this URL when clicked |
-| `hx-target` | `"#task-list"`    | Put the response into #task-list          |
-| `hx-swap`   | `"outerHTML"`     | Replace the entire element                |
-
-This is the canonical "fetch and swap" pattern:
-
-1. User clicks the button
-2. htmx sends `GET /Tasks?handler=List`
-3. Server returns `_TaskList` partial
-4. htmx replaces `#task-list` with the response
-
-### 3.4 Test the Refresh Button
-
-1. **Add a few tasks** using the form
-2. **Click "Refresh List"**
-3. **Observe** in Network tab:
-   - GET request to `?handler=List`
-   - Response is just the list HTML
-   - List updates without page reload
-
----
-
-## Step 4: Introduce hx-vals for Simple Parameters (5–7 minutes)
-
-Sometimes you need to pass additional data with a request without building a form. The `hx-vals` attribute lets you include JSON data in requests.
-
-### 4.1 Update the Refresh Button with hx-vals
-
-Let's add a button that shows only the top 5 tasks:
-
-**Update the buttons section in `Index.cshtml`:**
+**File: `Pages/Tasks/Index.cshtml` (relevant section)**
 
 ```cshtml
 <div class="d-flex justify-content-between align-items-center mb-2">
-    <h2 class="h5 mb-0">Current Tasks</h2>
-
-    <div class="btn-group btn-group-sm">
-        @* Refresh all tasks *@
-        <button type="button"
-                class="btn btn-outline-secondary"
-                hx-get="?handler=List"
-                hx-target="#task-list"
-                hx-swap="outerHTML">
-            Refresh All
-        </button>
-
-        @* Refresh with limit using hx-vals *@
-        <button type="button"
-                class="btn btn-outline-secondary"
-                hx-get="?handler=List"
-                hx-vals='{"take": 5}'
-                hx-target="#task-list"
-                hx-swap="outerHTML">
-            Top 5
-        </button>
-    </div>
-</div>
-```
-
-### 4.2 Understanding hx-vals
-
-```html
-hx-vals='{"take": 5}'
-```
-
-| Aspect     | Detail                                                              |
-|------------|---------------------------------------------------------------------|
-| **Format** | JSON object as a string                                             |
-| **Quotes** | Use single quotes for the attribute, double quotes inside JSON      |
-| **Result** | Adds `?take=5` to the request URL (for GET) or form data (for POST) |
-
-The `OnGetList(int? take)` handler already accepts this parameter, so the server will limit results to 5 tasks.
-
-### 4.3 Alternative: Hidden Inputs
-
-For more complex scenarios or when you want the values in the DOM, you can use hidden inputs:
-
-```html
-<form hx-get="?handler=List" hx-target="#task-list" hx-swap="outerHTML">
-    <input type="hidden" name="take" value="5" />
-    <button type="submit" class="btn btn-outline-secondary">Top 5</button>
-</form>
-```
-
-Both approaches work; `hx-vals` is more concise for simple cases.
-
-### 4.4 Test hx-vals
-
-1. **Add more than 5 tasks** (or just a few to see the difference)
-2. **Click "Top 5"**
-3. **Check Network tab**: Request URL should include `?handler=List&take=5`
-4. **Click "Refresh All"**: Shows all tasks (no `take` parameter)
-
----
-
-## Step 5: Add Loading Indicator + Error Handling (10–12 minutes)
-
-Real applications need user feedback during requests and graceful error handling. Let's add both.
-
-### 5.1 Add a Loading Indicator Element
-
-First, add a spinner element to the page. Update `Pages/Tasks/Index.cshtml`:
-
-**Update the button section in `Index.cshtml`:**
-
-```cshtml
-<div class="d-flex justify-content-between align-items-center mb-2">
-    <h2 class="h5 mb-0">Current Tasks</h2>
+    <h2 class="h5 mb-0">List</h2>
 
     <div class="d-flex align-items-center gap-2">
         @* Loading indicator - hidden by default, shown during htmx requests *@
@@ -594,6 +517,7 @@ First, add a spinner element to the page. Update `Pages/Tasks/Index.cshtml`:
         </div>
 
         <div class="btn-group btn-group-sm">
+            @* Refresh all tasks *@
             <button type="button"
                     class="btn btn-outline-secondary"
                     hx-get="?handler=List"
@@ -603,6 +527,7 @@ First, add a spinner element to the page. Update `Pages/Tasks/Index.cshtml`:
                 Refresh All
             </button>
 
+            @* Refresh with limit using hx-vals *@
             <button type="button"
                     class="btn btn-outline-secondary"
                     hx-get="?handler=List"
@@ -617,44 +542,63 @@ First, add a spinner element to the page. Update `Pages/Tasks/Index.cshtml`:
 </div>
 ```
 
-### 5.2 Update the Form with Indicator
+### 3.2 Understanding hx-get
 
-Also update the form partial to use the indicator:
+| Attribute      | Value             | Purpose                                   |
+|----------------|-------------------|-------------------------------------------|
+| `hx-get`       | `"?handler=List"` | Send GET request to this URL when clicked |
+| `hx-target`    | `"#task-list"`    | Put the response into #task-list          |
+| `hx-swap`      | `"outerHTML"`     | Replace the entire element                |
+| `hx-indicator` | `"#task-loading"` | Show loading spinner during request       |
 
-**Update `Pages/Tasks/Partials/_TaskForm.cshtml`:**
+This is the canonical "fetch and swap" pattern:
 
-```cshtml
-@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+1. User clicks the button
+2. htmx sends `GET /Tasks?handler=List`
+3. Server returns `_TaskList` partial
+4. htmx replaces `#task-list` with the response
 
-<div id="task-form">
-    <form method="post" asp-page-handler="Create"
-          hx-post="?handler=Create"
-          hx-target="#task-list"
-          hx-swap="outerHTML"
-          hx-indicator="#task-loading">
-        <div class="mb-3">
-            <label class="form-label" for="title">Task Title</label>
-            <input id="title"
-                   class="form-control"
-                   asp-for="Input.Title"
-                   placeholder="e.g., Add htmx to Razor Pages" />
-            <span class="text-danger" asp-validation-for="Input.Title"></span>
-        </div>
-        <button class="btn btn-primary" type="submit">Add Task</button>
-    </form>
-</div>
+### 3.3 Understanding hx-vals
+
+```html
+hx-vals='{"take": 5}'
 ```
 
-### 5.3 Add CSS for the Indicator
+| Aspect     | Detail                                                              |
+|------------|---------------------------------------------------------------------|
+| **Format** | JSON object as a string                                             |
+| **Quotes** | Use single quotes for the attribute, double quotes inside JSON      |
+| **Result** | Adds `?take=5` to the request URL (for GET) or form data (for POST) |
 
-htmx adds/removes the class `htmx-request` on elements during requests. We need CSS to show/hide the indicator.
+The `OnGetList(int? take)` handler already accepts this parameter, so the server will limit results to 5 tasks.
 
-Add to `wwwroot/css/site.css`:
+### 3.4 Test the Refresh Buttons
 
-**Add to `site.css`:**
+1. **Add a few tasks** using the form
+2. **Click "Refresh All"**
+3. **Observe** in Network tab:
+   - GET request to `?handler=List`
+   - Response is just the list HTML
+   - List updates without page reload
+4. **Click "Top 5"**
+5. **Check Network tab**: Request URL should include `?handler=List&take=5`
+
+---
+
+## Step 4: Add Loading Indicator Styling (5–7 minutes)
+
+The loading indicator element is already in place, but we need CSS to show/hide it properly.
+
+### 4.1 Add CSS for the Indicator
+
+The htmx indicator styles should already be in `wwwroot/css/site.css`:
+
+**File: `wwwroot/css/site.css` (relevant section)**
 
 ```css
-/* htmx loading indicator styles */
+/* ═══════════════════════════════════════════════════════════════
+   htmx Loading Indicator Styles
+   ═══════════════════════════════════════════════════════════════ */
 
 /* Hide indicator by default */
 .htmx-indicator {
@@ -672,9 +616,18 @@ Add to `wwwroot/css/site.css`:
     opacity: 0.5;
     transition: opacity 200ms ease-in-out;
 }
+
+/* Disable form elements during submission */
+.htmx-request input,
+.htmx-request button,
+.htmx-request select,
+.htmx-request textarea {
+    pointer-events: none;
+    opacity: 0.7;
+}
 ```
 
-### 5.4 Understanding hx-indicator
+### 4.2 Understanding hx-indicator
 
 | Aspect                 | Detail                                               |
 |------------------------|------------------------------------------------------|
@@ -689,103 +642,14 @@ htmx's built-in behavior:
 3. Request ends → removes `htmx-request` class
 4. Indicator hides again
 
-### 5.5 Create an Error Fragment
-
-Create a partial for displaying errors:
-
-**File: `Pages/Tasks/Partials/_Error.cshtml`**
-
-```cshtml
-@model string
-
-@*
-    Error Fragment
-    ==============
-
-    Purpose:
-    - Displays error messages in a consistent format
-    - Used for server errors, not found conditions, etc.
-
-    Model:
-    - string message - The error message to display
-*@
-
-<div class="alert alert-danger" role="alert">
-    <strong>Error:</strong> @Model
-</div>
-```
-
-### 5.6 Add Error Handling to OnPostCreate
-
-Update the `OnPostCreate` method to demonstrate error handling:
-
-**Update `OnPostCreate` in `Index.cshtml.cs`:**
-
-```csharp
-public IActionResult OnPostCreate()
-{
-    // Validation
-    if (string.IsNullOrWhiteSpace(Input.Title))
-    {
-        ModelState.AddModelError(nameof(Input.Title), "Title is required.");
-    }
-
-    if (!ModelState.IsValid)
-    {
-        Tasks = InMemoryTaskStore.All();
-
-        if (IsHtmx())
-        {
-            Response.Headers["HX-Retarget"] = "#task-form";
-            Response.Headers["HX-Reswap"] = "outerHTML";
-            return Fragment("Partials/_TaskForm", this);
-        }
-
-        return Page();
-    }
-
-    // Simulated error condition for demonstration
-    // Type "boom" as the title to trigger this error
-    if (Input.Title.Trim().Equals("boom", StringComparison.OrdinalIgnoreCase))
-    {
-        if (IsHtmx())
-        {
-            Response.Headers["HX-Retarget"] = "#messages";
-            Response.Headers["HX-Reswap"] = "innerHTML";
-            return Fragment("Partials/_Error",
-                "Simulated server error. Try a different title (anything except 'boom').");
-        }
-
-        throw new InvalidOperationException("Simulated server error.");
-    }
-
-    // Create the task
-    InMemoryTaskStore.Add(Input.Title);
-    Tasks = InMemoryTaskStore.All();
-
-    if (IsHtmx())
-    {
-        return Fragment("Partials/_TaskList", Tasks);
-    }
-
-    FlashMessage = "Task added.";
-    return RedirectToPage();
-}
-```
-
-**Key Points:**
-
-1. **htmx treats non-2xx responses as valid**: You can still return HTML and swap it
-2. **HX-Retarget changes where content goes**: Lets you route errors to a different location
-3. **HX-Reswap changes how content is swapped**: `innerHTML` here because we want to put content inside `#messages`, not replace it
-
-### 5.7 Test Everything
+### 4.3 Test Everything
 
 **Test the loading indicator:**
 
 1. Open Network tab, enable throttling (Slow 3G)
 2. Click refresh or submit a task
 3. Observe the spinner appears during the request
+4. Notice the task list becomes slightly transparent
 
 **Test validation errors:**
 
@@ -801,26 +665,22 @@ public IActionResult OnPostCreate()
 
 ---
 
-## Step 6: Clear the Form After Success (Optional Enhancement)
+## Step 5: Clear the Form After Success (6–8 minutes)
 
-Currently, after successfully adding a task, the form retains the entered value. Let's add a mechanism to clear it.
+Currently, after successfully adding a task, the form retains the entered value. Let's add a mechanism to clear it using htmx events.
 
-### 6.1 The Strategy: Use HX-Trigger
+### 5.1 The Strategy: Use HX-Trigger
 
 htmx can fire custom events that other elements listen to. We'll:
 
 1. Server sends `HX-Trigger: clearForm` header on success
 2. An invisible listener element catches this and refreshes the form
 
-### 6.2 Add a Handler to Return Empty Form
+### 5.2 The Handler is Already There
 
-**Add to `Index.cshtml.cs`:**
+The `OnGetEmptyForm()` handler is already implemented in the PageModel:
 
 ```csharp
-/// <summary>
-/// Returns an empty form fragment.
-/// Called via htmx trigger after successful task creation.
-/// </summary>
 public IActionResult OnGetEmptyForm()
 {
     Input = new NewTaskInput();
@@ -829,9 +689,11 @@ public IActionResult OnGetEmptyForm()
 }
 ```
 
-### 6.3 Add a Listener Element to the Page
+### 5.3 Add a Listener Element to the Page
 
-**Add to `Index.cshtml` (at the bottom, before `@section Scripts`):**
+The listener should already be in `Pages/Tasks/Index.cshtml` (near the bottom, before `@section Scripts`):
+
+**File: `Pages/Tasks/Index.cshtml` (listener section)**
 
 ```cshtml
 @*
@@ -845,22 +707,19 @@ public IActionResult OnGetEmptyForm()
 </div>
 ```
 
-### 6.4 Trigger the Event from OnPostCreate
+### 5.4 The Event is Already Triggered
 
-Update the success path in `OnPostCreate`:
-
-**Update success path in `OnPostCreate`:**
+The success path in `OnPostCreate` already includes the trigger:
 
 ```csharp
 if (IsHtmx())
 {
-    // Trigger form clear after successful creation
     Response.Headers["HX-Trigger"] = "clearForm";
     return Fragment("Partials/_TaskList", Tasks);
 }
 ```
 
-### 6.5 Understanding HX-Trigger
+### 5.5 Understanding HX-Trigger
 
 | Aspect                             | Detail                                                                                |
 |------------------------------------|---------------------------------------------------------------------------------------|
@@ -869,6 +728,208 @@ if (IsHtmx())
 | Flow                               | Response includes header → htmx fires event → listener catches it → makes new request |
 
 This pattern keeps your markup clean—the form itself doesn't need to know about clearing. The server controls the behavior through headers.
+
+---
+
+## Complete File Reference
+
+### Index.cshtml (Complete)
+
+**File: `Pages/Tasks/Index.cshtml`**
+
+```cshtml
+@page
+@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
+@{
+    ViewData["Title"] = "Tasks • htmx Razor Pages Workshop";
+}
+
+<div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="mb-1">Tasks</h1>
+        <p class="text-muted mb-0">Lab-friendly page with clear fragment boundaries.</p>
+    </div>
+    <form method="post" asp-page-handler="Reset" class="m-0">
+        <button class="btn btn-sm btn-outline-secondary" type="submit">Reset</button>
+    </form>
+</div>
+
+<partial name="Partials/_Messages" model="Model.FlashMessage" />
+
+<div class="row g-3 g-md-4">
+    <div class="col-lg-5">
+        <div class="card workshop-card h-100">
+            <div class="card-body">
+                <div class="workshop-kicker">Fragment boundary</div>
+                <h2 class="h5">Create</h2>
+                <partial name="Partials/_TaskForm" model="Model" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card workshop-card h-100">
+            <div class="card-body">
+                <div class="workshop-kicker">Fragment boundary</div>
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h2 class="h5 mb-0">List</h2>
+
+                    <div class="d-flex align-items-center gap-2">
+                        @* Loading indicator - hidden by default, shown during htmx requests *@
+                        <div id="task-loading"
+                             class="htmx-indicator spinner-border spinner-border-sm text-secondary"
+                             role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+
+                        <div class="btn-group btn-group-sm">
+                            @* Refresh all tasks *@
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    hx-get="?handler=List"
+                                    hx-target="#task-list"
+                                    hx-swap="outerHTML"
+                                    hx-indicator="#task-loading">
+                                Refresh All
+                            </button>
+
+                            @* Refresh with limit using hx-vals *@
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    hx-get="?handler=List"
+                                    hx-vals='{"take": 5}'
+                                    hx-target="#task-list"
+                                    hx-swap="outerHTML"
+                                    hx-indicator="#task-loading">
+                                Top 5
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <partial name="Partials/_TaskList" model="Model.Tasks" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@*
+    Invisible listeners for htmx events
+    These elements respond to HX-Trigger headers from the server
+*@
+<div hx-get="?handler=EmptyForm"
+     hx-trigger="clearForm from:body"
+     hx-target="#task-form"
+     hx-swap="outerHTML">
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+```
+
+### Partials Reference
+
+**File: `Pages/Tasks/Partials/_TaskList.cshtml`**
+
+```cshtml
+@using RazorPagesHtmxWorkshop.Models
+@model IReadOnlyList<TaskItem>
+
+@*
+    Task List Fragment
+    ==================
+
+    Target ID: #task-list
+    Swap: outerHTML
+    Returned by: OnGetList, OnPostCreate (on success)
+
+    This fragment displays the list of tasks.
+    The wrapper div with id="task-list" is essential for htmx targeting.
+    Using outerHTML swap means the entire div is replaced, not just its contents.
+*@
+
+<div id="task-list">
+    @if (Model.Count == 0)
+    {
+        <div class="text-muted">
+            No tasks yet. Add one to establish a baseline.
+        </div>
+    }
+    else
+    {
+        <ul class="list-group list-group-flush">
+            @foreach (var task in Model)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <div class="d-flex flex-column">
+                        <strong>@task.Title</strong>
+                        <span class="small text-muted">Created @task.CreatedUtc.ToLocalTime().ToString("g")</span>
+                    </div>
+                    @if (task.IsDone)
+                    {
+                        <span class="badge text-bg-success">Done</span>
+                    }
+                    else
+                    {
+                        <span class="badge text-bg-secondary">Open</span>
+                    }
+                </li>
+            }
+        </ul>
+    }
+</div>
+```
+
+**File: `Pages/Tasks/Partials/_Messages.cshtml`**
+
+```cshtml
+@model string?
+
+@*
+    Messages Fragment
+    =================
+
+    Target ID: #messages
+    Swap: innerHTML (when used as error target)
+
+    This fragment displays flash messages and can also receive
+    error content via HX-Retarget from server error responses.
+*@
+
+<div id="messages">
+    @if (!string.IsNullOrWhiteSpace(Model))
+    {
+        <div class="alert alert-info workshop-alert" role="alert">
+            @Model
+        </div>
+    }
+</div>
+```
+
+**File: `Pages/Tasks/Partials/_Error.cshtml`**
+
+```cshtml
+@model string
+
+@*
+    Error Fragment
+    ==============
+
+    Purpose:
+    - Displays error messages in a consistent format
+    - Used for server errors, not found conditions, etc.
+    - Typically swapped into #messages via HX-Retarget
+
+    Model:
+    - string message - The error message to display
+*@
+
+<div class="alert alert-danger workshop-alert" role="alert">
+    <strong>Error:</strong> @Model
+</div>
+```
 
 ---
 
@@ -881,7 +942,8 @@ Before moving to Lab 3, verify these behaviors:
 - [ ] Submit with valid title updates only `#task-list` (no page reload)
 - [ ] Submit with empty title shows error in `#task-form` (retargeted)
 - [ ] Submit with "boom" shows error in `#messages` (retargeted)
-- [ ] Form clears after successful submit (if you implemented Step 6)
+- [ ] Form clears after successful submit
+- [ ] Loading spinner appears during submission
 
 ### Refresh Buttons
 
@@ -893,12 +955,15 @@ Before moving to Lab 3, verify these behaviors:
 
 - [ ] Requests include `HX-Request: true` header
 - [ ] Responses are HTML fragments (not full pages)
+- [ ] Success responses include `HX-Trigger: clearForm` header
+- [ ] Error responses include `HX-Retarget` and `HX-Reswap` headers
 
 ### DOM Verification
 
 - [ ] `#task-list` exists and updates correctly
 - [ ] `#task-form` exists and shows validation errors
 - [ ] `#messages` exists and shows server errors
+- [ ] Loading indicator shows/hides correctly
 
 ---
 
@@ -922,6 +987,13 @@ Before moving to Lab 3, verify these behaviors:
 | `HX-Retarget`              | Route responses to different targets |
 | `HX-Trigger`               | Fire events for secondary actions    |
 
+### Important Implementation Details
+
+1. **Namespace**: Use `RazorPagesHtmxWorkshop` (not `RazorHtmxWorkshop`)
+2. **Fragment helper**: Uses `MetadataProvider` and `ModelState` for proper validation context
+3. **Progressive enhancement**: Keep traditional attributes (`method`, `asp-page-handler`) as fallbacks
+4. **Workshop styling**: Custom CSS provides dark theme with gradient backgrounds
+
 ### What Comes Next
 
 In **Lab 3**, you'll implement:
@@ -937,204 +1009,23 @@ In **Lab 3**, you'll implement:
 
 ### Common Issues and Solutions
 
-| Problem                      | Likely Cause                   | Solution                                              |
-|------------------------------|--------------------------------|-------------------------------------------------------|
-| Nothing happens on submit    | htmx not loaded                | Check console for htmx object                         |
-| Full page reloads            | htmx not intercepting          | Verify `hx-post` attribute is present                 |
-| Wrong content swapped in     | Incorrect `hx-target`          | Check selector matches element ID                     |
-| Nested duplicate elements    | Using `innerHTML` with wrapper | Change to `outerHTML`                                 |
-| Validation errors don't show | Retarget headers missing       | Add `HX-Retarget` and `HX-Reswap`                     |
-| Indicator doesn't show       | CSS missing                    | Add `.htmx-indicator` and `.htmx-request` rules       |
-| 400 Bad Request              | Antiforgery token issue        | Ensure token is in form (we'll fix properly in Lab 3) |
+| Problem                      | Likely Cause                   | Solution                                        |
+|------------------------------|--------------------------------|-------------------------------------------------|
+| Nothing happens on submit    | htmx not loaded                | Check console for htmx object                   |
+| Full page reloads            | htmx not intercepting          | Verify `hx-post` attribute is present           |
+| Wrong content swapped in     | Incorrect `hx-target`          | Check selector matches element ID               |
+| Nested duplicate elements    | Using `innerHTML` with wrapper | Change to `outerHTML`                           |
+| Validation errors don't show | Retarget headers missing       | Add `HX-Retarget` and `HX-Reswap`               |
+| Indicator doesn't show       | CSS missing                    | Add `.htmx-indicator` and `.htmx-request` rules |
+| Form doesn't clear           | Event listener missing         | Check for listener div at bottom of page        |
 
 ### Debug Tips
 
 1. **Network Tab**: Check request headers for `HX-Request: true`
-2. **Network Tab**: Check response headers for `HX-Retarget`, `HX-Reswap`
+2. **Network Tab**: Check response headers for `HX-Retarget`, `HX-Reswap`, `HX-Trigger`
 3. **Console**: Look for htmx errors or warnings
 4. **Elements Tab**: Watch DOM changes during swaps
 5. **Response Preview**: Verify server returns HTML fragment, not full page
-
----
-
-## Complete Code Reference
-
-### Index.cshtml.cs (Complete)
-
-```csharp
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using RazorHtmxWorkshop.Data;
-using RazorHtmxWorkshop.Models;
-
-namespace RazorHtmxWorkshop.Pages.Tasks;
-
-public class IndexModel : PageModel
-{
-    public IReadOnlyList<TaskItem> Tasks { get; private set; } = Array.Empty<TaskItem>();
-
-    [BindProperty]
-    public NewTaskInput Input { get; set; } = new();
-
-    [TempData]
-    public string? FlashMessage { get; set; }
-
-    private bool IsHtmx() =>
-        Request.Headers.TryGetValue("HX-Request", out var value) && value == "true";
-
-    private PartialViewResult Fragment(string partialName, object model) =>
-        new()
-        {
-            ViewName = partialName,
-            ViewData = new ViewDataDictionary(ViewData) { Model = model }
-        };
-
-    public void OnGet()
-    {
-        Tasks = InMemoryTaskStore.All();
-    }
-
-    public IActionResult OnGetList(int? take)
-    {
-        var tasks = InMemoryTaskStore.All();
-
-        if (take is > 0)
-        {
-            tasks = tasks.Take(take.Value).ToList();
-        }
-
-        return Fragment("Partials/_TaskList", tasks);
-    }
-
-    public IActionResult OnGetEmptyForm()
-    {
-        Input = new NewTaskInput();
-        ModelState.Clear();
-        return Fragment("Partials/_TaskForm", this);
-    }
-
-    public IActionResult OnPostCreate()
-    {
-        if (string.IsNullOrWhiteSpace(Input.Title))
-        {
-            ModelState.AddModelError(nameof(Input.Title), "Title is required.");
-        }
-
-        if (!ModelState.IsValid)
-        {
-            Tasks = InMemoryTaskStore.All();
-
-            if (IsHtmx())
-            {
-                Response.Headers["HX-Retarget"] = "#task-form";
-                Response.Headers["HX-Reswap"] = "outerHTML";
-                return Fragment("Partials/_TaskForm", this);
-            }
-
-            return Page();
-        }
-
-        if (Input.Title.Trim().Equals("boom", StringComparison.OrdinalIgnoreCase))
-        {
-            if (IsHtmx())
-            {
-                Response.Headers["HX-Retarget"] = "#messages";
-                Response.Headers["HX-Reswap"] = "innerHTML";
-                return Fragment("Partials/_Error",
-                    "Simulated server error. Try a different title (anything except 'boom').");
-            }
-
-            throw new InvalidOperationException("Simulated server error.");
-        }
-
-        InMemoryTaskStore.Add(Input.Title);
-        Tasks = InMemoryTaskStore.All();
-
-        if (IsHtmx())
-        {
-            Response.Headers["HX-Trigger"] = "clearForm";
-            return Fragment("Partials/_TaskList", Tasks);
-        }
-
-        FlashMessage = "Task added.";
-        return RedirectToPage();
-    }
-
-    public class NewTaskInput
-    {
-        public string Title { get; set; } = "";
-    }
-}
-```
-
-### Index.cshtml (Complete)
-
-```cshtml
-@page
-@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
-@{
-    ViewData["Title"] = "Tasks";
-}
-
-<h1>Tasks</h1>
-
-<partial name="Partials/_Messages" model="Model.FlashMessage" />
-
-<div class="row">
-    <div class="col-md-5">
-        <h2 class="h5">Add a Task</h2>
-        <partial name="Partials/_TaskForm" model="Model" />
-    </div>
-
-    <div class="col-md-7">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h2 class="h5 mb-0">Current Tasks</h2>
-
-            <div class="d-flex align-items-center gap-2">
-                <div id="task-loading"
-                     class="htmx-indicator spinner-border spinner-border-sm text-secondary"
-                     role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-
-                <div class="btn-group btn-group-sm">
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            hx-get="?handler=List"
-                            hx-target="#task-list"
-                            hx-swap="outerHTML"
-                            hx-indicator="#task-loading">
-                        Refresh All
-                    </button>
-
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            hx-get="?handler=List"
-                            hx-vals='{"take": 5}'
-                            hx-target="#task-list"
-                            hx-swap="outerHTML"
-                            hx-indicator="#task-loading">
-                        Top 5
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <partial name="Partials/_TaskList" model="Model.Tasks" />
-    </div>
-</div>
-
-<div hx-get="?handler=EmptyForm"
-     hx-trigger="clearForm from:body"
-     hx-target="#task-form"
-     hx-swap="outerHTML">
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
-```
 
 ---
 
@@ -1148,6 +1039,7 @@ You have successfully completed Lab 2! Your application now:
 - ✅ Handles validation errors gracefully with retargeting
 - ✅ Handles server errors with appropriate feedback
 - ✅ Supports parameterized queries with `hx-vals`
+- ✅ Clears the form after successful submission
 
 This is the core htmx workflow that you'll use throughout your applications. In Lab 3, you'll build on this foundation to add real-time validation and more sophisticated form handling.
 
