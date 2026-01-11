@@ -1,6 +1,6 @@
 ---
 order: 1
-icon: code-square
+icon: briefcase
 ---
 
 # Foundations: Hypermedia + htmx Mental Model
