@@ -1,6 +1,6 @@
 ---
 order: 1
-icon: code-square
+icon: check-circle-fill
 ---
 
 # Capstone: Hardening + Take-Home Extensions
