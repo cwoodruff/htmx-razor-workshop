@@ -409,3 +409,4 @@ chinook-razor-htmx/.DS_Store
 *.xml
 /src/.idea
 **/CLAUDE.md
+/src/.claude
