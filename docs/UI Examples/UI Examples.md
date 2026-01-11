@@ -6,7 +6,9 @@ icon: shield-check
 
 You can find all exaples running in Azure to test and explore.
 
-[!ref target="blank" text="htmx examples on Azure"](https://htmx-examples-anbva9b7gkhtgfbd.centralus-01.azurewebsites.net/).
+[!ref target="blank" text="htmx examples on Azure"](https://htmx-examples-anbva9b7gkhtgfbd.centralus-01.azurewebsites.net/)
+
+[!ref target="blank" text="htmx examples GitHub repo"](https://github.com/cwoodruff/htmx-examples-for-workshop)
 
 | Pattern                                    | Description                                                                                    |
 |:-------------------------------------------|------------------------------------------------------------------------------------------------|
