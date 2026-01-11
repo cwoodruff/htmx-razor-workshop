@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821468383476">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821468870789">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -35,12 +35,12 @@
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.821468383476" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821468870789" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821468383476" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821468870789" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821468383476" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821468383476" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821468870789" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821468870789" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -322,6 +322,10 @@
 <td><strong>Conditional polling</strong></td>
 <td>Start/stop polling based on job status</td>
 </tr>
+<tr>
+<td><strong>Enhanced details view</strong></td>
+<td>Display all task properties including tags and categories</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -340,10 +344,10 @@
 <li><strong>Fragment helpers</strong> (<code v-pre>IsHtmx()</code> and <code v-pre>Fragment()</code>) ready</li>
 </ul>
 <hr>
-<doc-anchor-target id="pattern-1-dynamic-form-rows-addremove-1520-minutes">
+<doc-anchor-target id="pattern-1-dynamic-form-rows-addremove-tags-1520-minutes">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-1-dynamic-form-rows-addremove-1520-minutes">#</doc-anchor-trigger>
-        <span>Pattern 1: Dynamic Form Rows (Add/Remove) (15–20 minutes)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-1-dynamic-form-rows-addremove-tags-1520-minutes">#</doc-anchor-trigger>
+        <span>Pattern 1: Dynamic Form Rows (Add/Remove Tags) (15–20 minutes)</span>
     </h2>
 </doc-anchor-target>
 <p>This pattern lets users add and remove items in a sub-collection—like tags on a task, line items on an order, or attendees on an event.</p>
@@ -357,24 +361,47 @@
 <ol>
 <li>User sees a task form with a &quot;Tags&quot; section</li>
 <li>User clicks &quot;Add Tag&quot; → new empty tag input appears</li>
-<li>User can remove any tag by clicking its &quot;Remove&quot; button</li>
+<li>User can remove any tag by clicking its &quot;Remove&quot; button (client-side, no server round-trip)</li>
 <li>On form submit, all tags are collected and saved</li>
 </ol>
 <p><strong>Architecture:</strong></p>
 <ul>
 <li>Tags are rendered as a list of inputs inside a <code v-pre>#tags-container</code></li>
-<li>&quot;Add Tag&quot; button fetches a new tag row fragment</li>
-<li>Each tag row has a &quot;Remove&quot; button that removes itself</li>
-<li>Server maintains tag indexes for model binding</li>
+<li>&quot;Add Tag&quot; button fetches a new tag row fragment from server</li>
+<li>Each tag row has a &quot;Remove&quot; button that removes itself <strong>client-side</strong> using htmx&#x27;s <code v-pre>hx-on</code> attribute</li>
+<li>Tags use simple name binding (<code v-pre>Input.Tags</code>) - ASP.NET Core handles multiple values automatically</li>
 </ul>
-<doc-anchor-target id="12-update-the-input-model">
+<doc-anchor-target id="12-update-the-taskitem-model">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#12-update-the-input-model">#</doc-anchor-trigger>
-        <span>1.2 Update the Input Model</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#12-update-the-taskitem-model">#</doc-anchor-trigger>
+        <span>1.2 Update the TaskItem Model</span>
     </h3>
 </doc-anchor-target>
-<p>First, extend <code v-pre>NewTaskInput</code> to support tags:</p>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (update NewTaskInput)</strong></p>
+<p>First, add Tag support to the TaskItem model:</p>
+<p><strong>File: <code v-pre>Models/TaskItem.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">namespace RazorPagesHtmxWorkshop.Models;
+
+public class TaskItem
+{
+    public int Id { get; set; }
+    public string Title { get; set; } = &quot;&quot;;
+    public bool IsDone { get; set; }
+    public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+
+    public string? Category { get; set; }
+    public string? Subcategory { get; set; }
+    public List&lt;string&gt; Tags { get; set; } = new();
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="13-update-the-input-model">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#13-update-the-input-model">#</doc-anchor-trigger>
+        <span>1.3 Update the Input Model</span>
+    </h3>
+</doc-anchor-target>
+<p>Extend <code v-pre>NewTaskInput</code> to support tags:</p>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (update NewTaskInput class)</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class NewTaskInput
 {
@@ -384,18 +411,28 @@
 
     /// &lt;summary&gt;
     /// Tags for the task. Each tag is a simple string.
-    /// Model binding uses index notation: Tags[0], Tags[1], etc.
+    /// Model binding automatically collects multiple inputs with the same name.
     /// &lt;/summary&gt;
     public List&lt;string&gt; Tags { get; set; } = new();
+
+    /// &lt;summary&gt;
+    /// Category for the task (first-level selection).
+    /// &lt;/summary&gt;
+    public string? Category { get; set; }
+
+    /// &lt;summary&gt;
+    /// Subcategory for the task (depends on Category).
+    /// &lt;/summary&gt;
+    public string? Subcategory { get; set; }
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="13-create-the-tag-row-fragment">
+<doc-anchor-target id="14-create-the-tag-row-fragment">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#13-create-the-tag-row-fragment">#</doc-anchor-trigger>
-        <span>1.3 Create the Tag Row Fragment</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#14-create-the-tag-row-fragment">#</doc-anchor-trigger>
+        <span>1.4 Create the Tag Row Fragment</span>
     </h3>
 </doc-anchor-target>
-<p>This fragment renders a single tag input with its remove button:</p>
+<p>This fragment renders a single tag input with a client-side remove button:</p>
 <p><strong>File: <code v-pre>Pages/Tasks/Partials/_TagRow.cshtml</code></strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model (int Index, string Value)
@@ -408,84 +445,37 @@
     Model: (int Index, string Value) - tuple with index and current value
 
     Design notes:
-    - Index is used for model binding (Input.Tags[0], Input.Tags[1], etc.)
-    - Remove button removes this row from DOM (no server round-trip needed)
-    - Each row has unique ID based on index for potential targeting
+    - Uses simple name=&quot;Input.Tags&quot; for model binding (no indexes needed!)
+    - Remove button uses hx-on:click for client-side removal (no server round-trip)
+    - ASP.NET Core model binder handles multiple inputs with same name
 
     Swap strategy:
-    - Added via hx-swap=&quot;beforeend&quot; into #tags-container
-    - Removed via hyperscript or hx-swap=&quot;delete&quot;
+    - Added via hx-swap=&quot;beforeend&quot; into #tags-list
+    - Removed via client-side JavaScript using hx-on:click
 *@
 
-&lt;div class=&quot;tag-row input-group mb-2&quot; id=&quot;tag-row-@Model.Index&quot;&gt;
+&lt;div class=&quot;tag-row input-group mb-2&quot;&gt;
     &lt;input type=&quot;text&quot;
            class=&quot;form-control&quot;
-           name=&quot;Input.Tags[@Model.Index]&quot;
+           name=&quot;Input.Tags&quot;
            value=&quot;@Model.Value&quot;
            placeholder=&quot;Enter tag...&quot; /&gt;
 
     &lt;button type=&quot;button&quot;
             class=&quot;btn btn-outline-danger&quot;
-            hx-get=&quot;?handler=RemoveTag&amp;index=@Model.Index&quot;
-            hx-target=&quot;#tag-row-@Model.Index&quot;
-            hx-swap=&quot;delete&quot;
+            hx-on:click=&quot;this.closest('.tag-row').remove()&quot;
             title=&quot;Remove tag&quot;&gt;
         &lt;span aria-hidden=&quot;true&quot;&gt;&amp;times;&lt;/span&gt;
         &lt;span class=&quot;visually-hidden&quot;&gt;Remove tag&lt;/span&gt;
     &lt;/button&gt;
 &lt;/div&gt;</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="14-understanding-the-remove-pattern">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#14-understanding-the-remove-pattern">#</doc-anchor-trigger>
-        <span>1.4 Understanding the Remove Pattern</span>
-    </h3>
-</doc-anchor-target>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;button hx-get=&quot;?handler=RemoveTag&amp;index=@Model.Index&quot;
-        hx-target=&quot;#tag-row-@Model.Index&quot;
-        hx-swap=&quot;delete&quot;&gt;</code></pre>
-</doc-codeblock></div>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Value</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code v-pre>hx-get</code></td>
-<td><code v-pre>&quot;?handler=RemoveTag&amp;index=...&quot;</code></td>
-<td>Request to remove handler</td>
-</tr>
-<tr>
-<td><code v-pre>hx-target</code></td>
-<td><code v-pre>&quot;#tag-row-@Model.Index&quot;</code></td>
-<td>Target this specific row</td>
-</tr>
-<tr>
-<td><code v-pre>hx-swap</code></td>
-<td><code v-pre>&quot;delete&quot;</code></td>
-<td>Remove the target from DOM</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><strong>Why <code v-pre>hx-swap=&quot;delete&quot;</code>?</strong></p>
-<p>The <code v-pre>delete</code> swap strategy removes the target element entirely. The server doesn&#x27;t need to return anything—an empty 200 response is sufficient.</p>
-<p><strong>Alternative: Client-side removal with hyperscript</strong></p>
-<p>If you want to avoid a server round-trip for simple removal:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;button type=&quot;button&quot;
-        class=&quot;btn btn-outline-danger&quot;
-        _=&quot;on click remove closest .tag-row&quot;&gt;
-    &amp;times;
-&lt;/button&gt;</code></pre>
-</doc-codeblock></div>
-<p>This uses hyperscript (htmx&#x27;s companion library) for purely client-side DOM manipulation.</p>
+<p><strong>Key Points:</strong></p>
+<ul>
+<li><strong>Simplified binding</strong>: All tag inputs use the same <code v-pre>name=&quot;Input.Tags&quot;</code>, and ASP.NET Core automatically binds them to a List</li>
+<li><strong>Client-side removal</strong>: Uses <code v-pre>hx-on:click=&quot;this.closest('.tag-row').remove()&quot;</code> to remove the row without a server call</li>
+<li><strong>No index tracking needed</strong>: The server doesn&#x27;t need to manage indexes</li>
+</ul>
 <doc-anchor-target id="15-create-the-tags-container-fragment">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#15-create-the-tags-container-fragment">#</doc-anchor-trigger>
@@ -507,7 +497,7 @@
     Design notes:
     - Container has stable ID #tags-container
     - Add button appends new rows via hx-swap=&quot;beforeend&quot;
-    - Server tracks next available index via hx-vals
+    - No need to track indexes - model binding handles it
 *@
 
 &lt;div id=&quot;tags-container&quot; class=&quot;mb-3&quot;&gt;
@@ -523,7 +513,6 @@
     &lt;button type=&quot;button&quot;
             class=&quot;btn btn-sm btn-outline-secondary mt-2&quot;
             hx-get=&quot;?handler=AddTag&quot;
-            hx-vals='{&quot;nextIndex&quot;: @Model.Count}'
             hx-target=&quot;#tags-list&quot;
             hx-swap=&quot;beforeend&quot;&gt;
         &lt;span aria-hidden=&quot;true&quot;&gt;+&lt;/span&gt; Add Tag
@@ -532,135 +521,69 @@
     &lt;div class=&quot;form-text&quot;&gt;Add tags to categorize your task.&lt;/div&gt;
 &lt;/div&gt;</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="16-understanding-the-add-pattern">
+<doc-anchor-target id="16-add-the-tag-handler">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#16-understanding-the-add-pattern">#</doc-anchor-trigger>
-        <span>1.6 Understanding the Add Pattern</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#16-add-the-tag-handler">#</doc-anchor-trigger>
+        <span>1.6 Add the Tag Handler</span>
     </h3>
 </doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add to #region Dynamic Tags)</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;button hx-get=&quot;?handler=AddTag&quot;
-        hx-vals='{&quot;nextIndex&quot;: @Model.Count}'
-        hx-target=&quot;#tags-list&quot;
-        hx-swap=&quot;beforeend&quot;&gt;</code></pre>
-</doc-codeblock></div>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Value</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code v-pre>hx-get</code></td>
-<td><code v-pre>&quot;?handler=AddTag&quot;</code></td>
-<td>Request new tag row</td>
-</tr>
-<tr>
-<td><code v-pre>hx-vals</code></td>
-<td><code v-pre>'{&quot;nextIndex&quot;: @Model.Count}'</code></td>
-<td>Pass the next available index</td>
-</tr>
-<tr>
-<td><code v-pre>hx-target</code></td>
-<td><code v-pre>&quot;#tags-list&quot;</code></td>
-<td>Append to the tags list</td>
-</tr>
-<tr>
-<td><code v-pre>hx-swap</code></td>
-<td><code v-pre>&quot;beforeend&quot;</code></td>
-<td>Insert as last child</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><strong>Why pass <code v-pre>nextIndex</code>?</strong></p>
-<p>Model binding in ASP.NET Core uses indexed names like <code v-pre>Input.Tags[0]</code>, <code v-pre>Input.Tags[1]</code>. The server needs to know which index to use for the new row.</p>
-<p><strong>The Index Problem:</strong></p>
-<p>If you have tags at indexes 0, 1, 2 and remove index 1, you have a gap. This is actually fine for model binding—it handles sparse arrays. But for simplicity, we track <code v-pre>nextIndex</code> as the count of current tags.</p>
-<doc-anchor-target id="17-add-the-handlers">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#17-add-the-handlers">#</doc-anchor-trigger>
-        <span>1.7 Add the Handlers</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add these handlers)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">#region Dynamic Tags
+
+/// &lt;summary&gt;
 /// Returns a new tag row fragment.
-/// The nextIndex parameter ensures unique name attributes for model binding.
 /// &lt;/summary&gt;
-public IActionResult OnGetAddTag(int nextIndex)
+public IActionResult OnGetAddTag()
 {
-    // Return a new empty tag row with the next available index
-    return Fragment(&quot;Partials/_TagRow&quot;, (nextIndex, &quot;&quot;));
+    // Return a new empty tag row (index doesn't matter for binding)
+    return Fragment(&quot;Partials/_TagRow&quot;, (0, &quot;&quot;));
 }
 
 /// &lt;summary&gt;
-/// Handles tag removal. Returns empty response for hx-swap=&quot;delete&quot;.
+/// Handles tag removal (not actually used - removal is client-side).
+/// Kept for potential server-side validation or tracking.
 /// &lt;/summary&gt;
-public IActionResult OnGetRemoveTag(int index)
+public IActionResult OnGetRemoveTag()
 {
-    // Nothing to return - the delete swap will remove the element
-    // We could track removed indexes if needed for server-side state
     return new EmptyResult();
+}
+
+#endregion</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="17-update-inmemorytaskstore">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#17-update-inmemorytaskstore">#</doc-anchor-trigger>
+        <span>1.7 Update InMemoryTaskStore</span>
+    </h3>
+</doc-anchor-target>
+<p>Update the <code v-pre>Add</code> method to accept tags, category, and subcategory:</p>
+<p><strong>File: <code v-pre>Data/InMemoryTaskStore.cs</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public static TaskItem Add(string title, string? category = null, string? subcategory = null, List&lt;string&gt;? tags = null)
+{
+    var item = new TaskItem
+    {
+        Id = _nextId++,
+        Title = title.Trim(),
+        IsDone = false,
+        CreatedUtc = DateTime.UtcNow,
+        Category = category,
+        Subcategory = subcategory,
+        Tags = tags ?? new()
+    };
+
+    _tasks.Add(item);
+    return item;
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="18-update-the-form-to-include-tags">
+<doc-anchor-target id="18-update-onpostcreate-to-handle-tags">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#18-update-the-form-to-include-tags">#</doc-anchor-trigger>
-        <span>1.8 Update the Form to Include Tags</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#18-update-onpostcreate-to-handle-tags">#</doc-anchor-trigger>
+        <span>1.8 Update OnPostCreate to Handle Tags</span>
     </h3>
 </doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskForm.cshtml</code> (add tags section)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
-
-&lt;div id=&quot;task-form&quot;&gt;
-    &lt;form method=&quot;post&quot; asp-page-handler=&quot;Create&quot;
-          hx-post=&quot;?handler=Create&quot;
-          hx-target=&quot;#task-list&quot;
-          hx-swap=&quot;outerHTML&quot;
-          hx-indicator=&quot;#task-loading&quot;&gt;
-
-        @Html.AntiForgeryToken()
-
-        &lt;div asp-validation-summary=&quot;ModelOnly&quot; class=&quot;text-danger mb-3&quot;&gt;&lt;/div&gt;
-
-        @* Title field with real-time validation *@
-        &lt;div class=&quot;mb-3&quot;&gt;
-            &lt;label class=&quot;form-label&quot; for=&quot;title&quot;&gt;Task Title&lt;/label&gt;
-            &lt;input id=&quot;title&quot;
-                   class=&quot;form-control&quot;
-                   asp-for=&quot;Input.Title&quot;
-                   placeholder=&quot;e.g., Add htmx to Razor Pages&quot;
-                   autocomplete=&quot;off&quot;
-                   hx-post=&quot;?handler=ValidateTitle&quot;
-                   hx-trigger=&quot;keyup changed delay:500ms&quot;
-                   hx-target=&quot;#title-validation&quot;
-                   hx-swap=&quot;outerHTML&quot;
-                   hx-include=&quot;closest form&quot; /&gt;
-            &lt;span class=&quot;text-danger&quot; asp-validation-for=&quot;Input.Title&quot;&gt;&lt;/span&gt;
-            &lt;partial name=&quot;Partials/_TitleValidation&quot; model=&quot;@((string?)null)&quot; /&gt;
-        &lt;/div&gt;
-
-        @* Dynamic Tags section *@
-        &lt;partial name=&quot;Partials/_TagsContainer&quot; model=&quot;Model.Input.Tags&quot; /&gt;
-
-        &lt;button class=&quot;btn btn-primary&quot; type=&quot;submit&quot;&gt;Add Task&lt;/button&gt;
-    &lt;/form&gt;
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="19-update-onpostcreate-to-handle-tags">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#19-update-onpostcreate-to-handle-tags">#</doc-anchor-trigger>
-        <span>1.9 Update OnPostCreate to Handle Tags</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (update OnPostCreate)</strong></p>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (update OnPostCreate method)</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public IActionResult OnPostCreate()
 {
@@ -684,34 +607,70 @@ public IActionResult OnGetRemoveTag(int index)
         return Page();
     }
 
-    // Add task with tags
-    var task = InMemoryTaskStore.Add(Input.Title);
+    if (Input.Title.Trim().Equals(&quot;boom&quot;, StringComparison.OrdinalIgnoreCase))
+    {
+        if (IsHtmx())
+        {
+            Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
+            Response.Headers[&quot;HX-Reswap&quot;] = &quot;innerHTML&quot;;
+            return Fragment(&quot;Partials/_Error&quot;,
+                &quot;Simulated server error. Try a different title.&quot;);
+        }
 
-    // Store tags (you'd save these in a real app)
-    // For the workshop, we'll just log them
+        throw new InvalidOperationException(&quot;Simulated server error.&quot;);
+    }
+
+    // Add task with tags, category and subcategory
+    var task = InMemoryTaskStore.Add(Input.Title, Input.Category, Input.Subcategory, Input.Tags);
+
+    // Log details
     if (Input.Tags.Count &gt; 0)
     {
-        // In a real app: taskTagService.AddTags(task.Id, Input.Tags);
         Console.WriteLine($&quot;Task {task.Id} created with tags: {string.Join(&quot;, &quot;, Input.Tags)}&quot;);
     }
 
-    Tasks = InMemoryTaskStore.All();
+    if (!string.IsNullOrWhiteSpace(Input.Category))
+    {
+        Console.WriteLine($&quot;Task {task.Id} category: {Input.Category} / {Input.Subcategory}&quot;);
+    }
 
     if (IsHtmx())
     {
+        var tagCount = Input.Tags.Count;
+        FlashMessage = tagCount &gt; 0
+            ? $&quot;Task added with {tagCount} tag(s)!&quot;
+            : &quot;Task added successfully!&quot;;
+
         // Reset input including tags for the form refresh
         Input = new NewTaskInput();
 
-        FlashMessage = $&quot;Task added with {Input.Tags.Count} tag(s).&quot;;
         Response.Headers[&quot;HX-Trigger&quot;] = &quot;showMessage,clearForm&quot;;
+
+        CurrentPage = Math.Max(1, PageNum);
+        PageSize = Math.Clamp(Size, 1, 50);
+
+        var all = InMemoryTaskStore.All();
+
+        if (!string.IsNullOrWhiteSpace(Q))
+        {
+            all = all
+                .Where(t =&gt; t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        var total = all.Count;
+        var items = all
+            .Skip((CurrentPage - 1) * PageSize)
+            .Take(PageSize)
+            .ToList();
 
         var vm = new TaskListVm
         {
-            Items = Tasks.Take(5).ToList(),
-            Page = 1,
-            PageSize = 5,
-            Total = Tasks.Count,
-            Query = null
+            Items = items,
+            Page = CurrentPage,
+            PageSize = PageSize,
+            Total = total,
+            Query = Q
         };
 
         return Fragment(&quot;Partials/_TaskList&quot;, vm);
@@ -721,25 +680,11 @@ public IActionResult OnGetRemoveTag(int index)
     return RedirectToPage();
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="110-test-dynamic-tags">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#110-test-dynamic-tags">#</doc-anchor-trigger>
-        <span>1.10 Test Dynamic Tags</span>
-    </h3>
-</doc-anchor-target>
-<ol>
-<li><strong>Navigate</strong> to <code v-pre>/Tasks</code></li>
-<li><strong>Click &quot;Add Tag&quot;</strong> → New tag input appears</li>
-<li><strong>Add multiple tags</strong> by clicking &quot;Add Tag&quot; repeatedly</li>
-<li><strong>Remove a tag</strong> by clicking the × button</li>
-<li><strong>Submit the form</strong> with tags</li>
-<li><strong>Verify</strong> in console or debugger that tags are received</li>
-</ol>
 <hr>
-<doc-anchor-target id="pattern-2-dependent-dropdowns-1015-minutes">
+<doc-anchor-target id="pattern-2-dependent-dropdowns-category--subcategory-1015-minutes">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-2-dependent-dropdowns-1015-minutes">#</doc-anchor-trigger>
-        <span>Pattern 2: Dependent Dropdowns (10–15 minutes)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-2-dependent-dropdowns-category--subcategory-1015-minutes">#</doc-anchor-trigger>
+        <span>Pattern 2: Dependent Dropdowns (Category → Subcategory) (10–15 minutes)</span>
     </h2>
 </doc-anchor-target>
 <p>Dependent dropdowns (cascading selects) update one dropdown based on another&#x27;s selection—like Category → Subcategory, Country → City, or Make → Model.</p>
@@ -758,8 +703,8 @@ public IActionResult OnGetRemoveTag(int index)
 </ol>
 <p><strong>Architecture:</strong></p>
 <ul>
-<li>Category dropdown has <code v-pre>hx-get</code> that fetches subcategory options</li>
-<li>Subcategory dropdown is wrapped in a swappable container</li>
+<li>Category dropdown has <code v-pre>hx-get</code> that fetches subcategory options on change</li>
+<li>Subcategory dropdown is wrapped in a swappable container (<code v-pre>#subcategory-container</code>)</li>
 <li>Server returns the subcategory <code v-pre>&lt;select&gt;</code> fragment</li>
 </ul>
 <doc-anchor-target id="22-create-sample-data">
@@ -771,8 +716,12 @@ public IActionResult OnGetRemoveTag(int index)
 <p>For this example, we&#x27;ll use simple in-memory data:</p>
 <p><strong>File: <code v-pre>Data/CategoryData.cs</code> (create new file)</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">namespace RazorHtmxWorkshop.Data;
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">namespace RazorPagesHtmxWorkshop.Data;
 
+/// &lt;summary&gt;
+/// Sample data for demonstrating dependent dropdowns.
+/// Category → Subcategory cascading selection.
+/// &lt;/summary&gt;
 public static class CategoryData
 {
     private static readonly Dictionary&lt;string, List&lt;string&gt;&gt; _subcategories = new()
@@ -792,42 +741,15 @@ public static class CategoryData
             : _subcategories[category];
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="23-update-the-input-model">
+<doc-anchor-target id="23-create-the-subcategory-fragment">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#23-update-the-input-model">#</doc-anchor-trigger>
-        <span>2.3 Update the Input Model</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (update NewTaskInput)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class NewTaskInput
-{
-    [Required(ErrorMessage = &quot;Title is required.&quot;)]
-    [StringLength(60, MinimumLength = 3, ErrorMessage = &quot;Title must be 3–60 characters.&quot;)]
-    public string Title { get; set; } = &quot;&quot;;
-
-    public List&lt;string&gt; Tags { get; set; } = new();
-
-    /// &lt;summary&gt;
-    /// Category for the task (first-level selection).
-    /// &lt;/summary&gt;
-    public string? Category { get; set; }
-
-    /// &lt;summary&gt;
-    /// Subcategory for the task (depends on Category).
-    /// &lt;/summary&gt;
-    public string? Subcategory { get; set; }
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="24-create-the-subcategory-fragment">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#24-create-the-subcategory-fragment">#</doc-anchor-trigger>
-        <span>2.4 Create the Subcategory Fragment</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#23-create-the-subcategory-fragment">#</doc-anchor-trigger>
+        <span>2.3 Create the Subcategory Fragment</span>
     </h3>
 </doc-anchor-target>
 <p><strong>File: <code v-pre>Pages/Tasks/Partials/_SubcategorySelect.cshtml</code></strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model (IReadOnlyList&lt;string&gt; Options, string? Selected)
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">@model (IReadOnlyList&lt;string&gt; Options, string? Selected)
 
 @*
     Subcategory Select Fragment
@@ -839,14 +761,14 @@ public static class CategoryData
     Design notes:
     - Wrapper div has stable ID for swapping
     - Select is disabled when no options available
-    - Options include a placeholder prompt
+    - Uses Razor syntax for disabled and selected attributes
 *@
 
 &lt;div id=&quot;subcategory-container&quot;&gt;
     &lt;select class=&quot;form-select&quot;
             name=&quot;Input.Subcategory&quot;
             id=&quot;subcategory&quot;
-            @(Model.Options.Count == 0 ? &quot;disabled&quot; : &quot;&quot;)&gt;
+            disabled=&quot;@(Model.Options.Count == 0)&quot;&gt;
 
         @if (Model.Options.Count == 0)
         {
@@ -857,42 +779,51 @@ public static class CategoryData
             &lt;option value=&quot;&quot;&gt;Select subcategory...&lt;/option&gt;
             @foreach (var option in Model.Options)
             {
-                var selected = option == Model.Selected ? &quot;selected&quot; : &quot;&quot;;
-                &lt;option value=&quot;@option&quot; @selected&gt;@option&lt;/option&gt;
+                &lt;option value=&quot;@option&quot; selected=&quot;@(option == Model.Selected)&quot;&gt;@option&lt;/option&gt;
             }
         }
     &lt;/select&gt;
 &lt;/div&gt;</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="25-add-the-subcategory-handler">
+<p><strong>Key Fix:</strong></p>
+<ul>
+<li>Uses <code v-pre>disabled=&quot;@(Model.Options.Count == 0)&quot;</code> instead of the old conditional string approach</li>
+<li>Uses <code v-pre>selected=&quot;@(option == Model.Selected)&quot;</code> for proper boolean attribute binding</li>
+</ul>
+<doc-anchor-target id="24-add-the-subcategory-handler">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#25-add-the-subcategory-handler">#</doc-anchor-trigger>
-        <span>2.5 Add the Subcategory Handler</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#24-add-the-subcategory-handler">#</doc-anchor-trigger>
+        <span>2.4 Add the Subcategory Handler</span>
     </h3>
 </doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add handler)</strong></p>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add to #region Dependent Dropdowns)</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">#region Dependent Dropdowns
+
+/// &lt;summary&gt;
 /// Returns the subcategory dropdown options based on selected category.
 /// Called when category dropdown changes.
 /// &lt;/summary&gt;
-public IActionResult OnGetSubcategories(string? category)
+public IActionResult OnGetSubcategories([FromQuery(Name = &quot;Input.Category&quot;)] string? category)
 {
     var subcategories = CategoryData.GetSubcategories(category);
     return Fragment(&quot;Partials/_SubcategorySelect&quot;, (subcategories, (string?)null));
-}</code></pre>
+}
+
+#endregion</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="26-add-the-category-section-to-the-form">
+<p><strong>Important:</strong> Uses <code v-pre>[FromQuery(Name = &quot;Input.Category&quot;)]</code> to bind the correct query parameter.</p>
+<doc-anchor-target id="25-add-categorysubcategory-to-the-form">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#26-add-the-category-section-to-the-form">#</doc-anchor-trigger>
-        <span>2.6 Add the Category Section to the Form</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#25-add-categorysubcategory-to-the-form">#</doc-anchor-trigger>
+        <span>2.5 Add Category/Subcategory to the Form</span>
     </h3>
 </doc-anchor-target>
 <p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskForm.cshtml</code> (add before Tags section)</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@* Category and Subcategory dropdowns *@
-&lt;div class=&quot;row mb-3&quot;&gt;
-    &lt;div class=&quot;col-md-6&quot;&gt;
+&lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-md-6 mb-3 mb-md-0&quot;&gt;
         &lt;label class=&quot;form-label&quot; for=&quot;category&quot;&gt;Category&lt;/label&gt;
         &lt;select class=&quot;form-select&quot;
                 name=&quot;Input.Category&quot;
@@ -900,10 +831,9 @@ public IActionResult OnGetSubcategories(string? category)
                 asp-for=&quot;Input.Category&quot;
                 hx-get=&quot;?handler=Subcategories&quot;
                 hx-target=&quot;#subcategory-container&quot;
-                hx-swap=&quot;outerHTML&quot;
-                hx-include=&quot;[name='Input.Category']&quot;&gt;
+                hx-swap=&quot;outerHTML&quot;&gt;
             &lt;option value=&quot;&quot;&gt;Select category...&lt;/option&gt;
-            @foreach (var cat in RazorHtmxWorkshop.Data.CategoryData.GetCategories())
+            @foreach (var cat in RazorPagesHtmxWorkshop.Data.CategoryData.GetCategories())
             {
                 &lt;option value=&quot;@cat&quot;&gt;@cat&lt;/option&gt;
             }
@@ -913,67 +843,21 @@ public IActionResult OnGetSubcategories(string? category)
     &lt;div class=&quot;col-md-6&quot;&gt;
         &lt;label class=&quot;form-label&quot; for=&quot;subcategory&quot;&gt;Subcategory&lt;/label&gt;
         @{
-            var currentSubcategories = RazorHtmxWorkshop.Data.CategoryData
+            var currentSubcategories = RazorPagesHtmxWorkshop.Data.CategoryData
                 .GetSubcategories(Model.Input.Category);
         }
         &lt;partial name=&quot;Partials/_SubcategorySelect&quot;
                  model=&quot;(currentSubcategories, Model.Input.Subcategory)&quot; /&gt;
     &lt;/div&gt;
-&lt;/div&gt;</code></pre>
+&lt;/div&gt;
+
+@* Dynamic Tags section *@
+&lt;partial name=&quot;Partials/_TagsContainer&quot; model=&quot;Model.Input.Tags&quot; /&gt;</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="27-understanding-the-dependent-dropdown-pattern">
+<doc-anchor-target id="26-test-dependent-dropdowns">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#27-understanding-the-dependent-dropdown-pattern">#</doc-anchor-trigger>
-        <span>2.7 Understanding the Dependent Dropdown Pattern</span>
-    </h3>
-</doc-anchor-target>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;select hx-get=&quot;?handler=Subcategories&quot;
-        hx-target=&quot;#subcategory-container&quot;
-        hx-swap=&quot;outerHTML&quot;
-        hx-include=&quot;[name='Input.Category']&quot;&gt;</code></pre>
-</doc-codeblock></div>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Value</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code v-pre>hx-get</code></td>
-<td><code v-pre>&quot;?handler=Subcategories&quot;</code></td>
-<td>Fetch new options</td>
-</tr>
-<tr>
-<td><code v-pre>hx-target</code></td>
-<td><code v-pre>&quot;#subcategory-container&quot;</code></td>
-<td>Replace subcategory dropdown</td>
-</tr>
-<tr>
-<td><code v-pre>hx-swap</code></td>
-<td><code v-pre>&quot;outerHTML&quot;</code></td>
-<td>Replace entire container</td>
-</tr>
-<tr>
-<td><code v-pre>hx-include</code></td>
-<td><code v-pre>&quot;[name='Input.Category']&quot;</code></td>
-<td>Include this select&#x27;s value</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><strong>Default Trigger:</strong></p>
-<p>For <code v-pre>&lt;select&gt;</code> elements, htmx defaults to <code v-pre>hx-trigger=&quot;change&quot;</code>, so we don&#x27;t need to specify it.</p>
-<p><strong>Why <code v-pre>hx-include</code>?</strong></p>
-<p>By default, htmx only sends the triggering element&#x27;s value for <code v-pre>hx-get</code>. We use <code v-pre>hx-include</code> to ensure the category value is sent as a query parameter.</p>
-<doc-anchor-target id="28-test-dependent-dropdowns">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#28-test-dependent-dropdowns">#</doc-anchor-trigger>
-        <span>2.8 Test Dependent Dropdowns</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#26-test-dependent-dropdowns">#</doc-anchor-trigger>
+        <span>2.6 Test Dependent Dropdowns</span>
     </h3>
 </doc-anchor-target>
 <ol>
@@ -986,44 +870,143 @@ public IActionResult OnGetSubcategories(string? category)
 <li><strong>Observe</strong>: Subcategory becomes disabled</li>
 </ol>
 <hr>
-<doc-anchor-target id="pattern-3-long-running-operations-with-polling-1520-minutes">
+<doc-anchor-target id="pattern-3-enhanced-task-details-modal-10-minutes">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-3-long-running-operations-with-polling-1520-minutes">#</doc-anchor-trigger>
-        <span>Pattern 3: Long-Running Operations with Polling (15–20 minutes)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-3-enhanced-task-details-modal-10-minutes">#</doc-anchor-trigger>
+        <span>Pattern 3: Enhanced Task Details Modal (10 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Now that we have tags and categories, let&#x27;s update the details modal to show ALL task information.</p>
+<doc-anchor-target id="31-update-the-taskdetails-partial">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#31-update-the-taskdetails-partial">#</doc-anchor-trigger>
+        <span>3.1 Update the TaskDetails Partial</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskDetails.cshtml</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorPagesHtmxWorkshop.Models
+@model TaskItem?
+
+@*
+    Task Details Modal
+    ==================
+
+    Target ID: #task-modal-container
+    Purpose: Display detailed information about a single task in a modal
+    Model: TaskItem? (null if not found)
+
+    Lab 5: Now includes Category, Subcategory, Tags, Status, and all metadata
+*@
+
+&lt;div class=&quot;modal fade&quot; id=&quot;task-modal&quot; tabindex=&quot;-1&quot; aria-labelledby=&quot;taskModalLabel&quot; aria-hidden=&quot;true&quot;&gt;
+    &lt;div class=&quot;modal-dialog modal-dialog-centered&quot;&gt;
+        &lt;div class=&quot;modal-content workshop-card&quot; style=&quot;background-color: #f8f9fa;&quot;&gt;
+            &lt;div class=&quot;modal-header border-bottom border-light&quot;&gt;
+                &lt;h5 class=&quot;modal-title text-dark&quot; id=&quot;taskModalLabel&quot;&gt;Task Details&lt;/h5&gt;
+                &lt;button type=&quot;button&quot; class=&quot;btn-close&quot; data-bs-dismiss=&quot;modal&quot; aria-label=&quot;Close&quot; style=&quot;filter: brightness(0);&quot;&gt;&lt;/button&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;modal-body&quot;&gt;
+                @if (Model is null)
+                {
+                    &lt;div class=&quot;text-dark text-center py-4&quot;&gt;Task not found.&lt;/div&gt;
+                }
+                else
+                {
+                    &lt;div class=&quot;vstack gap-4 py-2&quot;&gt;
+                        &lt;div&gt;
+                            &lt;label class=&quot;form-label text-dark small mb-1&quot;&gt;Title&lt;/label&gt;
+                            &lt;div class=&quot;fw-semibold fs-5 text-dark&quot;&gt;@Model.Title&lt;/div&gt;
+                        &lt;/div&gt;
+
+                        &lt;div class=&quot;row&quot;&gt;
+                            &lt;div class=&quot;col-6&quot;&gt;
+                                &lt;label class=&quot;form-label text-dark small mb-1&quot;&gt;Category&lt;/label&gt;
+                                &lt;div class=&quot;fw-medium text-dark&quot;&gt;@(Model.Category ?? &quot;None&quot;)&lt;/div&gt;
+                            &lt;/div&gt;
+                            &lt;div class=&quot;col-6&quot;&gt;
+                                &lt;label class=&quot;form-label text-dark small mb-1&quot;&gt;Subcategory&lt;/label&gt;
+                                &lt;div class=&quot;fw-medium text-dark&quot;&gt;@(Model.Subcategory ?? &quot;None&quot;)&lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+
+                        &lt;div&gt;
+                            &lt;label class=&quot;form-label text-dark small mb-1&quot;&gt;Tags&lt;/label&gt;
+                            &lt;div&gt;
+                                @if (Model.Tags.Any())
+                                {
+                                    @foreach (var tag in Model.Tags)
+                                    {
+                                        &lt;span class=&quot;badge rounded-pill border border-secondary text-dark me-1&quot;&gt;@tag&lt;/span&gt;
+                                    }
+                                }
+                                else
+                                {
+                                    &lt;span class=&quot;text-dark italic small&quot;&gt;No tags&lt;/span&gt;
+                                }
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+
+                        &lt;div class=&quot;row&quot;&gt;
+                            &lt;div class=&quot;col-6&quot;&gt;
+                                &lt;label class=&quot;form-label text-dark small mb-1&quot;&gt;Status&lt;/label&gt;
+                                &lt;div&gt;
+                                    @if (Model.IsDone)
+                                    {
+                                        &lt;span class=&quot;badge text-bg-success&quot;&gt;Done&lt;/span&gt;
+                                    }
+                                    else
+                                    {
+                                        &lt;span class=&quot;badge text-bg-secondary&quot;&gt;Open&lt;/span&gt;
+                                    }
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                            &lt;div class=&quot;col-6&quot;&gt;
+                                &lt;label class=&quot;form-label text-dark small mb-1&quot;&gt;ID&lt;/label&gt;
+                                &lt;div class=&quot;text-dark&quot;&gt;@Model.Id&lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+
+                        &lt;div&gt;
+                            &lt;label class=&quot;form-label text-dark small mb-1&quot;&gt;Created&lt;/label&gt;
+                            &lt;div class=&quot;text-dark&quot;&gt;@Model.CreatedUtc.ToLocalTime().ToString(&quot;F&quot;)&lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                }
+            &lt;/div&gt;
+            &lt;div class=&quot;modal-footer border-top border-light&quot;&gt;
+                &lt;button type=&quot;button&quot; class=&quot;btn btn-outline-secondary&quot; data-bs-dismiss=&quot;modal&quot;&gt;Close&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>New Features:</strong></p>
+<ul>
+<li>Shows Category and Subcategory</li>
+<li>Displays Tags as badges</li>
+<li>Shows Task Status (Done/Open)</li>
+<li>Displays Task ID and Created timestamp</li>
+<li>Better visual organization with grouped fields</li>
+</ul>
+<hr>
+<doc-anchor-target id="pattern-4-long-running-operations-with-polling-1520-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-4-long-running-operations-with-polling-1520-minutes">#</doc-anchor-trigger>
+        <span>Pattern 4: Long-Running Operations with Polling (15–20 minutes)</span>
     </h2>
 </doc-anchor-target>
 <p>Some operations take time—file processing, report generation, external API calls. Instead of making users wait on a loading spinner, you can show progress updates via polling.</p>
-<doc-anchor-target id="31-the-design">
+<doc-anchor-target id="41-create-a-simple-job-simulation">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#31-the-design">#</doc-anchor-trigger>
-        <span>3.1 The Design</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>User Flow:</strong></p>
-<ol>
-<li>User clicks &quot;Generate Report&quot; (or similar action)</li>
-<li>Server starts the job and returns a &quot;job started&quot; response</li>
-<li>Page begins polling a status endpoint every second</li>
-<li>Status fragment updates with progress (10%, 50%, 90%...)</li>
-<li>When complete, polling stops and final result is shown</li>
-</ol>
-<p><strong>Architecture:</strong></p>
-<ul>
-<li>Job submission handler starts the job and returns initial status</li>
-<li>Status endpoint returns current progress</li>
-<li>Polling uses <code v-pre>hx-trigger=&quot;every 1s&quot;</code> with conditional stop</li>
-<li><code v-pre>hx-swap-oob</code> can update other regions simultaneously</li>
-</ul>
-<doc-anchor-target id="32-create-a-simple-job-simulation">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#32-create-a-simple-job-simulation">#</doc-anchor-trigger>
-        <span>3.2 Create a Simple Job Simulation</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#41-create-a-simple-job-simulation">#</doc-anchor-trigger>
+        <span>4.1 Create a Simple Job Simulation</span>
     </h3>
 </doc-anchor-target>
 <p>For the workshop, we&#x27;ll simulate a background job with in-memory state:</p>
 <p><strong>File: <code v-pre>Data/JobSimulator.cs</code> (create new file)</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">namespace RazorHtmxWorkshop.Data;
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">namespace RazorPagesHtmxWorkshop.Data;
 
 /// &lt;summary&gt;
 /// Simulates a long-running background job for demonstration.
@@ -1141,15 +1124,15 @@ public static class JobSimulator
     }
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="33-create-the-job-status-fragment">
+<doc-anchor-target id="42-create-the-job-status-fragment">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#33-create-the-job-status-fragment">#</doc-anchor-trigger>
-        <span>3.3 Create the Job Status Fragment</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#42-create-the-job-status-fragment">#</doc-anchor-trigger>
+        <span>4.2 Create the Job Status Fragment</span>
     </h3>
 </doc-anchor-target>
 <p><strong>File: <code v-pre>Pages/Tasks/Partials/_JobStatus.cshtml</code></strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorHtmxWorkshop.Data
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorPagesHtmxWorkshop.Data
 @model JobSimulator.JobStatus?
 
 @*
@@ -1258,287 +1241,16 @@ public static class JobSimulator
     }
 &lt;/div&gt;</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="34-understanding-conditional-polling">
+<doc-anchor-target id="43-create-the-oob-job-status-fragment">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#34-understanding-conditional-polling">#</doc-anchor-trigger>
-        <span>3.4 Understanding Conditional Polling</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#43-create-the-oob-job-status-fragment">#</doc-anchor-trigger>
+        <span>4.3 Create the OOB Job Status Fragment</span>
     </h3>
 </doc-anchor-target>
-<p>The key to this pattern is that <strong>polling is defined in the fragment itself</strong>:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Only present when job is running --&gt;
-&lt;div hx-get=&quot;?handler=JobStatus&amp;jobId=@Model.JobId&quot;
-     hx-trigger=&quot;every 1s&quot;
-     hx-target=&quot;#job-status&quot;
-     hx-swap=&quot;outerHTML&quot;&gt;</code></pre>
-</doc-codeblock></div>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Value</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code v-pre>hx-get</code></td>
-<td><code v-pre>&quot;?handler=JobStatus&amp;jobId=...&quot;</code></td>
-<td>Poll status endpoint</td>
-</tr>
-<tr>
-<td><code v-pre>hx-trigger</code></td>
-<td><code v-pre>&quot;every 1s&quot;</code></td>
-<td>Fire every 1 second</td>
-</tr>
-<tr>
-<td><code v-pre>hx-target</code></td>
-<td><code v-pre>&quot;#job-status&quot;</code></td>
-<td>Replace this fragment</td>
-</tr>
-<tr>
-<td><code v-pre>hx-swap</code></td>
-<td><code v-pre>&quot;outerHTML&quot;</code></td>
-<td>Replace entire element</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><strong>How Polling Stops:</strong></p>
-<p>When the job completes, the server returns a fragment <strong>without</strong> the <code v-pre>hx-trigger=&quot;every 1s&quot;</code> attribute. Since htmx attributes are on the new content, polling stops automatically.</p>
-<p>This is the elegant part: <strong>the server controls whether polling continues by what it renders</strong>.</p>
-<doc-anchor-target id="35-add-the-job-handlers">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#35-add-the-job-handlers">#</doc-anchor-trigger>
-        <span>3.5 Add the Job Handlers</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add these handlers)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
-/// Starts a new simulated background job.
-/// Returns the initial status fragment which begins polling.
-/// &lt;/summary&gt;
-public IActionResult OnPostStartJob()
-{
-    var job = JobSimulator.StartJob();
-    return Fragment(&quot;Partials/_JobStatus&quot;, job);
-}
-
-/// &lt;summary&gt;
-/// Returns the current status of a job.
-/// Called by polling requests.
-/// &lt;/summary&gt;
-public IActionResult OnGetJobStatus(string jobId)
-{
-    var status = JobSimulator.GetStatus(jobId);
-    return Fragment(&quot;Partials/_JobStatus&quot;, status);
-}
-
-/// &lt;summary&gt;
-/// Resets the job UI to initial state.
-/// &lt;/summary&gt;
-public IActionResult OnGetResetJob()
-{
-    return Fragment(&quot;Partials/_JobStatus&quot;, null);
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="36-add-job-status-to-the-page">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#36-add-job-status-to-the-page">#</doc-anchor-trigger>
-        <span>3.6 Add Job Status to the Page</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml</code> (add a section for the job demo)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@* Long-Running Job Demo *@
-&lt;div class=&quot;row mt-4&quot;&gt;
-    &lt;div class=&quot;col-12&quot;&gt;
-        &lt;h2 class=&quot;h5&quot;&gt;Background Job Demo&lt;/h2&gt;
-        &lt;partial name=&quot;Partials/_JobStatus&quot; model=&quot;@((JobSimulator.JobStatus?)null)&quot; /&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<p>Add the using statement at the top of the page:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorHtmxWorkshop.Data</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="37-test-polling">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#37-test-polling">#</doc-anchor-trigger>
-        <span>3.7 Test Polling</span>
-    </h3>
-</doc-anchor-target>
-<ol>
-<li><strong>Navigate</strong> to <code v-pre>/Tasks</code></li>
-<li><strong>Click &quot;Start Report Generation&quot;</strong></li>
-<li><strong>Observe</strong>: Progress bar updates every second</li>
-<li><strong>Watch Network tab</strong>: See requests firing every ~1 second</li>
-<li><strong>Wait for completion</strong> (about 5 seconds)</li>
-<li><strong>Observe</strong>: Polling stops, success message shows</li>
-<li><strong>Click &quot;Generate Another Report&quot;</strong> to repeat</li>
-</ol>
-<hr>
-<doc-anchor-target id="pattern-4-out-of-band-swaps-1015-minutes">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-4-out-of-band-swaps-1015-minutes">#</doc-anchor-trigger>
-        <span>Pattern 4: Out-of-Band Swaps (10–15 minutes)</span>
-    </h2>
-</doc-anchor-target>
-<p>Sometimes a single action needs to update multiple page regions. Out-of-band (OOB) swaps let the server include additional fragments that swap into their respective targets automatically.</p>
-<doc-anchor-target id="41-the-design">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#41-the-design">#</doc-anchor-trigger>
-        <span>4.1 The Design</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>Scenario:</strong></p>
-<p>When a job completes, we want to:</p>
-<ol>
-<li>Update the job status card (primary swap)</li>
-<li>Update the messages area with a notification (out-of-band)</li>
-<li>Maybe update a &quot;recent activity&quot; section (another OOB)</li>
-</ol>
-<p><strong>How It Works:</strong></p>
-<ul>
-<li>Response includes the primary fragment (swapped normally)</li>
-<li>Response also includes additional fragments with <code v-pre>hx-swap-oob=&quot;true&quot;</code></li>
-<li>htmx finds each OOB fragment&#x27;s ID and swaps it into the matching element</li>
-</ul>
-<doc-anchor-target id="42-understanding-hx-swap-oob">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#42-understanding-hx-swap-oob">#</doc-anchor-trigger>
-        <span>4.2 Understanding hx-swap-oob</span>
-    </h3>
-</doc-anchor-target>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Primary response (swapped into hx-target) --&gt;
-&lt;div id=&quot;job-status&quot;&gt;
-    ... job completed content ...
-&lt;/div&gt;
-
-&lt;!-- Out-of-band swap (swapped into #messages automatically) --&gt;
-&lt;div id=&quot;messages&quot; hx-swap-oob=&quot;true&quot;&gt;
-    &lt;div class=&quot;alert alert-success&quot;&gt;Report generation complete!&lt;/div&gt;
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<p>The <code v-pre>hx-swap-oob=&quot;true&quot;</code> attribute tells htmx:</p>
-<ol>
-<li>Find an element with <code v-pre>id=&quot;messages&quot;</code> in the current page</li>
-<li>Swap this fragment into that element</li>
-<li>Use <code v-pre>outerHTML</code> swap by default (can be customized)</li>
-</ol>
-<doc-anchor-target id="43-create-an-oob-aware-job-status-response">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#43-create-an-oob-aware-job-status-response">#</doc-anchor-trigger>
-        <span>4.3 Create an OOB-Aware Job Status Response</span>
-    </h3>
-</doc-anchor-target>
-<p>Let&#x27;s update the job handlers to use OOB swaps for notifications:</p>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (update OnGetJobStatus)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
-/// Returns the current status of a job.
-/// When job completes, includes OOB swap for messages.
-/// &lt;/summary&gt;
-public IActionResult OnGetJobStatus(string jobId)
-{
-    var status = JobSimulator.GetStatus(jobId);
-
-    // For completed or failed jobs, include OOB message
-    if (status?.State is &quot;completed&quot; or &quot;failed&quot;)
-    {
-        return JobStatusWithOobMessage(status);
-    }
-
-    return Fragment(&quot;Partials/_JobStatus&quot;, status);
-}
-
-/// &lt;summary&gt;
-/// Returns job status fragment with an out-of-band message fragment.
-/// &lt;/summary&gt;
-private IActionResult JobStatusWithOobMessage(JobSimulator.JobStatus status)
-{
-    // Build the combined response with OOB content
-    var message = status.State == &quot;completed&quot;
-        ? &quot;Report generation completed successfully!&quot;
-        : $&quot;Report generation failed: {status.Error}&quot;;
-
-    var alertClass = status.State == &quot;completed&quot; ? &quot;success&quot; : &quot;danger&quot;;
-
-    // Return a view that combines both fragments
-    return new ContentResult
-    {
-        ContentType = &quot;text/html&quot;,
-        Content = $@&quot;
-            &lt;div id=&quot;&quot;job-status&quot;&quot;&gt;
-                {RenderJobStatusContent(status)}
-            &lt;/div&gt;
-            &lt;div id=&quot;&quot;messages&quot;&quot; hx-swap-oob=&quot;&quot;true&quot;&quot;&gt;
-                &lt;div class=&quot;&quot;alert alert-{alertClass} alert-dismissible fade show&quot;&quot; role=&quot;&quot;alert&quot;&quot;&gt;
-                    {message}
-                    &lt;button type=&quot;&quot;button&quot;&quot; class=&quot;&quot;btn-close&quot;&quot; data-bs-dismiss=&quot;&quot;alert&quot;&quot; aria-label=&quot;&quot;Close&quot;&quot;&gt;&lt;/button&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;&quot;
-    };
-}
-
-private string RenderJobStatusContent(JobSimulator.JobStatus status)
-{
-    if (status.State == &quot;completed&quot;)
-    {
-        return $@&quot;
-            &lt;div class=&quot;&quot;card border-success&quot;&quot;&gt;
-                &lt;div class=&quot;&quot;card-body&quot;&quot;&gt;
-                    &lt;h5 class=&quot;&quot;card-title text-success&quot;&quot;&gt;
-                        &lt;span class=&quot;&quot;me-2&quot;&quot;&gt;✓&lt;/span&gt; Report Complete
-                    &lt;/h5&gt;
-                    &lt;p class=&quot;&quot;card-text&quot;&quot;&gt;{status.Result}&lt;/p&gt;
-                    &lt;p class=&quot;&quot;card-text text-muted small&quot;&quot;&gt;
-                        Completed in {(status.CompletedAt!.Value - status.StartedAt).TotalSeconds:F1} seconds
-                    &lt;/p&gt;
-                    &lt;button type=&quot;&quot;button&quot;&quot;
-                            class=&quot;&quot;btn btn-outline-primary&quot;&quot;
-                            hx-get=&quot;&quot;?handler=ResetJob&quot;&quot;
-                            hx-target=&quot;&quot;#job-status&quot;&quot;
-                            hx-swap=&quot;&quot;outerHTML&quot;&quot;&gt;
-                        Generate Another Report
-                    &lt;/button&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;&quot;;
-    }
-    else
-    {
-        return $@&quot;
-            &lt;div class=&quot;&quot;card border-danger&quot;&quot;&gt;
-                &lt;div class=&quot;&quot;card-body&quot;&quot;&gt;
-                    &lt;h5 class=&quot;&quot;card-title text-danger&quot;&quot;&gt;
-                        &lt;span class=&quot;&quot;me-2&quot;&quot;&gt;✗&lt;/span&gt; Report Failed
-                    &lt;/h5&gt;
-                    &lt;p class=&quot;&quot;card-text text-danger&quot;&quot;&gt;{status.Error}&lt;/p&gt;
-                    &lt;button type=&quot;&quot;button&quot;&quot;
-                            class=&quot;&quot;btn btn-outline-primary&quot;&quot;
-                            hx-get=&quot;&quot;?handler=ResetJob&quot;&quot;
-                            hx-target=&quot;&quot;#job-status&quot;&quot;
-                            hx-swap=&quot;&quot;outerHTML&quot;&quot;&gt;
-                        Try Again
-                    &lt;/button&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;&quot;;
-    }
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="44-a-cleaner-approach-oob-partial">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#44-a-cleaner-approach-oob-partial">#</doc-anchor-trigger>
-        <span>4.4 A Cleaner Approach: OOB Partial</span>
-    </h3>
-</doc-anchor-target>
-<p>Instead of building HTML strings, create a dedicated partial for OOB responses:</p>
+<p>For job completion, we want to update both the job status AND show a message:</p>
 <p><strong>File: <code v-pre>Pages/Tasks/Partials/_JobStatusWithOob.cshtml</code></strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorHtmxWorkshop.Data
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorPagesHtmxWorkshop.Data
 @model (JobSimulator.JobStatus Status, string Message, string AlertClass)
 
 @*
@@ -1605,21 +1317,38 @@ private string RenderJobStatusContent(JobSimulator.JobStatus status)
     &lt;/div&gt;
 &lt;/div&gt;</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="45-update-handler-to-use-oob-partial">
+<doc-anchor-target id="44-add-the-job-handlers">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#45-update-handler-to-use-oob-partial">#</doc-anchor-trigger>
-        <span>4.5 Update Handler to Use OOB Partial</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#44-add-the-job-handlers">#</doc-anchor-trigger>
+        <span>4.4 Add the Job Handlers</span>
     </h3>
 </doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (simplified handler)</strong></p>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add to #region Long-Running Jobs)</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public IActionResult OnGetJobStatus(string jobId)
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">#region Long-Running Jobs
+
+/// &lt;summary&gt;
+/// Starts a new simulated background job.
+/// Returns the initial status fragment which begins polling.
+/// &lt;/summary&gt;
+public IActionResult OnPostStartJob()
+{
+    var job = JobSimulator.StartJob();
+    return Fragment(&quot;Partials/_JobStatus&quot;, job);
+}
+
+/// &lt;summary&gt;
+/// Returns the current status of a job.
+/// Called by polling requests.
+/// When job completes, includes OOB swap for messages.
+/// &lt;/summary&gt;
+public IActionResult OnGetJobStatus(string jobId)
 {
     var status = JobSimulator.GetStatus(jobId);
 
     if (status is null)
     {
-        return Fragment(&quot;Partials/_JobStatus&quot;, null);
+        return Fragment(&quot;Partials/_JobStatus&quot;, (JobSimulator.JobStatus?)null);
     }
 
     // For completed or failed jobs, use OOB partial
@@ -1636,152 +1365,44 @@ private string RenderJobStatusContent(JobSimulator.JobStatus status)
 
     // Running jobs use simple status fragment
     return Fragment(&quot;Partials/_JobStatus&quot;, status);
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="46-understanding-oob-swap-strategies">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#46-understanding-oob-swap-strategies">#</doc-anchor-trigger>
-        <span>4.6 Understanding OOB Swap Strategies</span>
-    </h3>
-</doc-anchor-target>
-<p>You can customize how OOB content is swapped:</p>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Syntax</th>
-<th>Behavior</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code v-pre>hx-swap-oob=&quot;true&quot;</code></td>
-<td>Default: <code v-pre>outerHTML</code> swap</td>
-</tr>
-<tr>
-<td><code v-pre>hx-swap-oob=&quot;innerHTML&quot;</code></td>
-<td>Replace target&#x27;s children</td>
-</tr>
-<tr>
-<td><code v-pre>hx-swap-oob=&quot;beforeend&quot;</code></td>
-<td>Append to target</td>
-</tr>
-<tr>
-<td><code v-pre>hx-swap-oob=&quot;afterbegin&quot;</code></td>
-<td>Prepend to target</td>
-</tr>
-<tr>
-<td><code v-pre>hx-swap-oob=&quot;outerHTML:#custom-id&quot;</code></td>
-<td>Swap into different ID</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><strong>Example: Append to Activity Log</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;div id=&quot;activity-log&quot; hx-swap-oob=&quot;beforeend&quot;&gt;
-    &lt;div class=&quot;activity-item&quot;&gt;New report generated at 3:45 PM&lt;/div&gt;
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="47-test-oob-swaps">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#47-test-oob-swaps">#</doc-anchor-trigger>
-        <span>4.7 Test OOB Swaps</span>
-    </h3>
-</doc-anchor-target>
-<ol>
-<li><strong>Navigate</strong> to <code v-pre>/Tasks</code></li>
-<li><strong>Start a job</strong> and wait for completion</li>
-<li><strong>Observe</strong>: Both the job card AND the messages area update</li>
-<li><strong>Check Network tab</strong>: Single response contains both fragments</li>
-</ol>
-<hr>
-<doc-anchor-target id="complete-code-reference">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#complete-code-reference">#</doc-anchor-trigger>
-        <span>Complete Code Reference</span>
-    </h2>
-</doc-anchor-target>
-<doc-anchor-target id="indexcshtmlcs-lab-5-additions">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#indexcshtmlcs-lab-5-additions">#</doc-anchor-trigger>
-        <span>Index.cshtml.cs (Lab 5 Additions)</span>
-    </h3>
-</doc-anchor-target>
-<p>Here are the key additions to your PageModel for Lab 5:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// Add to using statements
-using RazorHtmxWorkshop.Data;
-
-// Add these handlers to IndexModel class:
-
-#region Dynamic Tags
-
-public IActionResult OnGetAddTag(int nextIndex)
-{
-    return Fragment(&quot;Partials/_TagRow&quot;, (nextIndex, &quot;&quot;));
 }
 
-public IActionResult OnGetRemoveTag(int index)
-{
-    return new EmptyResult();
-}
-
-#endregion
-
-#region Dependent Dropdowns
-
-public IActionResult OnGetSubcategories(string? category)
-{
-    var subcategories = CategoryData.GetSubcategories(category);
-    return Fragment(&quot;Partials/_SubcategorySelect&quot;, (subcategories, (string?)null));
-}
-
-#endregion
-
-#region Long-Running Jobs
-
-public IActionResult OnPostStartJob()
-{
-    var job = JobSimulator.StartJob();
-    return Fragment(&quot;Partials/_JobStatus&quot;, job);
-}
-
-public IActionResult OnGetJobStatus(string jobId)
-{
-    var status = JobSimulator.GetStatus(jobId);
-
-    if (status is null)
-    {
-        return Fragment(&quot;Partials/_JobStatus&quot;, null);
-    }
-
-    if (status.State is &quot;completed&quot; or &quot;failed&quot;)
-    {
-        var message = status.State == &quot;completed&quot;
-            ? &quot;Report generation completed successfully!&quot;
-            : $&quot;Report generation failed: {status.Error}&quot;;
-
-        var alertClass = status.State == &quot;completed&quot; ? &quot;success&quot; : &quot;danger&quot;;
-
-        return Fragment(&quot;Partials/_JobStatusWithOob&quot;, (status, message, alertClass));
-    }
-
-    return Fragment(&quot;Partials/_JobStatus&quot;, status);
-}
-
+/// &lt;summary&gt;
+/// Resets the job UI to initial state.
+/// &lt;/summary&gt;
 public IActionResult OnGetResetJob()
 {
-    return Fragment(&quot;Partials/_JobStatus&quot;, null);
+    return Fragment(&quot;Partials/_JobStatus&quot;, (JobSimulator.JobStatus?)null);
 }
 
 #endregion</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="handler-inventory-lab-5">
+<doc-anchor-target id="45-add-job-status-to-the-page">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#handler-inventory-lab-5">#</doc-anchor-trigger>
-        <span>Handler Inventory (Lab 5)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#45-add-job-status-to-the-page">#</doc-anchor-trigger>
+        <span>4.5 Add Job Status to the Page</span>
     </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml</code> (add section for job demo)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@* Long-Running Job Demo *@
+&lt;div class=&quot;row mt-4&quot;&gt;
+    &lt;div class=&quot;col-12&quot;&gt;
+        &lt;h2 class=&quot;h5&quot;&gt;Background Job Demo&lt;/h2&gt;
+        &lt;partial name=&quot;Partials/_JobStatus&quot; model=&quot;@((JobSimulator.JobStatus?)null)&quot; /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p>Add the using statement at the top:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorPagesHtmxWorkshop.Data</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="complete-handler-inventory-lab-5">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#complete-handler-inventory-lab-5">#</doc-anchor-trigger>
+        <span>Complete Handler Inventory (Lab 5)</span>
+    </h2>
 </doc-anchor-target>
 <div class="table-wrapper scrollbar overflow-hidden">
 <table class="comfortable">
@@ -1804,7 +1425,7 @@ public IActionResult OnGetResetJob()
 <td><code v-pre>OnGetRemoveTag</code></td>
 <td>GET</td>
 <td>Empty</td>
-<td>Remove tag (delete swap)</td>
+<td>(Not used - removal client-side)</td>
 </tr>
 <tr>
 <td><code v-pre>OnGetSubcategories</code></td>
@@ -1849,10 +1470,11 @@ public IActionResult OnGetResetJob()
 </doc-anchor-target>
 <ul class="contains-task-list">
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> &quot;Add Tag&quot; button appends new tag input</li>
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Each tag has a working remove button</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Each tag has a working remove button (client-side, instant)</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Multiple tags can be added</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Tags are included when form submits</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Form reset clears all tags</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Flash message shows tag count on success</li>
 </ul>
 <doc-anchor-target id="dependent-dropdowns">
     <h3>
@@ -1865,6 +1487,19 @@ public IActionResult OnGetResetJob()
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Changing category updates subcategory again</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Clearing category disables subcategory</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Selected values persist on validation failure</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Category and subcategory are saved with task</li>
+</ul>
+<doc-anchor-target id="enhanced-task-details">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#enhanced-task-details">#</doc-anchor-trigger>
+        <span>Enhanced Task Details</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Details modal shows Category and Subcategory</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Details modal shows all Tags as badges</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Details modal shows Task Status (Done/Open)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Details modal shows Task ID and Created timestamp</li>
 </ul>
 <doc-anchor-target id="polling">
     <h3>
@@ -1891,6 +1526,66 @@ public IActionResult OnGetResetJob()
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Messages area shows appropriate alert</li>
 </ul>
 <hr>
+<doc-anchor-target id="key-fixes-and-improvements-in-lab-5">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#key-fixes-and-improvements-in-lab-5">#</doc-anchor-trigger>
+        <span>Key Fixes and Improvements in Lab 5</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="1-simplified-tag-implementation">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#1-simplified-tag-implementation">#</doc-anchor-trigger>
+        <span>1. Simplified Tag Implementation</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Before (documented):</strong></p>
+<ul>
+<li>Required server-side removal handler</li>
+<li>Complex index tracking with <code v-pre>hx-vals</code></li>
+<li>Individual IDs for each tag row</li>
+</ul>
+<p><strong>After (actual code):</strong></p>
+<ul>
+<li>Client-side removal with <code v-pre>hx-on:click</code></li>
+<li>Simple <code v-pre>name=&quot;Input.Tags&quot;</code> binding</li>
+<li>No index management needed</li>
+</ul>
+<doc-anchor-target id="2-fixed-categorysubcategory-attributes">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#2-fixed-categorysubcategory-attributes">#</doc-anchor-trigger>
+        <span>2. Fixed Category/Subcategory Attributes</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Before (old syntax):</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@(Model.Options.Count == 0 ? &quot;disabled&quot; : &quot;&quot;)</code></pre>
+</doc-codeblock></div>
+<p><strong>After (proper Razor):</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">disabled=&quot;@(Model.Options.Count == 0)&quot;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="3-enhanced-task-details-modal">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#3-enhanced-task-details-modal">#</doc-anchor-trigger>
+        <span>3. Enhanced Task Details Modal</span>
+    </h3>
+</doc-anchor-target>
+<p>Now shows complete task information:</p>
+<ul>
+<li>Category and Subcategory</li>
+<li>Tags (with badge styling)</li>
+<li>Status (Done/Open badge)</li>
+<li>Task ID</li>
+<li>Created timestamp</li>
+</ul>
+<doc-anchor-target id="4-proper-parameter-binding">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#4-proper-parameter-binding">#</doc-anchor-trigger>
+        <span>4. Proper Parameter Binding</span>
+    </h3>
+</doc-anchor-target>
+<p>Uses <code v-pre>[FromQuery(Name = &quot;Input.Category&quot;)]</code> for subcategory handler to correctly bind the parameter from the htmx request.</p>
+<hr>
 <doc-anchor-target id="key-takeaways">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#key-takeaways">#</doc-anchor-trigger>
@@ -1915,12 +1610,12 @@ public IActionResult OnGetResetJob()
 <tbody>
 <tr>
 <td><strong>Add/Remove Rows</strong></td>
-<td><code v-pre>hx-swap=&quot;beforeend&quot;</code> + <code v-pre>hx-swap=&quot;delete&quot;</code></td>
+<td><code v-pre>hx-swap=&quot;beforeend&quot;</code> + client-side removal</td>
 <td>Dynamic sub-collections</td>
 </tr>
 <tr>
 <td><strong>Dependent Dropdowns</strong></td>
-<td><code v-pre>hx-get</code> on change + <code v-pre>hx-include</code></td>
+<td><code v-pre>hx-get</code> on change + proper parameter binding</td>
 <td>Cascading selections</td>
 </tr>
 <tr>
@@ -1947,81 +1642,9 @@ public IActionResult OnGetResetJob()
 <li><strong>What HTML to render</strong> (the fragments)</li>
 <li><strong>Whether to continue polling</strong> (by including/excluding trigger)</li>
 <li><strong>What else to update</strong> (via OOB fragments)</li>
-<li><strong>What indexes to use</strong> (for model binding)</li>
+<li><strong>Validation and business logic</strong> (tags cleanup, category relationships)</li>
 </ul>
 <p>This is the power of hypermedia: the server remains in control of application state.</p>
-<doc-anchor-target id="polling-best-practices">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#polling-best-practices">#</doc-anchor-trigger>
-        <span>Polling Best Practices</span>
-    </h3>
-</doc-anchor-target>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Practice</th>
-<th>Reason</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Use 1-2 second intervals</td>
-<td>Balances responsiveness with server load</td>
-</tr>
-<tr>
-<td>Stop polling on completion</td>
-<td>Prevent unnecessary requests</td>
-</tr>
-<tr>
-<td>Include job ID in requests</td>
-<td>Enable multiple concurrent jobs</td>
-</tr>
-<tr>
-<td>Show progress feedback</td>
-<td>Keep users informed</td>
-</tr>
-<tr>
-<td>Handle failures gracefully</td>
-<td>Display errors, offer retry</td>
-</tr>
-</tbody>
-</table>
-</div>
-<doc-anchor-target id="oob-swap-guidelines">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#oob-swap-guidelines">#</doc-anchor-trigger>
-        <span>OOB Swap Guidelines</span>
-    </h3>
-</doc-anchor-target>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Guideline</th>
-<th>Reason</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Use sparingly</td>
-<td>Too many OOB swaps become hard to track</td>
-</tr>
-<tr>
-<td>Document OOB targets</td>
-<td>Others need to know what updates</td>
-</tr>
-<tr>
-<td>Keep OOB content small</td>
-<td>Large OOB swaps can be jarring</td>
-</tr>
-<tr>
-<td>Consider events instead</td>
-<td><code v-pre>HX-Trigger</code> + listeners may be cleaner</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 <doc-anchor-target id="troubleshooting">
     <h2>
@@ -2047,18 +1670,18 @@ public IActionResult OnGetResetJob()
 <tbody>
 <tr>
 <td>Tags not binding</td>
-<td>Index mismatch</td>
-<td>Ensure indexes are sequential</td>
+<td>Wrong name attribute</td>
+<td>Use <code v-pre>name=&quot;Input.Tags&quot;</code> (no index)</td>
 </tr>
 <tr>
 <td>Remove button doesn&#x27;t work</td>
-<td>Missing hx-target</td>
-<td>Add target to specific row</td>
+<td>Missing hx-on:click</td>
+<td>Add <code v-pre>hx-on:click</code> attribute</td>
 </tr>
 <tr>
 <td>Dropdown doesn&#x27;t update</td>
-<td>Missing hx-include</td>
-<td>Include the select&#x27;s value</td>
+<td>Missing parameter binding</td>
+<td>Use <code v-pre>[FromQuery]</code> attribute</td>
 </tr>
 <tr>
 <td>Polling doesn&#x27;t stop</td>
@@ -2071,26 +1694,13 @@ public IActionResult OnGetResetJob()
 <td>Ensure target element exists</td>
 </tr>
 <tr>
-<td>OOB replaces wrong element</td>
-<td>Duplicate IDs</td>
-<td>Ensure unique IDs</td>
+<td>Details missing info</td>
+<td>Old partial version</td>
+<td>Update <code v-pre>_TaskDetails.cshtml</code></td>
 </tr>
 </tbody>
 </table>
 </div>
-<doc-anchor-target id="debug-tips">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#debug-tips">#</doc-anchor-trigger>
-        <span>Debug Tips</span>
-    </h3>
-</doc-anchor-target>
-<ol>
-<li><strong>Network tab</strong>: Verify polling requests and responses</li>
-<li><strong>Response body</strong>: Check for OOB fragments in response</li>
-<li><strong>Elements panel</strong>: Confirm target elements exist with correct IDs</li>
-<li><strong>Console</strong>: Look for htmx processing messages</li>
-<li><strong>Form data</strong>: Verify model binding with debugger</li>
-</ol>
 <hr>
 <doc-anchor-target id="workshop-wrap-up">
     <h2>
@@ -2098,72 +1708,22 @@ public IActionResult OnGetResetJob()
         <span>Workshop Wrap-Up</span>
     </h2>
 </doc-anchor-target>
-<p>Congratulations! You&#x27;ve completed all five labs and two checkpoints. You now have:</p>
-<doc-anchor-target id="skills-acquired">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#skills-acquired">#</doc-anchor-trigger>
-        <span>Skills Acquired</span>
-    </h3>
-</doc-anchor-target>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Lab</th>
-<th>Skills</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Lab 1</strong></td>
-<td>Fragment boundaries, partial views, stable IDs</td>
-</tr>
-<tr>
-<td><strong>Lab 2</strong></td>
-<td><code v-pre>hx-get</code>, <code v-pre>hx-post</code>, <code v-pre>hx-target</code>, <code v-pre>hx-swap</code>, retargeting</td>
-</tr>
-<tr>
-<td><strong>Lab 3</strong></td>
-<td>Real-time validation, debouncing, antiforgery</td>
-</tr>
-<tr>
-<td><strong>Lab 4</strong></td>
-<td>Modals, confirm dialogs, URL state, pagination</td>
-</tr>
-<tr>
-<td><strong>Lab 5</strong></td>
-<td>Dynamic forms, dependent selects, polling, OOB swaps</td>
-</tr>
-</tbody>
-</table>
-</div>
-<doc-anchor-target id="patterns-to-apply">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#patterns-to-apply">#</doc-anchor-trigger>
-        <span>Patterns to Apply</span>
-    </h3>
-</doc-anchor-target>
-<p>Take these patterns to your real projects:</p>
+<p>Congratulations! You&#x27;ve completed Lab 5 and mastered:</p>
+<ul>
+<li><strong>Dynamic forms</strong> with add/remove functionality</li>
+<li><strong>Dependent dropdowns</strong> with cascading selection</li>
+<li><strong>Long-running operations</strong> with polling</li>
+<li><strong>Out-of-band swaps</strong> for multi-region updates</li>
+<li><strong>Enhanced UI patterns</strong> showing complete data models</li>
+</ul>
+<p><strong>Next Steps:</strong></p>
 <ol>
-<li><strong>Fragment-first architecture</strong>: Design UI as swappable regions</li>
-<li><strong>Server-driven state</strong>: Let the server control what renders</li>
-<li><strong>Progressive enhancement</strong>: Start with working forms, add htmx</li>
-<li><strong>Polling for async</strong>: Replace WebSockets with simple polling</li>
-<li><strong>OOB for multi-updates</strong>: Update related regions in one response</li>
+<li>Apply these patterns to your real projects</li>
+<li>Explore htmx extensions (SSE, WebSockets)</li>
+<li>Read the htmx documentation at htmx.org</li>
+<li>Join the htmx community</li>
 </ol>
-<doc-anchor-target id="next-steps">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#next-steps">#</doc-anchor-trigger>
-        <span>Next Steps</span>
-    </h3>
-</doc-anchor-target>
-<ol>
-<li><strong>Apply to a real project</strong>: Start with one feature</li>
-<li><strong>Explore extensions</strong>: SSE, WebSockets, hyperscript</li>
-<li><strong>Read the docs</strong>: htmx.org has excellent documentation</li>
-<li><strong>Join the community</strong>: htmx Discord, GitHub discussions</li>
-</ol>
-<p><strong>Thank you for attending!</strong></p>
+<p><strong>Thank you for completing the workshop!</strong></p>
 
                                 
                                 <!-- Required only on API pages -->
