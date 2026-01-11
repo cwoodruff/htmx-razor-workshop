@@ -188,17 +188,16 @@ public class IndexModel : PageModel
 
     /// <summary>
     /// Returns a new tag row fragment.
-    /// The nextIndex parameter ensures unique name attributes for model binding.
     /// </summary>
-    public IActionResult OnGetAddTag(int nextIndex)
+    public IActionResult OnGetAddTag()
     {
-        return Fragment("Partials/_TagRow", (nextIndex, ""));
+        return Fragment("Partials/_TagRow", (0, ""));
     }
 
     /// <summary>
-    /// Handles tag removal. Returns empty response for hx-swap="delete".
+    /// Handles tag removal.
     /// </summary>
-    public IActionResult OnGetRemoveTag(int index)
+    public IActionResult OnGetRemoveTag()
     {
         return new EmptyResult();
     }
@@ -308,18 +307,15 @@ public class IndexModel : PageModel
             throw new InvalidOperationException("Simulated server error.");
         }
 
-        // Add task with tags
-        var task = InMemoryTaskStore.Add(Input.Title);
+        // Add task with tags, category and subcategory
+        var task = InMemoryTaskStore.Add(Input.Title, Input.Category, Input.Subcategory, Input.Tags);
         
-        // Store tags (you'd save these in a real app)
-        // For the workshop, we'll just log them
+        // Log details
         if (Input.Tags.Count > 0)
         {
-            // In a real app: taskTagService.AddTags(task.Id, Input.Tags);
             Console.WriteLine($"Task {task.Id} created with tags: {string.Join(", ", Input.Tags)}");
         }
 
-        // Log category/subcategory if selected
         if (!string.IsNullOrWhiteSpace(Input.Category))
         {
             Console.WriteLine($"Task {task.Id} category: {Input.Category} / {Input.Subcategory}");

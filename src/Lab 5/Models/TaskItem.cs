@@ -6,4 +6,8 @@ public class TaskItem
     public string Title { get; set; } = "";
     public bool IsDone { get; set; }
     public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+    
+    public string? Category { get; set; }
+    public string? Subcategory { get; set; }
+    public List<string> Tags { get; set; } = new();
 }

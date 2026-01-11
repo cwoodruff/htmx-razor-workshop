@@ -17,18 +17,16 @@
     - Removed via hx-swap="delete"
 *@
 
-<div class="tag-row input-group mb-2" id="tag-row-@Model.Index">
+<div class="tag-row input-group mb-2">
     <input type="text"
            class="form-control"
-           name="Input.Tags[@Model.Index]"
+           name="Input.Tags"
            value="@Model.Value"
            placeholder="Enter tag..." />
     
     <button type="button"
             class="btn btn-outline-danger"
-            hx-get="?handler=RemoveTag&index=@Model.Index"
-            hx-target="#tag-row-@Model.Index"
-            hx-swap="delete"
+            hx-on:click="this.closest('.tag-row').remove()"
             title="Remove tag">
         <span aria-hidden="true">&times;</span>
         <span class="visually-hidden">Remove tag</span>

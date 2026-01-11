@@ -16,14 +16,17 @@ public static class InMemoryTaskStore
     public static TaskItem? Find(int id) => 
         _tasks.FirstOrDefault(t => t.Id == id);
 
-    public static TaskItem Add(string title)
+    public static TaskItem Add(string title, string? category = null, string? subcategory = null, List<string>? tags = null)
     {
         var item = new TaskItem
         {
             Id = _nextId++,
             Title = title.Trim(),
             IsDone = false,
-            CreatedUtc = DateTime.UtcNow
+            CreatedUtc = DateTime.UtcNow,
+            Category = category,
+            Subcategory = subcategory,
+            Tags = tags ?? new()
         };
 
         _tasks.Add(item);

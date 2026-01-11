@@ -12,27 +12,55 @@
 
 <div class="modal fade" id="task-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content workshop-card">
+        <div class="modal-content workshop-card" style="background-color: #f8f9fa;">
             <div class="modal-header border-bottom border-light">
-                <h5 class="modal-title" id="taskModalLabel">Task Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title text-dark" id="taskModalLabel">Task Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: brightness(0);"></button>
             </div>
             <div class="modal-body">
                 @if (Model is null)
                 {
-                    <div class="text-muted text-center py-4">Task not found.</div>
+                    <div class="text-dark text-center py-4">Task not found.</div>
                 }
                 else
                 {
                     <div class="vstack gap-4 py-2">
                         <div>
-                            <label class="form-label text-muted small mb-1">Title</label>
-                            <div class="fw-semibold fs-5">@Model.Title</div>
+                            <label class="form-label text-dark small mb-1">Title</label>
+                            <div class="fw-semibold fs-5 text-dark">@Model.Title</div>
                         </div>
                         
                         <div class="row">
                             <div class="col-6">
-                                <label class="form-label text-muted small mb-1">Status</label>
+                                <label class="form-label text-dark small mb-1">Category</label>
+                                <div class="fw-medium text-dark">@(Model.Category ?? "None")</div>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-dark small mb-1">Subcategory</label>
+                                <div class="fw-medium text-dark">@(Model.Subcategory ?? "None")</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label text-dark small mb-1">Tags</label>
+                            <div>
+                                @if (Model.Tags.Any())
+                                {
+                                    @foreach (var tag in Model.Tags)
+                                    {
+                                        <span class="badge rounded-pill border border-secondary text-dark me-1">@tag</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-dark italic small">No tags</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="form-label text-dark small mb-1">Status</label>
                                 <div>
                                     @if (Model.IsDone)
                                     {
@@ -45,14 +73,14 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <label class="form-label text-muted small mb-1">ID</label>
-                                <div class="text-muted">@Model.Id</div>
+                                <label class="form-label text-dark small mb-1">ID</label>
+                                <div class="text-dark">@Model.Id</div>
                             </div>
                         </div>
                         
                         <div>
-                            <label class="form-label text-muted small mb-1">Created</label>
-                            <div>@Model.CreatedUtc.ToLocalTime().ToString("F")</div>
+                            <label class="form-label text-dark small mb-1">Created</label>
+                            <div class="text-dark">@Model.CreatedUtc.ToLocalTime().ToString("F")</div>
                         </div>
                     </div>
                 }
