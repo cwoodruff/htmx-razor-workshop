@@ -4,7 +4,7 @@ This is the Lab 5 version of the Razor Pages app with dynamic forms, polling, an
 
 ## What's New in Lab 5
 
-- **Dynamic tag rows**: Add/remove form inputs dynamically via `hx-swap="beforeend"` and `hx-swap="delete"`
+- **Dynamic tag rows**: Add/remove form inputs dynamically via `hx-swap="beforeend"` and client-side `remove()`
 - **Dependent dropdowns**: Category → Subcategory cascading selection
 - **Long-running operations**: Polling with `hx-trigger="every 1s"` for progress updates
 - **Out-of-band swaps**: Update multiple page regions from a single response via `hx-swap-oob="true"`
@@ -63,7 +63,7 @@ Then open the displayed URL.
 | Handler | Verb | Returns | Purpose |
 |---------|------|---------|---------|
 | `OnGetAddTag` | GET | `_TagRow` | Add new tag input |
-| `OnGetRemoveTag` | GET | Empty | Remove tag (delete swap) |
+| `OnGetRemoveTag` | GET | Empty | Unused (removal is client-side) |
 | `OnGetSubcategories` | GET | `_SubcategorySelect` | Update subcategory dropdown |
 | `OnPostStartJob` | POST | `_JobStatus` | Start background job |
 | `OnGetJobStatus` | GET | `_JobStatus` or `_JobStatusWithOob` | Poll job progress |
@@ -99,8 +99,8 @@ Then open the displayed URL.
 
 | Pattern | Key Technique | When to Use |
 |---------|---------------|-------------|
-| **Add/Remove Rows** | `hx-swap="beforeend"` + `hx-swap="delete"` | Dynamic sub-collections |
-| **Dependent Dropdowns** | `hx-get` on change + `hx-include` | Cascading selections |
+| **Add/Remove Rows** | `hx-swap="beforeend"` + `hx-on:click` | Dynamic sub-collections |
+| **Dependent Dropdowns** | `hx-get` on change | Cascading selections |
 | **Polling** | `hx-trigger="every Xs"` in fragment | Long-running operations |
 | **OOB Swaps** | `hx-swap-oob="true"` on additional fragments | Multi-region updates |
 
@@ -110,43 +110,43 @@ In all four patterns, the server decides:
 - **What HTML to render** (the fragments)
 - **Whether to continue polling** (by including/excluding trigger)
 - **What else to update** (via OOB fragments)
-- **What indexes to use** (for model binding)
+- **What name attributes to use** (for model binding)
 
 This is the power of hypermedia: the server remains in control of application state.
 
 ## Verification Checklist
 
 ### Dynamic Tags
-- [ ] "Add Tag" button appends new tag input
-- [ ] Each tag has a working remove button
-- [ ] Multiple tags can be added
-- [ ] Tags are included when form submits
-- [ ] Form reset clears all tags
+- [x] "Add Tag" button appends new tag input
+- [x] Each tag has a working remove button (client-side)
+- [x] Multiple tags can be added
+- [x] Tags are included when form submits
+- [x] Form reset clears all tags
 
 ### Dependent Dropdowns
-- [ ] Selecting a category updates subcategory options
-- [ ] Changing category updates subcategory again
-- [ ] Clearing category disables subcategory
-- [ ] Selected values persist on validation failure
+- [x] Selecting a category updates subcategory options
+- [x] Changing category updates subcategory again
+- [x] Clearing category disables subcategory
+- [x] Selected values persist on validation failure
 
 ### Polling
-- [ ] Starting job shows progress card
-- [ ] Progress updates every second
-- [ ] Network tab shows polling requests
-- [ ] Polling stops when job completes
-- [ ] Success/failure state displays correctly
+- [x] Starting job shows progress card
+- [x] Progress updates every second
+- [x] Network tab shows polling requests
+- [x] Polling stops when job completes
+- [x] Success/failure state displays correctly
 
 ### OOB Swaps
-- [ ] Job completion updates both job card and messages
-- [ ] Single network response contains both fragments
-- [ ] Messages area shows appropriate alert
+- [x] Job completion updates both job card and messages
+- [x] Single network response contains both fragments
+- [x] Messages area shows appropriate alert
 
 ## Troubleshooting
 
 | Problem | Likely Cause | Solution |
 |---------|--------------|----------|
-| Tags not binding | Index mismatch | Ensure indexes are sequential |
-| Remove button doesn't work | Missing hx-target | Add target to specific row |
-| Dropdown doesn't update | Missing hx-include | Include the select's value |
+| Tags not binding | Name mismatch | Ensure all inputs use `name="Input.Tags"` |
+| Remove button doesn't work | Script error | Check `hx-on:click` syntax |
+| Dropdown doesn't update | Handler parameter mismatch | Use `[FromQuery(Name = "...")]` if names differ |
 | Polling doesn't stop | Trigger in completed state | Remove trigger when done |
 | OOB swap fails | Target ID doesn't exist | Ensure target element exists |
