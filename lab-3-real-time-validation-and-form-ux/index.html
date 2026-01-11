@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821395061126">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821454106716">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -35,12 +35,12 @@
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.821395061126" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821454106716" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821395061126" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821454106716" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821395061126" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821395061126" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821454106716" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821454106716" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -361,7 +361,7 @@
         <span>Step 1: Add Data Annotations to the Input Model (5–7 minutes)</span>
     </h2>
 </doc-anchor-target>
-<p>Currently, validation is handled with manual <code v-pre>if</code> statements. Let&#x27;s replace that with data annotations—the standard .NET approach.</p>
+<p>Currently, validation is handled with manual <code v-pre>if</code> statements in <code v-pre>OnPostCreate</code>. Let&#x27;s replace that with data annotations—the standard .NET approach.</p>
 <doc-anchor-target id="11-understanding-data-annotations">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#11-understanding-data-annotations">#</doc-anchor-trigger>
@@ -407,30 +407,45 @@
 </tbody>
 </table>
 </div>
-<doc-anchor-target id="12-update-the-newtaskinput-class">
+<doc-anchor-target id="12-add-required-using-statement">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#12-update-the-newtaskinput-class">#</doc-anchor-trigger>
-        <span>1.2 Update the NewTaskInput Class</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#12-add-required-using-statement">#</doc-anchor-trigger>
+        <span>1.2 Add Required Using Statement</span>
     </h3>
 </doc-anchor-target>
-<p>Edit <code v-pre>Pages/Tasks/Index.cshtml.cs</code> and add annotations to <code v-pre>NewTaskInput</code>:</p>
+<p>Edit <code v-pre>Pages/Tasks/Index.cshtml.cs</code> and add the required namespace:</p>
 <p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code></strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using System.ComponentModel.DataAnnotations;
-
-// Inside IndexModel class:
-
-public class NewTaskInput
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;  // ← Add this
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using RazorPagesHtmxWorkshop.Data;
+using RazorPagesHtmxWorkshop.Models;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="13-update-the-newtaskinput-class">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#13-update-the-newtaskinput-class">#</doc-anchor-trigger>
+        <span>1.3 Update the NewTaskInput Class</span>
+    </h3>
+</doc-anchor-target>
+<p>Find the <code v-pre>NewTaskInput</code> class in <code v-pre>Index.cshtml.cs</code> and add annotations:</p>
+<p><strong>Update the <code v-pre>NewTaskInput</code> class:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public class NewTaskInput
 {
     [Required(ErrorMessage = &quot;Title is required.&quot;)]
     [StringLength(60, MinimumLength = 3, ErrorMessage = &quot;Title must be 3–60 characters.&quot;)]
     public string Title { get; set; } = &quot;&quot;;
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="13-understanding-the-annotations">
+<doc-anchor-target id="14-understanding-the-annotations">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#13-understanding-the-annotations">#</doc-anchor-trigger>
-        <span>1.3 Understanding the Annotations</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#14-understanding-the-annotations">#</doc-anchor-trigger>
+        <span>1.4 Understanding the Annotations</span>
     </h3>
 </doc-anchor-target>
 <div class="table-wrapper scrollbar overflow-hidden">
@@ -463,18 +478,18 @@ public class NewTaskInput
 <li><strong>Client-side validation support</strong>: Can generate JavaScript validation (optional)</li>
 <li><strong>Consistent error messages</strong>: Defined alongside the rule</li>
 </ol>
-<doc-anchor-target id="14-update-onpostcreate-to-use-tryvalidatemodel">
+<doc-anchor-target id="15-update-onpostcreate-to-use-tryvalidatemodel">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#14-update-onpostcreate-to-use-tryvalidatemodel">#</doc-anchor-trigger>
-        <span>1.4 Update OnPostCreate to Use TryValidateModel</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#15-update-onpostcreate-to-use-tryvalidatemodel">#</doc-anchor-trigger>
+        <span>1.5 Update OnPostCreate to Use TryValidateModel</span>
     </h3>
 </doc-anchor-target>
-<p>Replace manual validation checks with <code v-pre>TryValidateModel</code>:</p>
+<p>Replace the manual validation logic in <code v-pre>OnPostCreate</code> with <code v-pre>TryValidateModel</code>:</p>
 <p><strong>Update <code v-pre>OnPostCreate</code> in <code v-pre>Index.cshtml.cs</code>:</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public IActionResult OnPostCreate()
 {
-    // TryValidateModel evaluates all data annotations on Input
+    // Validate using data annotations
     if (!TryValidateModel(Input, nameof(Input)))
     {
         Tasks = InMemoryTaskStore.All();
@@ -489,7 +504,8 @@ public class NewTaskInput
         return Page();
     }
 
-    // Simulated error (keep from Lab 2 for testing)
+    // Simulated error for testing
+    // Type &quot;boom&quot; as the title to trigger this error
     if (Input.Title.Trim().Equals(&quot;boom&quot;, StringComparison.OrdinalIgnoreCase))
     {
         if (IsHtmx())
@@ -503,12 +519,16 @@ public class NewTaskInput
         throw new InvalidOperationException(&quot;Simulated server error.&quot;);
     }
 
-    // Success path
+    // Success
     InMemoryTaskStore.Add(Input.Title);
     Tasks = InMemoryTaskStore.All();
 
     if (IsHtmx())
     {
+        FlashMessage = &quot;Task added successfully!&quot;;
+        // Trigger events for listeners to handle
+        // Multiple events separated by commas
+        Response.Headers[&quot;HX-Trigger&quot;] = &quot;showMessage,clearForm&quot;;
         return Fragment(&quot;Partials/_TaskList&quot;, Tasks);
     }
 
@@ -516,10 +536,10 @@ public class NewTaskInput
     return RedirectToPage();
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="15-understanding-tryvalidatemodel">
+<doc-anchor-target id="16-understanding-tryvalidatemodel">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#15-understanding-tryvalidatemodel">#</doc-anchor-trigger>
-        <span>1.5 Understanding TryValidateModel</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#16-understanding-tryvalidatemodel">#</doc-anchor-trigger>
+        <span>1.6 Understanding TryValidateModel</span>
     </h3>
 </doc-anchor-target>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -559,14 +579,20 @@ public class NewTaskInput
 </div>
 <p><strong>Why <code v-pre>nameof(Input)</code>?</strong></p>
 <p>This ensures error keys like <code v-pre>Input.Title</code> match what Razor&#x27;s <code v-pre>asp-validation-for</code> expects. Without it, error messages might not display correctly.</p>
-<doc-anchor-target id="16-test-the-changes">
+<doc-anchor-target id="17-test-the-changes">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#16-test-the-changes">#</doc-anchor-trigger>
-        <span>1.6 Test the Changes</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#17-test-the-changes">#</doc-anchor-trigger>
+        <span>1.7 Test the Changes</span>
     </h3>
 </doc-anchor-target>
 <ol>
-<li><strong>Build and run</strong> the application</li>
+<li><p><strong>Build and run</strong> the application:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-bash"><code v-pre class="language-bash">cd &quot;src/Lab 2&quot;
+dotnet run</code></pre>
+</doc-codeblock></div>
+</li>
+<li><strong>Navigate</strong> to <code v-pre>/Tasks</code> in your browser</li>
 <li><strong>Try submitting</strong> with an empty title → Should see &quot;Title is required.&quot;</li>
 <li><strong>Try submitting</strong> with &quot;ab&quot; (2 characters) → Should see &quot;Title must be 3–60 characters.&quot;</li>
 <li><strong>Try submitting</strong> with a valid title → Should succeed</li>
@@ -597,6 +623,7 @@ public class NewTaskInput
         <span>2.2 Create the Validation Partial</span>
     </h3>
 </doc-anchor-target>
+<p>Create a new file in the <code v-pre>Partials</code> folder:</p>
 <p><strong>File: <code v-pre>Pages/Tasks/Partials/_TitleValidation.cshtml</code></strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model string?
@@ -605,9 +632,13 @@ public class NewTaskInput
     Title Field Validation Fragment
     ================================
 
+    Target ID: #title-validation
+    Swap: outerHTML
+    Returned by: OnPostValidateTitle
+
     Purpose:
     - Displays validation error for the Title field
-    - Swapped on every keystroke (debounced)
+    - Swapped on every keystroke (debounced 500ms)
     - Must always render the wrapper div for consistent swapping
 
     Model:
@@ -653,47 +684,49 @@ public class NewTaskInput
     </h2>
 </doc-anchor-target>
 <p>Now we&#x27;ll create a handler specifically for validating the Title field. This handler is intentionally narrow—it validates one field and returns one fragment.</p>
-<doc-anchor-target id="31-add-the-validation-handler">
+<doc-anchor-target id="31-organize-your-code-with-regions">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#31-add-the-validation-handler">#</doc-anchor-trigger>
-        <span>3.1 Add the Validation Handler</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#31-organize-your-code-with-regions">#</doc-anchor-trigger>
+        <span>3.1 Organize Your Code with Regions</span>
     </h3>
 </doc-anchor-target>
+<p>In <code v-pre>Index.cshtml.cs</code>, let&#x27;s add a new region for validation handlers. Find the comment section after the page handlers and add:</p>
 <p><strong>Add to <code v-pre>Pages/Tasks/Index.cshtml.cs</code>:</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
-/// Validates the Title field and returns just the validation fragment.
-/// Called via htmx on keystrokes (debounced).
-///
-/// Design: This handler is intentionally &quot;micro&quot;—one field, one fragment.
-/// It avoids returning the entire form on each keystroke.
-/// &lt;/summary&gt;
-public IActionResult OnPostValidateTitle()
-{
-    // Get the current title value (may be null or empty)
-    var title = Input.Title?.Trim() ?? &quot;&quot;;
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">    #region Validation Handlers
 
-    // Manual validation to match data annotations
-    // (We could use ModelState, but this is clearer for teaching)
-    string? error = null;
+    /// &lt;summary&gt;
+    /// Validates the Title field and returns just the validation fragment.
+    /// Called via htmx on keystrokes (debounced).
+    ///
+    /// Design: This handler is intentionally &quot;micro&quot;—one field, one fragment.
+    /// It avoids returning the entire form on each keystroke.
+    /// &lt;/summary&gt;
+    public IActionResult OnPostValidateTitle()
+    {
+        var title = Input.Title?.Trim() ?? &quot;&quot;;
 
-    if (string.IsNullOrWhiteSpace(title))
-    {
-        error = &quot;Title is required.&quot;;
-    }
-    else if (title.Length &lt; 3)
-    {
-        error = &quot;Title must be at least 3 characters.&quot;;
-    }
-    else if (title.Length &gt; 60)
-    {
-        error = &quot;Title must be 60 characters or fewer.&quot;;
+        string? error = null;
+
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            error = &quot;Title is required.&quot;;
+        }
+        else if (title.Length &lt; 3)
+        {
+            error = &quot;Title must be at least 3 characters.&quot;;
+        }
+        else if (title.Length &gt; 60)
+        {
+            error = &quot;Title must be 60 characters or fewer.&quot;;
+        }
+
+        return Fragment(&quot;Partials/_TitleValidation&quot;, error);
     }
 
-    // Return only the tiny validation fragment
-    return Fragment(&quot;Partials/_TitleValidation&quot;, error);
-}</code></pre>
+    #endregion</code></pre>
 </doc-codeblock></div>
+<p>Place this region between your existing page handlers and the <code v-pre>OnPostCreate</code> method.</p>
 <doc-anchor-target id="32-understanding-the-handler-design">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#32-understanding-the-handler-design">#</doc-anchor-trigger>
@@ -777,11 +810,15 @@ return Fragment(&quot;Partials/_TaskForm&quot;, this);</code></pre>
 <p>Edit <code v-pre>Pages/Tasks/Partials/_TaskForm.cshtml</code> to add validation attributes and the placeholder fragment:</p>
 <p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskForm.cshtml</code></strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
 
 @*
     Task Form Fragment (with real-time validation)
     ==============================================
+
+    Target ID: #task-form
+    Swap: outerHTML
+    Returned by: OnGetEmptyForm, OnPostCreate (on validation error)
 
     htmx attributes on form:
     - hx-post: Submit to Create handler
@@ -805,7 +842,8 @@ return Fragment(&quot;Partials/_TaskForm&quot;, this);</code></pre>
           hx-post=&quot;?handler=Create&quot;
           hx-target=&quot;#task-list&quot;
           hx-swap=&quot;outerHTML&quot;
-          hx-indicator=&quot;#task-loading&quot;&gt;
+          hx-indicator=&quot;#task-loading&quot;
+          class=&quot;vstack gap-3&quot;&gt;
 
         @* Antiforgery token - required for all POST requests *@
         @Html.AntiForgeryToken()
@@ -813,19 +851,22 @@ return Fragment(&quot;Partials/_TaskForm&quot;, this);</code></pre>
         @* Validation summary for full-form validation *@
         &lt;div asp-validation-summary=&quot;ModelOnly&quot; class=&quot;text-danger mb-3&quot;&gt;&lt;/div&gt;
 
-        &lt;div class=&quot;mb-3&quot;&gt;
+        &lt;div&gt;
             &lt;label class=&quot;form-label&quot; for=&quot;title&quot;&gt;Task Title&lt;/label&gt;
 
             @* Title input with real-time validation *@
             &lt;input id=&quot;title&quot;
-                   class=&quot;form-control&quot;
+                   class=&quot;form-control form-control-lg&quot;
                    asp-for=&quot;Input.Title&quot;
                    placeholder=&quot;e.g., Add htmx to Razor Pages&quot;
+                   autocomplete=&quot;off&quot;
                    hx-post=&quot;?handler=ValidateTitle&quot;
                    hx-trigger=&quot;keyup changed delay:500ms&quot;
                    hx-target=&quot;#title-validation&quot;
                    hx-swap=&quot;outerHTML&quot;
                    hx-include=&quot;closest form&quot; /&gt;
+
+            &lt;div class=&quot;form-text&quot;&gt;Keep it short; we're optimizing for fast feedback loops.&lt;/div&gt;
 
             @* Standard Razor validation message (shown on full submit) *@
             &lt;span class=&quot;text-danger&quot; asp-validation-for=&quot;Input.Title&quot;&gt;&lt;/span&gt;
@@ -834,7 +875,10 @@ return Fragment(&quot;Partials/_TaskForm&quot;, this);</code></pre>
             &lt;partial name=&quot;Partials/_TitleValidation&quot; model=&quot;@((string?)null)&quot; /&gt;
         &lt;/div&gt;
 
-        &lt;button class=&quot;btn btn-primary&quot; type=&quot;submit&quot;&gt;Add Task&lt;/button&gt;
+        &lt;div class=&quot;d-flex gap-2&quot;&gt;
+            &lt;button class=&quot;btn btn-primary btn-lg&quot; type=&quot;submit&quot;&gt;Add task&lt;/button&gt;
+            &lt;a class=&quot;btn btn-outline-secondary btn-lg&quot; asp-page=&quot;/Labs&quot;&gt;Back to labs&lt;/a&gt;
+        &lt;/div&gt;
     &lt;/form&gt;
 &lt;/div&gt;</code></pre>
 </doc-codeblock></div>
@@ -948,10 +992,10 @@ return Fragment(&quot;Partials/_TaskForm&quot;, this);</code></pre>
 <p>Notice we have both:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@* Standard Razor validation (full submit) *@
-&lt;span asp-validation-for=&quot;Input.Title&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;text-danger&quot; asp-validation-for=&quot;Input.Title&quot;&gt;&lt;/span&gt;
 
 @* htmx validation (keystrokes) *@
-&lt;partial name=&quot;Partials/_TitleValidation&quot; model=&quot;...&quot; /&gt;</code></pre>
+&lt;partial name=&quot;Partials/_TitleValidation&quot; model=&quot;@((string?)null)&quot; /&gt;</code></pre>
 </doc-codeblock></div>
 <p><strong>Why both?</strong></p>
 <div class="table-wrapper scrollbar overflow-hidden">
@@ -1005,221 +1049,20 @@ return Fragment(&quot;Partials/_TaskForm&quot;, this);</code></pre>
 </li>
 </ol>
 <hr>
-<doc-anchor-target id="step-5-add-validation-summary-to-form-fragment-57-minutes">
+<doc-anchor-target id="step-5-add-success-message-handler-57-minutes">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#step-5-add-validation-summary-to-form-fragment-57-minutes">#</doc-anchor-trigger>
-        <span>Step 5: Add Validation Summary to Form Fragment (5–7 minutes)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-5-add-success-message-handler-57-minutes">#</doc-anchor-trigger>
+        <span>Step 5: Add Success Message Handler (5–7 minutes)</span>
     </h2>
 </doc-anchor-target>
-<p>When the full form submits with errors, we want to show a summary at the top of the form.</p>
-<doc-anchor-target id="51-understanding-the-validation-summary">
+<p>After successfully creating a task, we want to show a success message in the <code v-pre>#messages</code> area.</p>
+<doc-anchor-target id="51-add-the-messages-handler">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#51-understanding-the-validation-summary">#</doc-anchor-trigger>
-        <span>5.1 Understanding the Validation Summary</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#51-add-the-messages-handler">#</doc-anchor-trigger>
+        <span>5.1 Add the Messages Handler</span>
     </h3>
 </doc-anchor-target>
-<p>The <code v-pre>asp-validation-summary</code> tag helper renders a list of all validation errors:</p>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Mode</th>
-<th>What It Shows</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code v-pre>All</code></td>
-<td>All errors (model-level + property-level)</td>
-</tr>
-<tr>
-<td><code v-pre>ModelOnly</code></td>
-<td>Only model-level errors (not individual properties)</td>
-</tr>
-<tr>
-<td><code v-pre>None</code></td>
-<td>Nothing</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>For our form, <code v-pre>ModelOnly</code> works well because property errors are shown next to each field.</p>
-<doc-anchor-target id="52-verify-the-summary-is-in-place">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#52-verify-the-summary-is-in-place">#</doc-anchor-trigger>
-        <span>5.2 Verify the Summary Is in Place</span>
-    </h3>
-</doc-anchor-target>
-<p>The form partial should already have:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;div asp-validation-summary=&quot;ModelOnly&quot; class=&quot;text-danger mb-3&quot;&gt;&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<p>This renders model-level errors when the form is returned after validation failure.</p>
-<doc-anchor-target id="53-how-full-form-validation-works">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#53-how-full-form-validation-works">#</doc-anchor-trigger>
-        <span>5.3 How Full-Form Validation Works</span>
-    </h3>
-</doc-anchor-target>
-<p>When you submit an invalid form:</p>
-<ol>
-<li><code v-pre>OnPostCreate</code> calls <code v-pre>TryValidateModel</code></li>
-<li>Validation fails, <code v-pre>ModelState</code> is populated with errors</li>
-<li>Handler returns the <code v-pre>_TaskForm</code> fragment (retargeted)</li>
-<li>htmx swaps the entire form into <code v-pre>#task-form</code></li>
-<li>Razor renders error messages from <code v-pre>ModelState</code></li>
-</ol>
-<p>The form fragment &quot;knows&quot; about errors because we pass <code v-pre>this</code> (the PageModel) which includes <code v-pre>ModelState</code>.</p>
-<doc-anchor-target id="54-test-full-form-validation">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#54-test-full-form-validation">#</doc-anchor-trigger>
-        <span>5.4 Test Full-Form Validation</span>
-    </h3>
-</doc-anchor-target>
-<ol>
-<li><strong>Submit</strong> with an empty title</li>
-<li><strong>Observe</strong>: Form replaces with error message in <code v-pre>asp-validation-for</code></li>
-<li><strong>Submit</strong> with &quot;ab&quot; (too short)</li>
-<li><strong>Observe</strong>: Form replaces with length error</li>
-</ol>
-<hr>
-<doc-anchor-target id="step-6-ensure-antiforgery-works-correctly-57-minutes">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#step-6-ensure-antiforgery-works-correctly-57-minutes">#</doc-anchor-trigger>
-        <span>Step 6: Ensure Antiforgery Works Correctly (5–7 minutes)</span>
-    </h2>
-</doc-anchor-target>
-<p>Antiforgery tokens prevent cross-site request forgery (CSRF) attacks. Every POST request in ASP.NET Core requires this token.</p>
-<doc-anchor-target id="61-where-the-token-comes-from">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#61-where-the-token-comes-from">#</doc-anchor-trigger>
-        <span>6.1 Where the Token Comes From</span>
-    </h3>
-</doc-anchor-target>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@Html.AntiForgeryToken()</code></pre>
-</doc-codeblock></div>
-<p>This renders a hidden input:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;input name=&quot;__RequestVerificationToken&quot; type=&quot;hidden&quot; value=&quot;CfDJ8...&quot; /&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="62-how-htmx-sends-the-token">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#62-how-htmx-sends-the-token">#</doc-anchor-trigger>
-        <span>6.2 How htmx Sends the Token</span>
-    </h3>
-</doc-anchor-target>
-<p>For the form submit (<code v-pre>hx-post</code> on <code v-pre>&lt;form&gt;</code>):</p>
-<ul>
-<li>htmx automatically serializes form fields, including the token</li>
-</ul>
-<p>For the input validation (<code v-pre>hx-post</code> on <code v-pre>&lt;input&gt;</code>):</p>
-<ul>
-<li>htmx only sends the input&#x27;s value by default</li>
-<li><code v-pre>hx-include=&quot;closest form&quot;</code> adds all form fields, including the token</li>
-</ul>
-<doc-anchor-target id="63-verify-token-flow">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#63-verify-token-flow">#</doc-anchor-trigger>
-        <span>6.3 Verify Token Flow</span>
-    </h3>
-</doc-anchor-target>
-<ol>
-<li><strong>Open Network tab</strong></li>
-<li><strong>Type in the Title field</strong> (trigger validation)</li>
-<li><p><strong>Inspect the request payload</strong>:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-none"><code v-pre class="language-none">Input.Title=test&amp;__RequestVerificationToken=CfDJ8...</code></pre>
-</doc-codeblock></div>
-</li>
-<li><strong>If token is missing</strong>: You&#x27;ll see a 400 Bad Request or 403 Forbidden</li>
-</ol>
-<doc-anchor-target id="64-troubleshooting-antiforgery-issues">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#64-troubleshooting-antiforgery-issues">#</doc-anchor-trigger>
-        <span>6.4 Troubleshooting Antiforgery Issues</span>
-    </h3>
-</doc-anchor-target>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Symptom</th>
-<th>Cause</th>
-<th>Fix</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>400 Bad Request</td>
-<td>Token missing from request</td>
-<td>Add <code v-pre>hx-include=&quot;closest form&quot;</code></td>
-</tr>
-<tr>
-<td>403 Forbidden</td>
-<td>Token invalid or expired</td>
-<td>Ensure token is in form, refresh page</td>
-</tr>
-<tr>
-<td>Works on submit, fails on keystroke</td>
-<td><code v-pre>hx-include</code> missing from input</td>
-<td>Add <code v-pre>hx-include=&quot;closest form&quot;</code> to input</td>
-</tr>
-</tbody>
-</table>
-</div>
-<doc-anchor-target id="65-alternative-global-antiforgery-header">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#65-alternative-global-antiforgery-header">#</doc-anchor-trigger>
-        <span>6.5 Alternative: Global Antiforgery Header</span>
-    </h3>
-</doc-anchor-target>
-<p>Instead of including the token in every request, you can configure htmx to send it as a header:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- In _Layout.cshtml --&gt;
-&lt;meta name=&quot;csrf-token&quot; content=&quot;@Html.AntiForgeryToken()&quot; /&gt;
-
-&lt;script&gt;
-    document.body.addEventListener('htmx:configRequest', function(evt) {
-        evt.detail.headers['RequestVerificationToken'] =
-            document.querySelector('meta[name=&quot;csrf-token&quot;]').getAttribute('content');
-    });
-&lt;/script&gt;</code></pre>
-</doc-codeblock></div>
-<p>This is more complex but useful for larger applications.</p>
-<hr>
-<doc-anchor-target id="step-7-add-success-message-and-form-reset-1012-minutes">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#step-7-add-success-message-and-form-reset-1012-minutes">#</doc-anchor-trigger>
-        <span>Step 7: Add Success Message and Form Reset (10–12 minutes)</span>
-    </h2>
-</doc-anchor-target>
-<p>After successfully creating a task, we should:</p>
-<ol>
-<li>Show a success message</li>
-<li>Optionally clear the form for the next entry</li>
-</ol>
-<doc-anchor-target id="71-the-strategy-use-hx-trigger-events">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#71-the-strategy-use-hx-trigger-events">#</doc-anchor-trigger>
-        <span>7.1 The Strategy: Use HX-Trigger Events</span>
-    </h3>
-</doc-anchor-target>
-<p>Instead of returning multiple fragments from one response, we&#x27;ll use <code v-pre>HX-Trigger</code> to fire events that other elements respond to.</p>
-<p><strong>The Flow:</strong></p>
-<ol>
-<li><code v-pre>OnPostCreate</code> succeeds → returns <code v-pre>_TaskList</code> + sets <code v-pre>HX-Trigger: showMessage,clearForm</code></li>
-<li>htmx swaps <code v-pre>#task-list</code></li>
-<li>htmx fires <code v-pre>showMessage</code> event → listener fetches and swaps <code v-pre>#messages</code></li>
-<li>htmx fires <code v-pre>clearForm</code> event → listener fetches and swaps <code v-pre>#task-form</code></li>
-</ol>
-<doc-anchor-target id="72-add-the-messages-handler">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#72-add-the-messages-handler">#</doc-anchor-trigger>
-        <span>7.2 Add the Messages Handler</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>Add to <code v-pre>Index.cshtml.cs</code>:</strong></p>
+<p><strong>Add to <code v-pre>Index.cshtml.cs</code> (in the Page Handlers region):</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
 /// Returns the messages fragment.
@@ -1230,63 +1073,45 @@ public IActionResult OnGetMessages()
     return Fragment(&quot;Partials/_Messages&quot;, FlashMessage);
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="73-add-the-empty-form-handler">
+<doc-anchor-target id="52-update-onpostcreate-to-trigger-the-message-event">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#73-add-the-empty-form-handler">#</doc-anchor-trigger>
-        <span>7.3 Add the Empty Form Handler</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#52-update-onpostcreate-to-trigger-the-message-event">#</doc-anchor-trigger>
+        <span>5.2 Update OnPostCreate to Trigger the Message Event</span>
     </h3>
 </doc-anchor-target>
-<p><strong>Add to <code v-pre>Index.cshtml.cs</code>:</strong></p>
+<p>The <code v-pre>OnPostCreate</code> method success path should already trigger events. Verify it looks like this:</p>
+<p><strong>Verify this code in <code v-pre>OnPostCreate</code>:</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
-/// Returns a reset/empty form fragment.
-/// Called by htmx listener when clearForm event fires.
-/// &lt;/summary&gt;
-public IActionResult OnGetEmptyForm()
-{
-    // Reset the bound input
-    Input = new NewTaskInput();
-
-    // Clear any lingering validation state
-    ModelState.Clear();
-
-    return Fragment(&quot;Partials/_TaskForm&quot;, this);
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="74-update-onpostcreate-to-trigger-events">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#74-update-onpostcreate-to-trigger-events">#</doc-anchor-trigger>
-        <span>7.4 Update OnPostCreate to Trigger Events</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>Update the success path in <code v-pre>OnPostCreate</code>:</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// Success path (inside OnPostCreate)
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// Success
 InMemoryTaskStore.Add(Input.Title);
 Tasks = InMemoryTaskStore.All();
 
 if (IsHtmx())
 {
-    // Set flash message for the messages handler
     FlashMessage = &quot;Task added successfully!&quot;;
-
     // Trigger events for listeners to handle
     // Multiple events separated by commas
     Response.Headers[&quot;HX-Trigger&quot;] = &quot;showMessage,clearForm&quot;;
-
     return Fragment(&quot;Partials/_TaskList&quot;, Tasks);
 }
 
 FlashMessage = &quot;Task added.&quot;;
 return RedirectToPage();</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="75-add-listener-elements-to-the-page">
+<hr>
+<doc-anchor-target id="step-6-add-event-listeners-to-the-page-810-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-6-add-event-listeners-to-the-page-810-minutes">#</doc-anchor-trigger>
+        <span>Step 6: Add Event Listeners to the Page (8–10 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>These invisible elements respond to triggered events from the server.</p>
+<doc-anchor-target id="61-add-listener-elements">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#75-add-listener-elements-to-the-page">#</doc-anchor-trigger>
-        <span>7.5 Add Listener Elements to the Page</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#61-add-listener-elements">#</doc-anchor-trigger>
+        <span>6.1 Add Listener Elements</span>
     </h3>
 </doc-anchor-target>
-<p>These invisible elements respond to triggered events:</p>
 <p><strong>Add to <code v-pre>Pages/Tasks/Index.cshtml</code> (at the bottom, before <code v-pre>@section Scripts</code>):</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@*
@@ -1315,12 +1140,16 @@ return RedirectToPage();</code></pre>
      hx-trigger=&quot;clearForm from:body&quot;
      hx-target=&quot;#task-form&quot;
      hx-swap=&quot;outerHTML&quot;&gt;
-&lt;/div&gt;</code></pre>
+&lt;/div&gt;
+
+@section Scripts {
+    &lt;partial name=&quot;_ValidationScriptsPartial&quot; /&gt;
+}</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="76-understanding-the-listeners">
+<doc-anchor-target id="62-understanding-the-listeners">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#76-understanding-the-listeners">#</doc-anchor-trigger>
-        <span>7.6 Understanding the Listeners</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#62-understanding-the-listeners">#</doc-anchor-trigger>
+        <span>6.2 Understanding the Listeners</span>
     </h3>
 </doc-anchor-target>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -1371,43 +1200,30 @@ return RedirectToPage();</code></pre>
 <li>Listener fires its <code v-pre>hx-get</code> request</li>
 <li>Response swaps into <code v-pre>#messages</code></li>
 </ol>
-<doc-anchor-target id="77-update-the-messages-partial">
+<doc-anchor-target id="63-the-complete-flow">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#77-update-the-messages-partial">#</doc-anchor-trigger>
-        <span>7.7 Update the Messages Partial</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#63-the-complete-flow">#</doc-anchor-trigger>
+        <span>6.3 The Complete Flow</span>
     </h3>
 </doc-anchor-target>
-<p>Ensure <code v-pre>_Messages.cshtml</code> always renders its wrapper:</p>
-<p><strong>File: <code v-pre>Pages/Tasks/Partials/_Messages.cshtml</code></strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model string?
-
-@*
-    Messages Fragment
-    =================
-
-    Purpose:
-    - Displays flash/success messages
-    - Must always render wrapper for consistent swapping
-
-    Model:
-    - string? message - The message to display (null if none)
-*@
-
-&lt;div id=&quot;messages&quot;&gt;
-    @if (!string.IsNullOrWhiteSpace(Model))
-    {
-        &lt;div class=&quot;alert alert-success alert-dismissible fade show&quot; role=&quot;alert&quot;&gt;
-            @Model
-            &lt;button type=&quot;button&quot; class=&quot;btn-close&quot; data-bs-dismiss=&quot;alert&quot; aria-label=&quot;Close&quot;&gt;&lt;/button&gt;
-        &lt;/div&gt;
-    }
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="78-test-the-complete-flow">
+<p><strong>When a task is successfully created:</strong></p>
+<ol>
+<li><code v-pre>OnPostCreate</code> succeeds → returns <code v-pre>_TaskList</code> + sets <code v-pre>HX-Trigger: showMessage,clearForm</code></li>
+<li>htmx swaps <code v-pre>#task-list</code> with the updated list</li>
+<li>htmx fires <code v-pre>showMessage</code> event → listener fetches and swaps <code v-pre>#messages</code> with success message</li>
+<li>htmx fires <code v-pre>clearForm</code> event → listener fetches and swaps <code v-pre>#task-form</code> with empty form</li>
+</ol>
+<hr>
+<doc-anchor-target id="step-7-test-the-complete-flow-5-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-7-test-the-complete-flow-5-minutes">#</doc-anchor-trigger>
+        <span>Step 7: Test the Complete Flow (5 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="71-full-integration-test">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#78-test-the-complete-flow">#</doc-anchor-trigger>
-        <span>7.8 Test the Complete Flow</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#71-full-integration-test">#</doc-anchor-trigger>
+        <span>7.1 Full Integration Test</span>
     </h3>
 </doc-anchor-target>
 <ol>
@@ -1428,11 +1244,53 @@ return RedirectToPage();</code></pre>
 </ul>
 </li>
 </ol>
+<doc-anchor-target id="72-test-all-scenarios">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#72-test-all-scenarios">#</doc-anchor-trigger>
+        <span>7.2 Test All Scenarios</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Test Case</th>
+<th>Expected Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Type 1-2 characters, wait 500ms</td>
+<td>Real-time error: &quot;Title must be at least 3 characters.&quot;</td>
+</tr>
+<tr>
+<td>Type 3+ characters, wait 500ms</td>
+<td>Real-time error disappears</td>
+</tr>
+<tr>
+<td>Submit with empty field</td>
+<td>Form reloads with validation error</td>
+</tr>
+<tr>
+<td>Submit with &quot;ab&quot;</td>
+<td>Form reloads with length error</td>
+</tr>
+<tr>
+<td>Submit with valid title</td>
+<td>Task added, success message shows, form clears</td>
+</tr>
+<tr>
+<td>Type &quot;boom&quot; and submit</td>
+<td>Error message appears in <code v-pre>#messages</code></td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
-<doc-anchor-target id="step-8-complete-code-reference">
+<doc-anchor-target id="complete-code-reference">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#step-8-complete-code-reference">#</doc-anchor-trigger>
-        <span>Step 8: Complete Code Reference</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#complete-code-reference">#</doc-anchor-trigger>
+        <span>Complete Code Reference</span>
     </h2>
 </doc-anchor-target>
 <p>Here is the complete code for all files modified in this lab.</p>
@@ -1444,14 +1302,17 @@ return RedirectToPage();</code></pre>
 </doc-anchor-target>
 <p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code></strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using System.ComponentModel.DataAnnotations;
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using RazorHtmxWorkshop.Data;
-using RazorHtmxWorkshop.Models;
+using RazorPagesHtmxWorkshop.Data;
+using RazorPagesHtmxWorkshop.Models;
 
-namespace RazorHtmxWorkshop.Pages.Tasks;
+namespace RazorPagesHtmxWorkshop.Pages.Tasks;
 
 public class IndexModel : PageModel
 {
@@ -1467,18 +1328,20 @@ public class IndexModel : PageModel
 
     /// &lt;summary&gt;
     /// Checks if the current request was made by htmx.
+    /// htmx sends &quot;HX-Request: true&quot; header with every request.
     /// &lt;/summary&gt;
     private bool IsHtmx() =&gt;
         Request.Headers.TryGetValue(&quot;HX-Request&quot;, out var value) &amp;&amp; value == &quot;true&quot;;
 
     /// &lt;summary&gt;
     /// Returns a partial view result for fragment responses.
+    /// This helper creates a PartialViewResult with the correct ViewData context.
     /// &lt;/summary&gt;
     private PartialViewResult Fragment(string partialName, object model) =&gt;
         new()
         {
             ViewName = partialName,
-            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+            ViewData = new ViewDataDictionary(MetadataProvider, ModelState) { Model = model }
         };
 
     #endregion
@@ -1490,6 +1353,10 @@ public class IndexModel : PageModel
         Tasks = InMemoryTaskStore.All();
     }
 
+    /// &lt;summary&gt;
+    /// Returns the task list fragment.
+    /// Optional parameter 'take' limits the number of tasks returned.
+    /// &lt;/summary&gt;
     public IActionResult OnGetList(int? take)
     {
         var tasks = InMemoryTaskStore.All();
@@ -1502,11 +1369,19 @@ public class IndexModel : PageModel
         return Fragment(&quot;Partials/_TaskList&quot;, tasks);
     }
 
+    /// &lt;summary&gt;
+    /// Returns the messages fragment.
+    /// Called by htmx listener when showMessage event fires.
+    /// &lt;/summary&gt;
     public IActionResult OnGetMessages()
     {
         return Fragment(&quot;Partials/_Messages&quot;, FlashMessage);
     }
 
+    /// &lt;summary&gt;
+    /// Returns a reset/empty form fragment.
+    /// Called by htmx listener when clearForm event fires.
+    /// &lt;/summary&gt;
     public IActionResult OnGetEmptyForm()
     {
         Input = new NewTaskInput();
@@ -1521,6 +1396,9 @@ public class IndexModel : PageModel
     /// &lt;summary&gt;
     /// Validates the Title field and returns just the validation fragment.
     /// Called via htmx on keystrokes (debounced).
+    ///
+    /// Design: This handler is intentionally &quot;micro&quot;—one field, one fragment.
+    /// It avoids returning the entire form on each keystroke.
     /// &lt;/summary&gt;
     public IActionResult OnPostValidateTitle()
     {
@@ -1566,6 +1444,7 @@ public class IndexModel : PageModel
         }
 
         // Simulated error for testing
+        // Type &quot;boom&quot; as the title to trigger this error
         if (Input.Title.Trim().Equals(&quot;boom&quot;, StringComparison.OrdinalIgnoreCase))
         {
             if (IsHtmx())
@@ -1586,11 +1465,20 @@ public class IndexModel : PageModel
         if (IsHtmx())
         {
             FlashMessage = &quot;Task added successfully!&quot;;
+            // Trigger events for listeners to handle
+            // Multiple events separated by commas
             Response.Headers[&quot;HX-Trigger&quot;] = &quot;showMessage,clearForm&quot;;
             return Fragment(&quot;Partials/_TaskList&quot;, Tasks);
         }
 
         FlashMessage = &quot;Task added.&quot;;
+        return RedirectToPage();
+    }
+
+    public IActionResult OnPostReset()
+    {
+        InMemoryTaskStore.Reset();
+        FlashMessage = &quot;Tasks reset.&quot;;
         return RedirectToPage();
     }
 
@@ -1616,18 +1504,31 @@ public class IndexModel : PageModel
 </doc-anchor-target>
 <p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskForm.cshtml</code></strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model RazorHtmxWorkshop.Pages.Tasks.IndexModel
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
 
 @*
     Task Form Fragment (with real-time validation)
     ==============================================
 
-    Features:
-    - Real-time validation on Title field (debounced 500ms)
-    - Full form validation on submit
-    - Antiforgery token for security
-    - Loading indicator support
-    - Progressive enhancement (works without JavaScript)
+    Target ID: #task-form
+    Swap: outerHTML
+    Returned by: OnGetEmptyForm, OnPostCreate (on validation error)
+
+    htmx attributes on form:
+    - hx-post: Submit to Create handler
+    - hx-target: Update #task-list on success
+    - hx-swap: Replace entire target element
+    - hx-indicator: Show loading spinner
+
+    htmx attributes on Title input:
+    - hx-post: Validate on keystroke
+    - hx-trigger: Debounced keyup (500ms delay)
+    - hx-target: Update only #title-validation
+    - hx-include: Send form fields (for antiforgery)
+
+    Progressive enhancement:
+    - Form works without JavaScript (method=&quot;post&quot; fallback)
+    - htmx adds real-time validation on top
 *@
 
 &lt;div id=&quot;task-form&quot;&gt;
@@ -1635,17 +1536,21 @@ public class IndexModel : PageModel
           hx-post=&quot;?handler=Create&quot;
           hx-target=&quot;#task-list&quot;
           hx-swap=&quot;outerHTML&quot;
-          hx-indicator=&quot;#task-loading&quot;&gt;
+          hx-indicator=&quot;#task-loading&quot;
+          class=&quot;vstack gap-3&quot;&gt;
 
+        @* Antiforgery token - required for all POST requests *@
         @Html.AntiForgeryToken()
 
+        @* Validation summary for full-form validation *@
         &lt;div asp-validation-summary=&quot;ModelOnly&quot; class=&quot;text-danger mb-3&quot;&gt;&lt;/div&gt;
 
-        &lt;div class=&quot;mb-3&quot;&gt;
+        &lt;div&gt;
             &lt;label class=&quot;form-label&quot; for=&quot;title&quot;&gt;Task Title&lt;/label&gt;
 
+            @* Title input with real-time validation *@
             &lt;input id=&quot;title&quot;
-                   class=&quot;form-control&quot;
+                   class=&quot;form-control form-control-lg&quot;
                    asp-for=&quot;Input.Title&quot;
                    placeholder=&quot;e.g., Add htmx to Razor Pages&quot;
                    autocomplete=&quot;off&quot;
@@ -1655,12 +1560,19 @@ public class IndexModel : PageModel
                    hx-swap=&quot;outerHTML&quot;
                    hx-include=&quot;closest form&quot; /&gt;
 
+            &lt;div class=&quot;form-text&quot;&gt;Keep it short; we're optimizing for fast feedback loops.&lt;/div&gt;
+
+            @* Standard Razor validation message (shown on full submit) *@
             &lt;span class=&quot;text-danger&quot; asp-validation-for=&quot;Input.Title&quot;&gt;&lt;/span&gt;
 
+            @* htmx validation fragment (shown on keystrokes) *@
             &lt;partial name=&quot;Partials/_TitleValidation&quot; model=&quot;@((string?)null)&quot; /&gt;
         &lt;/div&gt;
 
-        &lt;button class=&quot;btn btn-primary&quot; type=&quot;submit&quot;&gt;Add Task&lt;/button&gt;
+        &lt;div class=&quot;d-flex gap-2&quot;&gt;
+            &lt;button class=&quot;btn btn-primary btn-lg&quot; type=&quot;submit&quot;&gt;Add task&lt;/button&gt;
+            &lt;a class=&quot;btn btn-outline-secondary btn-lg&quot; asp-page=&quot;/Labs&quot;&gt;Back to labs&lt;/a&gt;
+        &lt;/div&gt;
     &lt;/form&gt;
 &lt;/div&gt;</code></pre>
 </doc-codeblock></div>
@@ -1678,10 +1590,22 @@ public class IndexModel : PageModel
     Title Field Validation Fragment
     ================================
 
-    Purpose: Display validation error for Title field
-    Model: string? error message (null if valid)
+    Target ID: #title-validation
+    Swap: outerHTML
+    Returned by: OnPostValidateTitle
 
-    Note: Wrapper must always render for consistent htmx swapping
+    Purpose:
+    - Displays validation error for the Title field
+    - Swapped on every keystroke (debounced 500ms)
+    - Must always render the wrapper div for consistent swapping
+
+    Model:
+    - string? error - The error message (null if valid)
+
+    Design notes:
+    - Wrapper div renders even when empty (htmx needs stable target)
+    - Error styling matches Bootstrap conventions
+    - Kept intentionally minimal for fast responses
 *@
 
 &lt;div id=&quot;title-validation&quot;&gt;
@@ -1691,57 +1615,36 @@ public class IndexModel : PageModel
     }
 &lt;/div&gt;</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="_messagescshtml-complete">
+<doc-anchor-target id="indexcshtml-event-listeners-section">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#_messagescshtml-complete">#</doc-anchor-trigger>
-        <span>_Messages.cshtml (Complete)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#indexcshtml-event-listeners-section">#</doc-anchor-trigger>
+        <span>Index.cshtml (Event Listeners Section)</span>
     </h3>
 </doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Partials/_Messages.cshtml</code></strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@model string?
-
-@*
-    Messages Fragment
-    =================
-
-    Purpose: Display flash/success/info messages
-    Model: string? message (null if none)
-
-    Note: Wrapper must always render for consistent htmx swapping
-*@
-
-&lt;div id=&quot;messages&quot;&gt;
-    @if (!string.IsNullOrWhiteSpace(Model))
-    {
-        &lt;div class=&quot;alert alert-success alert-dismissible fade show&quot; role=&quot;alert&quot;&gt;
-            @Model
-            &lt;button type=&quot;button&quot; class=&quot;btn-close&quot; data-bs-dismiss=&quot;alert&quot; aria-label=&quot;Close&quot;&gt;&lt;/button&gt;
-        &lt;/div&gt;
-    }
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="indexcshtml-updated-sections">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#indexcshtml-updated-sections">#</doc-anchor-trigger>
-        <span>Index.cshtml (Updated Sections)</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>Add at the bottom of <code v-pre>Pages/Tasks/Index.cshtml</code> (before <code v-pre>@section Scripts</code>):</strong></p>
+<p><strong>Add to <code v-pre>Pages/Tasks/Index.cshtml</code> (at the bottom, before <code v-pre>@section Scripts</code>):</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@*
     Event Listeners
     ===============
 
-    Invisible elements that respond to HX-Trigger events
+    These invisible elements respond to HX-Trigger events from the server.
+    When the server sends &quot;HX-Trigger: showMessage,clearForm&quot;, these listeners
+    fire their respective requests.
+
+    Pattern benefits:
+    - Keeps markup clean (form doesn't need to know about messages)
+    - Server controls behavior through headers
+    - Each concern is handled independently
 *@
 
+@* Listener: Refresh messages when showMessage event fires *@
 &lt;div hx-get=&quot;?handler=Messages&quot;
      hx-trigger=&quot;showMessage from:body&quot;
      hx-target=&quot;#messages&quot;
      hx-swap=&quot;outerHTML&quot;&gt;
 &lt;/div&gt;
 
+@* Listener: Reset form when clearForm event fires *@
 &lt;div hx-get=&quot;?handler=EmptyForm&quot;
      hx-trigger=&quot;clearForm from:body&quot;
      hx-target=&quot;#task-form&quot;

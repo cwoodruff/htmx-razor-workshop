@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821395061126">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821454106716">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -35,12 +35,12 @@
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.821395061126" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821454106716" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821395061126" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821454106716" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821395061126" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821395061126" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821454106716" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821454106716" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -241,7 +241,7 @@
 </doc-anchor-target>
 <p>In this lab, you&#x27;ll implement the core UX patterns that make htmx-powered applications feel polished and professional. These patterns are the building blocks of real-world interactive applications:</p>
 <ul>
-<li><strong>Details View</strong>: Load content into a panel or modal without page reload</li>
+<li><strong>Details View</strong>: Load content into a Bootstrap modal without page reload</li>
 <li><strong>Delete with Confirmation</strong>: Safe destructive actions with user confirmation</li>
 <li><strong>Filtering and Pagination</strong>: URL-driven state that supports browser back/forward</li>
 <li><strong>Smooth Transitions</strong>: Visual polish with CSS transitions</li>
@@ -301,7 +301,7 @@
 <tbody>
 <tr>
 <td><strong>Details pattern</strong></td>
-<td>Load task details into a side panel or Bootstrap modal</td>
+<td>Load task details into a Bootstrap modal</td>
 </tr>
 <tr>
 <td><strong>Delete with confirm</strong></td>
@@ -321,7 +321,7 @@
 </tr>
 <tr>
 <td><strong>Swap strategies</strong></td>
-<td>Choose between <code v-pre>outerHTML</code> and <code v-pre>innerHTML</code> appropriately</td>
+<td>Understand when to use different swap approaches</td>
 </tr>
 <tr>
 <td><strong>Transitions</strong></td>
@@ -345,690 +345,22 @@
 <li><strong>Fragment helpers</strong> (<code v-pre>IsHtmx()</code> and <code v-pre>Fragment()</code>) in place</li>
 </ul>
 <hr>
-<doc-anchor-target id="pattern-1-details-view-1015-minutes">
+<doc-anchor-target id="step-1-create-the-task-list-view-model-57-minutes">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-1-details-view-1015-minutes">#</doc-anchor-trigger>
-        <span>Pattern 1: Details View (10–15 minutes)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-1-create-the-task-list-view-model-57-minutes">#</doc-anchor-trigger>
+        <span>Step 1: Create the Task List View Model (5–7 minutes)</span>
     </h2>
 </doc-anchor-target>
-<p>The Details pattern loads additional information about an item without navigating away from the list. You can implement this as either a <strong>side panel</strong> (simpler) or a <strong>Bootstrap modal</strong> (more polished).</p>
-<doc-anchor-target id="11-choose-your-implementation">
+<p>To support filtering and pagination, we need a richer view model than just a list of tasks.</p>
+<doc-anchor-target id="11-create-the-tasklistvm-class">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#11-choose-your-implementation">#</doc-anchor-trigger>
-        <span>1.1 Choose Your Implementation</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#11-create-the-tasklistvm-class">#</doc-anchor-trigger>
+        <span>1.1 Create the TaskListVm Class</span>
     </h3>
 </doc-anchor-target>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Option</th>
-<th>Complexity</th>
-<th>Best For</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Side Panel</strong></td>
-<td>Simple</td>
-<td>Always-visible detail area</td>
-</tr>
-<tr>
-<td><strong>Bootstrap Modal</strong></td>
-<td>Moderate</td>
-<td>Focused attention, familiar UX</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>We&#x27;ll cover both options. Choose one to implement.</p>
-<hr>
-<doc-anchor-target id="option-a-side-panel-simplest-approach">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#option-a-side-panel-simplest-approach">#</doc-anchor-trigger>
-        <span>Option A: Side Panel (Simplest Approach)</span>
-    </h3>
-</doc-anchor-target>
-<doc-anchor-target id="a1-add-the-details-container">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#a1-add-the-details-container">#</doc-anchor-trigger>
-        <span>A.1 Add the Details Container</span>
-    </h4>
-</doc-anchor-target>
-<p>Add a details panel to <code v-pre>Pages/Tasks/Index.cshtml</code>:</p>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml</code> (add in the right column or below the list)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@*
-    Details Panel
-    =============
-
-    Fragment boundary: #task-details
-    Purpose: Display detailed information about a selected task
-
-    Design notes:
-    - Always renders the wrapper for consistent swapping
-    - Default state shows placeholder text
-    - Loaded via hx-get from task row buttons
-*@
-
-&lt;div class=&quot;card mt-4&quot;&gt;
-    &lt;div class=&quot;card-header&quot;&gt;
-        &lt;h5 class=&quot;mb-0&quot;&gt;Task Details&lt;/h5&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;card-body&quot;&gt;
-        &lt;div id=&quot;task-details&quot; class=&quot;text-muted&quot;&gt;
-            Select a task to view details.
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="a2-create-the-details-fragment">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#a2-create-the-details-fragment">#</doc-anchor-trigger>
-        <span>A.2 Create the Details Fragment</span>
-    </h4>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskDetails.cshtml</code></strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorHtmxWorkshop.Models
-@model TaskItem?
-
-@*
-    Task Details Fragment
-    =====================
-
-    Purpose: Display detailed information about a single task
-    Model: TaskItem? (null if not found)
-
-    Design notes:
-    - Wrapper div always renders (stable target for htmx)
-    - Handles null case gracefully
-    - Shows all task properties
-*@
-
-&lt;div id=&quot;task-details&quot;&gt;
-    @if (Model is null)
-    {
-        &lt;div class=&quot;text-muted&quot;&gt;Task not found.&lt;/div&gt;
-    }
-    else
-    {
-        &lt;div class=&quot;vstack gap-3&quot;&gt;
-            &lt;div&gt;
-                &lt;label class=&quot;form-label text-muted small mb-0&quot;&gt;Title&lt;/label&gt;
-                &lt;div class=&quot;fw-semibold&quot;&gt;@Model.Title&lt;/div&gt;
-            &lt;/div&gt;
-
-            &lt;div&gt;
-                &lt;label class=&quot;form-label text-muted small mb-0&quot;&gt;Status&lt;/label&gt;
-                &lt;div&gt;
-                    @if (Model.IsDone)
-                    {
-                        &lt;span class=&quot;badge bg-success&quot;&gt;Done&lt;/span&gt;
-                    }
-                    else
-                    {
-                        &lt;span class=&quot;badge bg-secondary&quot;&gt;Open&lt;/span&gt;
-                    }
-                &lt;/div&gt;
-            &lt;/div&gt;
-
-            &lt;div&gt;
-                &lt;label class=&quot;form-label text-muted small mb-0&quot;&gt;Created&lt;/label&gt;
-                &lt;div&gt;@Model.CreatedUtc.ToLocalTime().ToString(&quot;f&quot;)&lt;/div&gt;
-            &lt;/div&gt;
-
-            &lt;div&gt;
-                &lt;label class=&quot;form-label text-muted small mb-0&quot;&gt;ID&lt;/label&gt;
-                &lt;div class=&quot;text-muted small&quot;&gt;@Model.Id&lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    }
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="a3-add-the-details-handler">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#a3-add-the-details-handler">#</doc-anchor-trigger>
-        <span>A.3 Add the Details Handler</span>
-    </h4>
-</doc-anchor-target>
-<p>First, add a <code v-pre>Find</code> method to your data store:</p>
-<p><strong>File: <code v-pre>Data/InMemoryTaskStore.cs</code> (add this method)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
-/// Finds a task by ID.
-/// &lt;/summary&gt;
-public static TaskItem? Find(int id) =&gt;
-    _tasks.FirstOrDefault(t =&gt; t.Id == id);</code></pre>
-</doc-codeblock></div>
-<p>Now add the handler:</p>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add this handler)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
-/// Returns the details fragment for a specific task.
-/// Called via hx-get from the Details button in each row.
-/// &lt;/summary&gt;
-public IActionResult OnGetDetails(int id)
-{
-    var task = InMemoryTaskStore.Find(id);
-    return Fragment(&quot;Partials/_TaskDetails&quot;, task);
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="a4-add-details-button-to-each-task-row">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#a4-add-details-button-to-each-task-row">#</doc-anchor-trigger>
-        <span>A.4 Add Details Button to Each Task Row</span>
-    </h4>
-</doc-anchor-target>
-<p>Update <code v-pre>_TaskList.cshtml</code> to include a Details button:</p>
-<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskList.cshtml</code> (update the foreach loop)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorHtmxWorkshop.Models
-@model IReadOnlyList&lt;TaskItem&gt;
-
-&lt;div id=&quot;task-list&quot;&gt;
-    @if (Model.Count == 0)
-    {
-        &lt;p class=&quot;text-muted&quot;&gt;No tasks yet.&lt;/p&gt;
-    }
-    else
-    {
-        &lt;ul class=&quot;list-group&quot;&gt;
-            @foreach (var task in Model)
-            {
-                &lt;li class=&quot;list-group-item d-flex justify-content-between align-items-center&quot;&gt;
-                    &lt;div&gt;
-                        &lt;span class=&quot;fw-medium&quot;&gt;@task.Title&lt;/span&gt;
-                        &lt;span class=&quot;text-muted small ms-2&quot;&gt;
-                            @task.CreatedUtc.ToLocalTime().ToString(&quot;g&quot;)
-                        &lt;/span&gt;
-                    &lt;/div&gt;
-
-                    &lt;div class=&quot;btn-group btn-group-sm&quot;&gt;
-                        @* Details button - loads into side panel *@
-                        &lt;button type=&quot;button&quot;
-                                class=&quot;btn btn-outline-secondary&quot;
-                                hx-get=&quot;?handler=Details&amp;id=@task.Id&quot;
-                                hx-target=&quot;#task-details&quot;
-                                hx-swap=&quot;outerHTML&quot;&gt;
-                            Details
-                        &lt;/button&gt;
-
-                        @if (task.IsDone)
-                        {
-                            &lt;span class=&quot;btn btn-outline-success disabled&quot;&gt;Done&lt;/span&gt;
-                        }
-                    &lt;/div&gt;
-                &lt;/li&gt;
-            }
-        &lt;/ul&gt;
-    }
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="a5-understanding-the-pattern">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#a5-understanding-the-pattern">#</doc-anchor-trigger>
-        <span>A.5 Understanding the Pattern</span>
-    </h4>
-</doc-anchor-target>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;button hx-get=&quot;?handler=Details&amp;id=@task.Id&quot;
-        hx-target=&quot;#task-details&quot;
-        hx-swap=&quot;outerHTML&quot;&gt;</code></pre>
-</doc-codeblock></div>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Value</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code v-pre>hx-get</code></td>
-<td><code v-pre>&quot;?handler=Details&amp;id=@task.Id&quot;</code></td>
-<td>GET request with task ID</td>
-</tr>
-<tr>
-<td><code v-pre>hx-target</code></td>
-<td><code v-pre>&quot;#task-details&quot;</code></td>
-<td>Update the details panel</td>
-</tr>
-<tr>
-<td><code v-pre>hx-swap</code></td>
-<td><code v-pre>&quot;outerHTML&quot;</code></td>
-<td>Replace entire fragment</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><strong>The Flow:</strong></p>
-<ol>
-<li>User clicks &quot;Details&quot; button</li>
-<li>htmx sends GET to <code v-pre>?handler=Details&amp;id=123</code></li>
-<li>Server returns <code v-pre>_TaskDetails</code> fragment</li>
-<li>htmx swaps <code v-pre>#task-details</code> with response</li>
-</ol>
-<hr>
-<doc-anchor-target id="option-b-bootstrap-modal-more-polished">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#option-b-bootstrap-modal-more-polished">#</doc-anchor-trigger>
-        <span>Option B: Bootstrap Modal (More Polished)</span>
-    </h3>
-</doc-anchor-target>
-<doc-anchor-target id="b1-add-the-modal-shell">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#b1-add-the-modal-shell">#</doc-anchor-trigger>
-        <span>B.1 Add the Modal Shell</span>
-    </h4>
-</doc-anchor-target>
-<p>Add a Bootstrap modal to <code v-pre>Pages/Tasks/Index.cshtml</code>:</p>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml</code> (add before closing the main content)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@*
-    Details Modal
-    =============
-
-    Bootstrap modal shell - content loaded dynamically via htmx
-    The modal body (#details-modal-body) is the swap target
-
-    Design notes:
-    - Modal structure is static (not swapped)
-    - Only modal-body content is dynamic
-    - Uses innerHTML swap since we're filling the body
-*@
-
-&lt;div class=&quot;modal fade&quot; id=&quot;detailsModal&quot; tabindex=&quot;-1&quot; aria-labelledby=&quot;detailsModalLabel&quot; aria-hidden=&quot;true&quot;&gt;
-    &lt;div class=&quot;modal-dialog modal-dialog-centered&quot;&gt;
-        &lt;div class=&quot;modal-content&quot;&gt;
-            &lt;div class=&quot;modal-header&quot;&gt;
-                &lt;h5 class=&quot;modal-title&quot; id=&quot;detailsModalLabel&quot;&gt;Task Details&lt;/h5&gt;
-                &lt;button type=&quot;button&quot; class=&quot;btn-close&quot; data-bs-dismiss=&quot;modal&quot; aria-label=&quot;Close&quot;&gt;&lt;/button&gt;
-            &lt;/div&gt;
-            &lt;div class=&quot;modal-body&quot; id=&quot;details-modal-body&quot;&gt;
-                &lt;div class=&quot;text-muted&quot;&gt;Loading...&lt;/div&gt;
-            &lt;/div&gt;
-            &lt;div class=&quot;modal-footer&quot;&gt;
-                &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary&quot; data-bs-dismiss=&quot;modal&quot;&gt;Close&lt;/button&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="b2-create-the-modal-body-fragment">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#b2-create-the-modal-body-fragment">#</doc-anchor-trigger>
-        <span>B.2 Create the Modal Body Fragment</span>
-    </h4>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskDetailsModal.cshtml</code></strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorHtmxWorkshop.Models
-@model TaskItem?
-
-@*
-    Task Details Modal Body Fragment
-    ================================
-
-    Purpose: Content for the details modal body
-    Model: TaskItem? (null if not found)
-
-    Note: This is the CONTENT only - not the modal wrapper.
-    Uses innerHTML swap into #details-modal-body.
-*@
-
-@if (Model is null)
-{
-    &lt;div class=&quot;text-muted&quot;&gt;Task not found.&lt;/div&gt;
-}
-else
-{
-    &lt;div class=&quot;vstack gap-3&quot;&gt;
-        &lt;div&gt;
-            &lt;label class=&quot;form-label text-muted small mb-0&quot;&gt;Title&lt;/label&gt;
-            &lt;div class=&quot;fw-semibold fs-5&quot;&gt;@Model.Title&lt;/div&gt;
-        &lt;/div&gt;
-
-        &lt;div class=&quot;row&quot;&gt;
-            &lt;div class=&quot;col-6&quot;&gt;
-                &lt;label class=&quot;form-label text-muted small mb-0&quot;&gt;Status&lt;/label&gt;
-                &lt;div&gt;
-                    @if (Model.IsDone)
-                    {
-                        &lt;span class=&quot;badge bg-success&quot;&gt;Done&lt;/span&gt;
-                    }
-                    else
-                    {
-                        &lt;span class=&quot;badge bg-secondary&quot;&gt;Open&lt;/span&gt;
-                    }
-                &lt;/div&gt;
-            &lt;/div&gt;
-            &lt;div class=&quot;col-6&quot;&gt;
-                &lt;label class=&quot;form-label text-muted small mb-0&quot;&gt;ID&lt;/label&gt;
-                &lt;div class=&quot;text-muted&quot;&gt;@Model.Id&lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-
-        &lt;div&gt;
-            &lt;label class=&quot;form-label text-muted small mb-0&quot;&gt;Created&lt;/label&gt;
-            &lt;div&gt;@Model.CreatedUtc.ToLocalTime().ToString(&quot;F&quot;)&lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="b3-update-the-handler-for-modal">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#b3-update-the-handler-for-modal">#</doc-anchor-trigger>
-        <span>B.3 Update the Handler for Modal</span>
-    </h4>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (update or add)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
-/// Returns the details fragment for a specific task.
-/// For modal: returns content only (innerHTML swap)
-/// For panel: returns wrapper (outerHTML swap)
-/// &lt;/summary&gt;
-public IActionResult OnGetDetails(int id)
-{
-    var task = InMemoryTaskStore.Find(id);
-
-    // Use modal version (no wrapper needed for innerHTML)
-    return Fragment(&quot;Partials/_TaskDetailsModal&quot;, task);
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="b4-update-the-details-button-for-modal">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#b4-update-the-details-button-for-modal">#</doc-anchor-trigger>
-        <span>B.4 Update the Details Button for Modal</span>
-    </h4>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskList.cshtml</code> (update button)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@* Details button - loads into modal and shows it *@
-&lt;button type=&quot;button&quot;
-        class=&quot;btn btn-outline-secondary&quot;
-        hx-get=&quot;?handler=Details&amp;id=@task.Id&quot;
-        hx-target=&quot;#details-modal-body&quot;
-        hx-swap=&quot;innerHTML&quot;
-        hx-on::after-request=&quot;bootstrap.Modal.getOrCreateInstance(document.getElementById('detailsModal')).show()&quot;&gt;
-    Details
-&lt;/button&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="b5-understanding-the-modal-pattern">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#b5-understanding-the-modal-pattern">#</doc-anchor-trigger>
-        <span>B.5 Understanding the Modal Pattern</span>
-    </h4>
-</doc-anchor-target>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Value</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code v-pre>hx-target</code></td>
-<td><code v-pre>&quot;#details-modal-body&quot;</code></td>
-<td>Target the modal body, not the whole modal</td>
-</tr>
-<tr>
-<td><code v-pre>hx-swap</code></td>
-<td><code v-pre>&quot;innerHTML&quot;</code></td>
-<td>Replace body content only</td>
-</tr>
-<tr>
-<td><code v-pre>hx-on::after-request</code></td>
-<td>Bootstrap modal show</td>
-<td>Open modal after content loads</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><strong>Key Difference from Panel:</strong></p>
-<ul>
-<li><strong>Panel</strong>: <code v-pre>outerHTML</code> swap replaces the entire <code v-pre>#task-details</code> div</li>
-<li><strong>Modal</strong>: <code v-pre>innerHTML</code> swap fills the <code v-pre>#details-modal-body</code> container</li>
-</ul>
-<p><strong>Why <code v-pre>innerHTML</code> for Modal?</strong></p>
-<p>The modal structure (header, footer, close button) is static. We only want to replace the body content, not the entire modal.</p>
-<hr>
-<doc-anchor-target id="pattern-2-delete-with-confirmation-1012-minutes">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-2-delete-with-confirmation-1012-minutes">#</doc-anchor-trigger>
-        <span>Pattern 2: Delete with Confirmation (10–12 minutes)</span>
-    </h2>
-</doc-anchor-target>
-<p>Destructive actions need confirmation. htmx provides <code v-pre>hx-confirm</code> for simple browser dialogs, or you can build custom confirmation UIs.</p>
-<doc-anchor-target id="21-add-delete-method-to-data-store">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#21-add-delete-method-to-data-store">#</doc-anchor-trigger>
-        <span>2.1 Add Delete Method to Data Store</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Data/InMemoryTaskStore.cs</code> (add this method)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
-/// Deletes a task by ID.
-/// Returns true if found and deleted, false if not found.
-/// &lt;/summary&gt;
-public static bool Delete(int id)
-{
-    var task = _tasks.FirstOrDefault(t =&gt; t.Id == id);
-    if (task is null) return false;
-
-    _tasks.Remove(task);
-    return true;
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="22-add-the-delete-handler">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#22-add-the-delete-handler">#</doc-anchor-trigger>
-        <span>2.2 Add the Delete Handler</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add this handler)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
-/// Deletes a task and returns the updated list fragment.
-/// Uses hx-confirm on the client for confirmation.
-///
-/// Response behavior:
-/// - Success: Returns updated _TaskList + triggers showMessage
-/// - Not found: Returns 404 + error message to #messages
-/// &lt;/summary&gt;
-public IActionResult OnPostDelete(int id)
-{
-    var removed = InMemoryTaskStore.Delete(id);
-    Tasks = InMemoryTaskStore.All();
-
-    if (IsHtmx())
-    {
-        if (!removed)
-        {
-            // Task was already deleted or never existed
-            Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
-            Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
-            return Fragment(&quot;Partials/_Messages&quot;, &quot;Task not found (already deleted?).&quot;);
-        }
-
-        // Success: update list and show message
-        FlashMessage = &quot;Task deleted.&quot;;
-        Response.Headers[&quot;HX-Trigger&quot;] = &quot;showMessage&quot;;
-        return Fragment(&quot;Partials/_TaskList&quot;, Tasks);
-    }
-
-    // Non-htmx fallback
-    FlashMessage = removed ? &quot;Task deleted.&quot; : &quot;Task not found.&quot;;
-    return RedirectToPage();
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="23-add-delete-button-to-each-row">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#23-add-delete-button-to-each-row">#</doc-anchor-trigger>
-        <span>2.3 Add Delete Button to Each Row</span>
-    </h3>
-</doc-anchor-target>
-<p>Update <code v-pre>_TaskList.cshtml</code> to include a Delete button:</p>
-<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskList.cshtml</code> (add to button group)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">&lt;div class=&quot;btn-group btn-group-sm&quot;&gt;
-    @* Details button *@
-    &lt;button type=&quot;button&quot;
-            class=&quot;btn btn-outline-secondary&quot;
-            hx-get=&quot;?handler=Details&amp;id=@task.Id&quot;
-            hx-target=&quot;#task-details&quot;
-            hx-swap=&quot;outerHTML&quot;&gt;
-        Details
-    &lt;/button&gt;
-
-    @* Delete button with confirmation *@
-    &lt;button type=&quot;button&quot;
-            class=&quot;btn btn-outline-danger&quot;
-            hx-post=&quot;?handler=Delete&quot;
-            hx-vals='{&quot;id&quot;: @task.Id}'
-            hx-confirm=&quot;Delete this task? This cannot be undone.&quot;
-            hx-target=&quot;#task-list&quot;
-            hx-swap=&quot;outerHTML&quot;&gt;
-        Delete
-    &lt;/button&gt;
-
-    @if (task.IsDone)
-    {
-        &lt;span class=&quot;btn btn-outline-success disabled&quot;&gt;Done&lt;/span&gt;
-    }
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="24-understanding-the-delete-pattern">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#24-understanding-the-delete-pattern">#</doc-anchor-trigger>
-        <span>2.4 Understanding the Delete Pattern</span>
-    </h3>
-</doc-anchor-target>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;button hx-post=&quot;?handler=Delete&quot;
-        hx-vals='{&quot;id&quot;: @task.Id}'
-        hx-confirm=&quot;Delete this task? This cannot be undone.&quot;
-        hx-target=&quot;#task-list&quot;
-        hx-swap=&quot;outerHTML&quot;&gt;</code></pre>
-</doc-codeblock></div>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Value</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code v-pre>hx-post</code></td>
-<td><code v-pre>&quot;?handler=Delete&quot;</code></td>
-<td>POST request to Delete handler</td>
-</tr>
-<tr>
-<td><code v-pre>hx-vals</code></td>
-<td><code v-pre>'{&quot;id&quot;: @task.Id}'</code></td>
-<td>Pass task ID as JSON</td>
-</tr>
-<tr>
-<td><code v-pre>hx-confirm</code></td>
-<td><code v-pre>&quot;Delete this task?...&quot;</code></td>
-<td>Browser confirmation dialog</td>
-</tr>
-<tr>
-<td><code v-pre>hx-target</code></td>
-<td><code v-pre>&quot;#task-list&quot;</code></td>
-<td>Update the entire list</td>
-</tr>
-<tr>
-<td><code v-pre>hx-swap</code></td>
-<td><code v-pre>&quot;outerHTML&quot;</code></td>
-<td>Replace list fragment</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><strong>Why <code v-pre>hx-vals</code> Instead of Query String?</strong></p>
-<p>You could use <code v-pre>hx-post=&quot;?handler=Delete&amp;id=@task.Id&quot;</code>, but <code v-pre>hx-vals</code> is cleaner for POST requests:</p>
-<ul>
-<li>Keeps the URL clean</li>
-<li>Sends data in the request body</li>
-<li>Avoids encoding issues with complex values</li>
-</ul>
-<p><strong>The Confirmation Flow:</strong></p>
-<ol>
-<li>User clicks Delete</li>
-<li>Browser shows confirmation dialog (native)</li>
-<li>If confirmed, htmx sends POST</li>
-<li>Server deletes task and returns updated list</li>
-<li>htmx swaps <code v-pre>#task-list</code></li>
-<li><code v-pre>showMessage</code> event triggers success message</li>
-</ol>
-<doc-anchor-target id="25-handling-edge-cases">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#25-handling-edge-cases">#</doc-anchor-trigger>
-        <span>2.5 Handling Edge Cases</span>
-    </h3>
-</doc-anchor-target>
-<p>The handler covers these scenarios:</p>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Scenario</th>
-<th>Response</th>
-<th>Status</th>
-<th>Target</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Task found and deleted</td>
-<td><code v-pre>_TaskList</code></td>
-<td>200</td>
-<td><code v-pre>#task-list</code></td>
-</tr>
-<tr>
-<td>Task not found</td>
-<td><code v-pre>_Messages</code></td>
-<td>200</td>
-<td><code v-pre>#messages</code> (retargeted)</td>
-</tr>
-<tr>
-<td>Non-htmx request</td>
-<td>Redirect</td>
-<td>302</td>
-<td>Full page</td>
-</tr>
-</tbody>
-</table>
-</div>
-<hr>
-<doc-anchor-target id="pattern-3-filtering-with-url-state-1215-minutes">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-3-filtering-with-url-state-1215-minutes">#</doc-anchor-trigger>
-        <span>Pattern 3: Filtering with URL State (12–15 minutes)</span>
-    </h2>
-</doc-anchor-target>
-<p>Filtering should update the list AND the URL, so users can bookmark or share filtered views.</p>
-<doc-anchor-target id="31-create-a-view-model-for-the-list">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#31-create-a-view-model-for-the-list">#</doc-anchor-trigger>
-        <span>3.1 Create a View Model for the List</span>
-    </h3>
-</doc-anchor-target>
-<p>To support filtering and pagination, we need a richer view model:</p>
 <p><strong>File: <code v-pre>Models/TaskListVm.cs</code> (create new file)</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">namespace RazorHtmxWorkshop.Models;
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">namespace RazorPagesHtmxWorkshop.Models;
 
 /// &lt;summary&gt;
 /// View model for the task list with filtering and pagination support.
@@ -1057,188 +389,555 @@ public class TaskListVm
     public bool HasNextPage =&gt; Page &lt; TotalPages;
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="32-update-the-list-handler">
+<doc-anchor-target id="12-understanding-the-view-model">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#32-update-the-list-handler">#</doc-anchor-trigger>
-        <span>3.2 Update the List Handler</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#12-understanding-the-view-model">#</doc-anchor-trigger>
+        <span>1.2 Understanding the View Model</span>
     </h3>
 </doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (update OnGetList)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
-/// Returns the task list fragment with optional filtering and pagination.
-/// Supports query parameter (q) for filtering and page/pageSize for pagination.
-/// &lt;/summary&gt;
-public IActionResult OnGetList(string? q, int page = 1, int pageSize = 5)
-{
-    // Validate page parameters
-    page = Math.Max(1, page);
-    pageSize = Math.Clamp(pageSize, 1, 50);
-
-    // Get all tasks
-    var all = InMemoryTaskStore.All();
-
-    // Apply filter if provided
-    if (!string.IsNullOrWhiteSpace(q))
-    {
-        all = all
-            .Where(t =&gt; t.Title.Contains(q, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-    }
-
-    // Calculate pagination
-    var total = all.Count;
-    var items = all
-        .Skip((page - 1) * pageSize)
-        .Take(pageSize)
-        .ToList();
-
-    // Build view model
-    var vm = new TaskListVm
-    {
-        Items = items,
-        Page = page,
-        PageSize = pageSize,
-        Total = total,
-        Query = q
-    };
-
-    return Fragment(&quot;Partials/_TaskList&quot;, vm);
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="33-update-onget-to-use-the-same-logic">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#33-update-onget-to-use-the-same-logic">#</doc-anchor-trigger>
-        <span>3.3 Update OnGet to Use the Same Logic</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (update OnGet)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// Add these properties to hold filter/page state for initial render
-public string? Query { get; set; }
-public int CurrentPage { get; set; } = 1;
-public int PageSize { get; set; } = 5;
-
-public void OnGet(string? q, int page = 1, int pageSize = 5)
-{
-    // Store for the view
-    Query = q;
-    CurrentPage = Math.Max(1, page);
-    PageSize = Math.Clamp(pageSize, 1, 50);
-
-    // Apply same logic as OnGetList
-    var all = InMemoryTaskStore.All();
-
-    if (!string.IsNullOrWhiteSpace(q))
-    {
-        all = all
-            .Where(t =&gt; t.Title.Contains(q, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-    }
-
-    Tasks = all
-        .Skip((CurrentPage - 1) * PageSize)
-        .Take(PageSize)
-        .ToList();
-}</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="34-add-filter-input">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#34-add-filter-input">#</doc-anchor-trigger>
-        <span>3.4 Add Filter Input</span>
-    </h3>
-</doc-anchor-target>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml</code> (add above the task list)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@*
-    Filter Input
-    ============
-
-    Filters the task list as user types (debounced).
-    Updates URL via hx-push-url for bookmarkability.
-*@
-
-&lt;div class=&quot;mb-3&quot;&gt;
-    &lt;div class=&quot;input-group&quot;&gt;
-        &lt;span class=&quot;input-group-text&quot;&gt;
-            &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; fill=&quot;currentColor&quot; viewBox=&quot;0 0 16 16&quot;&gt;
-                &lt;path d=&quot;M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z&quot;/&gt;
-            &lt;/svg&gt;
-        &lt;/span&gt;
-        &lt;input type=&quot;text&quot;
-               class=&quot;form-control&quot;
-               name=&quot;q&quot;
-               placeholder=&quot;Filter tasks...&quot;
-               value=&quot;@Model.Query&quot;
-               hx-get=&quot;?handler=List&quot;
-               hx-trigger=&quot;keyup changed delay:400ms&quot;
-               hx-target=&quot;#task-list&quot;
-               hx-swap=&quot;outerHTML&quot;
-               hx-push-url=&quot;true&quot; /&gt;
-    &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="35-understanding-hx-push-url">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#35-understanding-hx-push-url">#</doc-anchor-trigger>
-        <span>3.5 Understanding <code v-pre>hx-push-url</code></span>
-    </h3>
-</doc-anchor-target>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;input hx-get=&quot;?handler=List&quot;
-       hx-trigger=&quot;keyup changed delay:400ms&quot;
-       hx-push-url=&quot;true&quot; /&gt;</code></pre>
-</doc-codeblock></div>
 <div class="table-wrapper scrollbar overflow-hidden">
 <table class="comfortable">
 <thead>
 <tr>
-<th>Attribute</th>
-<th>Value</th>
+<th>Property</th>
+<th>Type</th>
 <th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code v-pre>hx-push-url</code></td>
-<td><code v-pre>&quot;true&quot;</code></td>
-<td>Push the request URL to browser history</td>
+<td><code v-pre>Items</code></td>
+<td><code v-pre>IReadOnlyList&lt;TaskItem&gt;</code></td>
+<td>The current page of tasks</td>
+</tr>
+<tr>
+<td><code v-pre>Page</code></td>
+<td><code v-pre>int</code></td>
+<td>Current page number (1-based)</td>
+</tr>
+<tr>
+<td><code v-pre>PageSize</code></td>
+<td><code v-pre>int</code></td>
+<td>Items per page</td>
+</tr>
+<tr>
+<td><code v-pre>Total</code></td>
+<td><code v-pre>int</code></td>
+<td>Total number of items (after filtering)</td>
+</tr>
+<tr>
+<td><code v-pre>Query</code></td>
+<td><code v-pre>string?</code></td>
+<td>Current filter query</td>
+</tr>
+<tr>
+<td><code v-pre>TotalPages</code></td>
+<td><code v-pre>int</code> (computed)</td>
+<td>Total number of pages</td>
+</tr>
+<tr>
+<td><code v-pre>HasPreviousPage</code></td>
+<td><code v-pre>bool</code> (computed)</td>
+<td>Whether previous page exists</td>
+</tr>
+<tr>
+<td><code v-pre>HasNextPage</code></td>
+<td><code v-pre>bool</code> (computed)</td>
+<td>Whether next page exists</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><strong>What This Enables:</strong></p>
-<ol>
-<li>User types &quot;buy&quot; in filter</li>
-<li>htmx sends GET to <code v-pre>?handler=List&amp;q=buy</code></li>
-<li>Browser URL updates to <code v-pre>/Tasks?handler=List&amp;q=buy</code></li>
-<li>User can bookmark or share this URL</li>
-<li><strong>Back button</strong> returns to previous filter state</li>
-</ol>
-<p><strong>Why This Matters:</strong></p>
-<p>Without <code v-pre>hx-push-url</code>, the URL stays static. Users can&#x27;t bookmark filtered views, and back/forward buttons don&#x27;t work as expected.</p>
+<p>This view model encapsulates all the information needed to render a paginated, filtered list with navigation controls.</p>
 <hr>
-<doc-anchor-target id="pattern-4-pagination-with-url-state-1012-minutes">
+<doc-anchor-target id="step-2-add-data-store-methods-for-details-and-delete-5-minutes">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-4-pagination-with-url-state-1012-minutes">#</doc-anchor-trigger>
-        <span>Pattern 4: Pagination with URL State (10–12 minutes)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-2-add-data-store-methods-for-details-and-delete-5-minutes">#</doc-anchor-trigger>
+        <span>Step 2: Add Data Store Methods for Details and Delete (5 minutes)</span>
     </h2>
 </doc-anchor-target>
-<p>Now we&#x27;ll add pagination controls that also update the URL.</p>
-<doc-anchor-target id="41-update-the-list-fragment-for-pagination">
+<doc-anchor-target id="21-add-find-and-delete-methods">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#41-update-the-list-fragment-for-pagination">#</doc-anchor-trigger>
-        <span>4.1 Update the List Fragment for Pagination</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#21-add-find-and-delete-methods">#</doc-anchor-trigger>
+        <span>2.1 Add Find and Delete Methods</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Data/InMemoryTaskStore.cs</code> (add these methods)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+/// Finds a task by ID.
+/// &lt;/summary&gt;
+public static TaskItem? Find(int id) =&gt;
+    _tasks.FirstOrDefault(t =&gt; t.Id == id);
+
+/// &lt;summary&gt;
+/// Deletes a task by ID.
+/// Returns true if found and deleted, false if not found.
+/// &lt;/summary&gt;
+public static bool Delete(int id)
+{
+    var task = _tasks.FirstOrDefault(t =&gt; t.Id == id);
+    if (task is null) return false;
+
+    _tasks.Remove(task);
+    return true;
+}</code></pre>
+</doc-codeblock></div>
+<p>These methods enable the Details and Delete features we&#x27;ll implement.</p>
+<hr>
+<doc-anchor-target id="step-3-update-the-pagemodel-for-filtering-and-pagination-1215-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-3-update-the-pagemodel-for-filtering-and-pagination-1215-minutes">#</doc-anchor-trigger>
+        <span>Step 3: Update the PageModel for Filtering and Pagination (12–15 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>We&#x27;ll update the PageModel to support URL-based filtering and pagination using model binding.</p>
+<doc-anchor-target id="31-add-query-parameter-properties">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#31-add-query-parameter-properties">#</doc-anchor-trigger>
+        <span>3.1 Add Query Parameter Properties</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add these properties at the top of the class)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">[BindProperty(SupportsGet = true)]
+public string? Q { get; set; }
+
+[BindProperty(SupportsGet = true)]
+public int PageNum { get; set; } = 1;
+
+[BindProperty(SupportsGet = true)]
+public int Size { get; set; } = 5;
+
+public string? Query { get; set; }
+public int CurrentPage { get; set; } = 1;
+public int PageSize { get; set; } = 5;
+public int TotalTasks { get; set; }</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="32-understanding-bindpropertysupportsget--true">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#32-understanding-bindpropertysupportsget--true">#</doc-anchor-trigger>
+        <span>3.2 Understanding BindProperty(SupportsGet = true)</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">[BindProperty(SupportsGet = true)]
+public string? Q { get; set; }</code></pre>
+</doc-codeblock></div>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>What it does</strong></td>
+<td>Binds query string parameters to properties for GET requests</td>
+</tr>
+<tr>
+<td><strong>Without it</strong></td>
+<td>Only POST requests bind to properties</td>
+</tr>
+<tr>
+<td><strong>With it</strong></td>
+<td>Both GET and POST requests bind to properties</td>
+</tr>
+<tr>
+<td><strong>Parameter name</strong></td>
+<td>Matches the property name exactly (case-sensitive)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This means:</p>
+<ul>
+<li>URL: <code v-pre>/Tasks?Q=test&amp;PageNum=2&amp;Size=10</code></li>
+<li>Automatically binds to: <code v-pre>Q = &quot;test&quot;</code>, <code v-pre>PageNum = 2</code>, <code v-pre>Size = 10</code></li>
+</ul>
+<doc-anchor-target id="33-update-onget-handler">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#33-update-onget-handler">#</doc-anchor-trigger>
+        <span>3.3 Update OnGet Handler</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (replace OnGet method)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public IActionResult OnGet()
+{
+    Query = Q;
+    CurrentPage = Math.Max(1, PageNum);
+    PageSize = Math.Clamp(Size, 1, 50);
+
+    var all = InMemoryTaskStore.All();
+
+    if (!string.IsNullOrWhiteSpace(Q))
+    {
+        all = all
+            .Where(t =&gt; t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    TotalTasks = all.Count;
+    Tasks = all
+        .Skip((CurrentPage - 1) * PageSize)
+        .Take(PageSize)
+        .ToList();
+
+    if (IsHtmx())
+    {
+        var vm = new TaskListVm
+        {
+            Items = Tasks,
+            Page = CurrentPage,
+            PageSize = PageSize,
+            Total = TotalTasks,
+            Query = Query
+        };
+        return Fragment(&quot;Partials/_TaskList&quot;, vm);
+    }
+
+    return Page();
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>Key Changes:</strong></p>
+<ol>
+<li><strong>Filtering</strong>: Applies <code v-pre>Q</code> parameter to filter tasks</li>
+<li><strong>Pagination</strong>: Uses <code v-pre>PageNum</code> and <code v-pre>Size</code> to paginate results</li>
+<li><strong>htmx support</strong>: Returns fragment for htmx requests, full page otherwise</li>
+<li><strong>Validation</strong>: Ensures <code v-pre>PageNum</code> is at least 1 and <code v-pre>Size</code> is between 1-50</li>
+</ol>
+<doc-anchor-target id="34-add-ongetlist-handler">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#34-add-ongetlist-handler">#</doc-anchor-trigger>
+        <span>3.4 Add OnGetList Handler</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add this handler)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+/// Returns the task list fragment with optional filtering and pagination.
+/// Supports query parameter (Q) for filtering and PageNum/Size for pagination.
+/// &lt;/summary&gt;
+public IActionResult OnGetList()
+{
+    CurrentPage = Math.Max(1, PageNum);
+    PageSize = Math.Clamp(Size, 1, 50);
+
+    var all = InMemoryTaskStore.All();
+
+    if (!string.IsNullOrWhiteSpace(Q))
+    {
+        all = all
+            .Where(t =&gt; t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    var total = all.Count;
+    var items = all
+        .Skip((CurrentPage - 1) * PageSize)
+        .Take(PageSize)
+        .ToList();
+
+    var vm = new TaskListVm
+    {
+        Items = items,
+        Page = CurrentPage,
+        PageSize = PageSize,
+        Total = total,
+        Query = Q
+    };
+
+    return Fragment(&quot;Partials/_TaskList&quot;, vm);
+}</code></pre>
+</doc-codeblock></div>
+<p>This handler provides a dedicated endpoint for fetching paginated/filtered lists via htmx.</p>
+<hr>
+<doc-anchor-target id="step-4-add-details-handler-5-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-4-add-details-handler-5-minutes">#</doc-anchor-trigger>
+        <span>Step 4: Add Details Handler (5 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="41-create-ongetdetails-handler">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#41-create-ongetdetails-handler">#</doc-anchor-trigger>
+        <span>4.1 Create OnGetDetails Handler</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add this handler)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+/// Returns the details fragment for a specific task.
+/// Called via hx-get from the Details button in each row.
+/// &lt;/summary&gt;
+public IActionResult OnGetDetails(int id)
+{
+    var task = InMemoryTaskStore.Find(id);
+    return Fragment(&quot;Partials/_TaskDetails&quot;, task);
+}</code></pre>
+</doc-codeblock></div>
+<p>This handler fetches a single task and returns a modal fragment.</p>
+<hr>
+<doc-anchor-target id="step-5-add-delete-handler-810-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-5-add-delete-handler-810-minutes">#</doc-anchor-trigger>
+        <span>Step 5: Add Delete Handler (8–10 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="51-create-onpostdelete-handler">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#51-create-onpostdelete-handler">#</doc-anchor-trigger>
+        <span>5.1 Create OnPostDelete Handler</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (add this handler)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">/// &lt;summary&gt;
+/// Deletes a task and returns the updated list fragment.
+/// Uses hx-confirm on the client for confirmation.
+///
+/// Response behavior:
+/// - Success: Returns updated _TaskList + triggers showMessage
+/// - Not found: Returns error message to #messages
+/// &lt;/summary&gt;
+public IActionResult OnPostDelete(int id)
+{
+    var removed = InMemoryTaskStore.Delete(id);
+    Tasks = InMemoryTaskStore.All();
+
+    if (IsHtmx())
+    {
+        if (!removed)
+        {
+            Response.Headers[&quot;HX-Retarget&quot;] = &quot;#messages&quot;;
+            Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
+            return Fragment(&quot;Partials/_Messages&quot;, &quot;Task not found (already deleted?).&quot;);
+        }
+
+        FlashMessage = &quot;Task deleted.&quot;;
+        Response.Headers[&quot;HX-Trigger&quot;] = &quot;showMessage&quot;;
+
+        CurrentPage = Math.Max(1, PageNum);
+        PageSize = Math.Clamp(Size, 1, 50);
+
+        var all = InMemoryTaskStore.All();
+
+        if (!string.IsNullOrWhiteSpace(Q))
+        {
+            all = all
+                .Where(t =&gt; t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        var total = all.Count;
+
+        // Adjust page number if it becomes invalid after deletion
+        var totalPages = (int)Math.Ceiling(total / (double)PageSize);
+        if (CurrentPage &gt; totalPages &amp;&amp; totalPages &gt; 0)
+        {
+            CurrentPage = totalPages;
+        }
+
+        var items = all
+            .Skip((CurrentPage - 1) * PageSize)
+            .Take(PageSize)
+            .ToList();
+
+        var vm = new TaskListVm
+        {
+            Items = items,
+            Page = CurrentPage,
+            PageSize = PageSize,
+            Total = total,
+            Query = Q
+        };
+
+        return Fragment(&quot;Partials/_TaskList&quot;, vm);
+    }
+
+    FlashMessage = removed ? &quot;Task deleted.&quot; : &quot;Task not found.&quot;;
+    return RedirectToPage();
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>Key Features:</strong></p>
+<ol>
+<li><strong>State preservation</strong>: Applies the same filter/pagination as before delete</li>
+<li><strong>Page adjustment</strong>: If deleting the last item on a page, moves back to previous page</li>
+<li><strong>Error handling</strong>: Returns error message if task not found</li>
+<li><strong>Success messaging</strong>: Triggers <code v-pre>showMessage</code> event</li>
+</ol>
+<hr>
+<doc-anchor-target id="step-6-update-onpostcreate-to-return-view-model-5-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-6-update-onpostcreate-to-return-view-model-5-minutes">#</doc-anchor-trigger>
+        <span>Step 6: Update OnPostCreate to Return View Model (5 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>The Create handler needs to return the same view model structure as the list.</p>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (update the success path in OnPostCreate)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// Success path in OnPostCreate
+InMemoryTaskStore.Add(Input.Title);
+
+if (IsHtmx())
+{
+    FlashMessage = &quot;Task added successfully!&quot;;
+    Response.Headers[&quot;HX-Trigger&quot;] = &quot;showMessage,clearForm&quot;;
+
+    CurrentPage = Math.Max(1, PageNum);
+    PageSize = Math.Clamp(Size, 1, 50);
+
+    var all = InMemoryTaskStore.All();
+
+    if (!string.IsNullOrWhiteSpace(Q))
+    {
+        all = all
+            .Where(t =&gt; t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    var total = all.Count;
+    var items = all
+        .Skip((CurrentPage - 1) * PageSize)
+        .Take(PageSize)
+        .ToList();
+
+    var vm = new TaskListVm
+    {
+        Items = items,
+        Page = CurrentPage,
+        PageSize = PageSize,
+        Total = total,
+        Query = Q
+    };
+
+    return Fragment(&quot;Partials/_TaskList&quot;, vm);
+}</code></pre>
+</doc-codeblock></div>
+<p>This ensures the list updates correctly after adding a task, preserving filter/pagination state.</p>
+<hr>
+<doc-anchor-target id="step-7-create-the-task-details-modal-fragment-810-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-7-create-the-task-details-modal-fragment-810-minutes">#</doc-anchor-trigger>
+        <span>Step 7: Create the Task Details Modal Fragment (8–10 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="71-create-the-details-partial">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#71-create-the-details-partial">#</doc-anchor-trigger>
+        <span>7.1 Create the Details Partial</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskDetails.cshtml</code> (create new file)</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorPagesHtmxWorkshop.Models
+@model TaskItem?
+
+@*
+    Task Details Modal
+    ==================
+
+    Target ID: #task-modal-container
+    Purpose: Display detailed information about a single task in a modal
+    Model: TaskItem? (null if not found)
+*@
+
+&lt;div class=&quot;modal fade&quot; id=&quot;task-modal&quot; tabindex=&quot;-1&quot; aria-labelledby=&quot;taskModalLabel&quot; aria-hidden=&quot;true&quot;&gt;
+    &lt;div class=&quot;modal-dialog modal-dialog-centered&quot;&gt;
+        &lt;div class=&quot;modal-content workshop-card&quot;&gt;
+            &lt;div class=&quot;modal-header border-bottom border-light&quot;&gt;
+                &lt;h5 class=&quot;modal-title&quot; id=&quot;taskModalLabel&quot;&gt;Task Details&lt;/h5&gt;
+                &lt;button type=&quot;button&quot; class=&quot;btn-close&quot; data-bs-dismiss=&quot;modal&quot; aria-label=&quot;Close&quot;&gt;&lt;/button&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;modal-body&quot;&gt;
+                @if (Model is null)
+                {
+                    &lt;div class=&quot;text-muted text-center py-4&quot;&gt;Task not found.&lt;/div&gt;
+                }
+                else
+                {
+                    &lt;div class=&quot;vstack gap-4 py-2&quot;&gt;
+                        &lt;div&gt;
+                            &lt;label class=&quot;form-label text-muted small mb-1&quot;&gt;Title&lt;/label&gt;
+                            &lt;div class=&quot;fw-semibold fs-5&quot;&gt;@Model.Title&lt;/div&gt;
+                        &lt;/div&gt;
+
+                        &lt;div class=&quot;row&quot;&gt;
+                            &lt;div class=&quot;col-6&quot;&gt;
+                                &lt;label class=&quot;form-label text-muted small mb-1&quot;&gt;Status&lt;/label&gt;
+                                &lt;div&gt;
+                                    @if (Model.IsDone)
+                                    {
+                                        &lt;span class=&quot;badge text-bg-success&quot;&gt;Done&lt;/span&gt;
+                                    }
+                                    else
+                                    {
+                                        &lt;span class=&quot;badge text-bg-secondary&quot;&gt;Open&lt;/span&gt;
+                                    }
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                            &lt;div class=&quot;col-6&quot;&gt;
+                                &lt;label class=&quot;form-label text-muted small mb-1&quot;&gt;ID&lt;/label&gt;
+                                &lt;div class=&quot;text-muted&quot;&gt;@Model.Id&lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+
+                        &lt;div&gt;
+                            &lt;label class=&quot;form-label text-muted small mb-1&quot;&gt;Created&lt;/label&gt;
+                            &lt;div&gt;@Model.CreatedUtc.ToLocalTime().ToString(&quot;F&quot;)&lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                }
+            &lt;/div&gt;
+            &lt;div class=&quot;modal-footer border-top border-light&quot;&gt;
+                &lt;button type=&quot;button&quot; class=&quot;btn btn-outline-secondary&quot; data-bs-dismiss=&quot;modal&quot;&gt;Close&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="72-understanding-the-modal-pattern">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#72-understanding-the-modal-pattern">#</doc-anchor-trigger>
+        <span>7.2 Understanding the Modal Pattern</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Key Aspects:</strong></p>
+<ul>
+<li><strong>Complete modal structure</strong>: The fragment includes the entire Bootstrap modal (not just the body)</li>
+<li><strong>Swapped into container</strong>: Gets inserted into <code v-pre>#task-modal-container</code></li>
+<li><strong>JavaScript trigger</strong>: A script shows the modal after it&#x27;s loaded</li>
+<li><strong>Null handling</strong>: Gracefully displays a message if task not found</li>
+</ul>
+<hr>
+<doc-anchor-target id="step-8-update-the-task-list-fragment-1518-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-8-update-the-task-list-fragment-1518-minutes">#</doc-anchor-trigger>
+        <span>Step 8: Update the Task List Fragment (15–18 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Now we&#x27;ll update the task list to use the view model and include pagination controls.</p>
+<doc-anchor-target id="81-rewrite-_tasklistcshtml">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#81-rewrite-_tasklistcshtml">#</doc-anchor-trigger>
+        <span>8.1 Rewrite _TaskList.cshtml</span>
     </h3>
 </doc-anchor-target>
 <p><strong>File: <code v-pre>Pages/Tasks/Partials/_TaskList.cshtml</code> (complete rewrite)</strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorHtmxWorkshop.Models
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@using RazorPagesHtmxWorkshop.Models
 @model TaskListVm
 
 @*
     Task List Fragment with Pagination
     ===================================
+
+    Target ID: #task-list
+    Swap: outerHTML
+    Returned by: OnGet (htmx), OnGetList, OnPostCreate (on success), OnPostDelete (on success)
 
     Features:
     - Displays filtered/paginated task list
@@ -1254,9 +953,9 @@ public void OnGet(string? q, int page = 1, int pageSize = 5)
         &lt;div class=&quot;text-muted py-4 text-center&quot;&gt;
             @if (!string.IsNullOrWhiteSpace(Model.Query))
             {
-                &lt;p&gt;No tasks match &quot;&lt;strong&gt;@Model.Query&lt;/strong&gt;&quot;&lt;/p&gt;
-                &lt;a href=&quot;?handler=List&quot;
-                   hx-get=&quot;?handler=List&quot;
+                &lt;p class=&quot;mb-2&quot;&gt;No tasks match &quot;&lt;strong&gt;@Model.Query&lt;/strong&gt;&quot;&lt;/p&gt;
+                &lt;a href=&quot;?&quot;
+                   hx-get=&quot;?&quot;
                    hx-target=&quot;#task-list&quot;
                    hx-swap=&quot;outerHTML&quot;
                    hx-push-url=&quot;true&quot;
@@ -1266,7 +965,7 @@ public void OnGet(string? q, int page = 1, int pageSize = 5)
             }
             else
             {
-                &lt;p&gt;No tasks yet. Add one above!&lt;/p&gt;
+                &lt;p class=&quot;mb-0&quot;&gt;No tasks yet. Add one above!&lt;/p&gt;
             }
         &lt;/div&gt;
     }
@@ -1283,24 +982,38 @@ public void OnGet(string? q, int page = 1, int pageSize = 5)
                         &lt;/span&gt;
                     &lt;/div&gt;
 
-                    &lt;div class=&quot;btn-group btn-group-sm&quot;&gt;
-                        &lt;button type=&quot;button&quot;
-                                class=&quot;btn btn-outline-secondary&quot;
-                                hx-get=&quot;?handler=Details&amp;id=@task.Id&quot;
-                                hx-target=&quot;#task-details&quot;
-                                hx-swap=&quot;outerHTML&quot;&gt;
-                            Details
-                        &lt;/button&gt;
+                    &lt;div class=&quot;d-flex align-items-center gap-2&quot;&gt;
+                        @if (task.IsDone)
+                        {
+                            &lt;span class=&quot;badge text-bg-success&quot;&gt;Done&lt;/span&gt;
+                        }
+                        else
+                        {
+                            &lt;span class=&quot;badge text-bg-secondary&quot;&gt;Open&lt;/span&gt;
+                        }
 
-                        &lt;button type=&quot;button&quot;
-                                class=&quot;btn btn-outline-danger&quot;
-                                hx-post=&quot;?handler=Delete&quot;
-                                hx-vals='{&quot;id&quot;: @task.Id}'
-                                hx-confirm=&quot;Delete this task? This cannot be undone.&quot;
-                                hx-target=&quot;#task-list&quot;
-                                hx-swap=&quot;outerHTML&quot;&gt;
-                            Delete
-                        &lt;/button&gt;
+                        &lt;div class=&quot;btn-group btn-group-sm&quot;&gt;
+                            @* Details button - loads into modal *@
+                            &lt;button type=&quot;button&quot;
+                                    class=&quot;btn btn-outline-secondary&quot;
+                                    hx-get=&quot;?handler=Details&amp;id=@task.Id&quot;
+                                    hx-target=&quot;#task-modal-container&quot;
+                                    hx-indicator=&quot;#task-loading&quot;&gt;
+                                Details
+                            &lt;/button&gt;
+
+                            @* Delete button with confirmation *@
+                            &lt;button type=&quot;button&quot;
+                                    class=&quot;btn btn-outline-danger&quot;
+                                    hx-post=&quot;?handler=Delete&quot;
+                                    hx-vals='{&quot;id&quot;: @task.Id, &quot;Q&quot;: &quot;@(Model.Query ?? &quot;&quot;)&quot;, &quot;PageNum&quot;: @Model.Page, &quot;Size&quot;: @Model.PageSize}'
+                                    hx-confirm=&quot;Delete this task? This cannot be undone.&quot;
+                                    hx-target=&quot;#task-list&quot;
+                                    hx-swap=&quot;outerHTML&quot;
+                                    hx-indicator=&quot;#task-loading&quot;&gt;
+                                Delete
+                            &lt;/button&gt;
+                        &lt;/div&gt;
                     &lt;/div&gt;
                 &lt;/li&gt;
             }
@@ -1309,167 +1022,437 @@ public void OnGet(string? q, int page = 1, int pageSize = 5)
         @* Pagination Controls *@
         @if (Model.TotalPages &gt; 1)
         {
-            &lt;nav class=&quot;mt-3&quot; aria-label=&quot;Task list pagination&quot;&gt;
-                &lt;ul class=&quot;pagination pagination-sm justify-content-center mb-0&quot;&gt;
-                    @* Previous button *@
-                    &lt;li class=&quot;page-item @(Model.HasPreviousPage ? &quot;&quot; : &quot;disabled&quot;)&quot;&gt;
-                        &lt;a class=&quot;page-link&quot;
-                           hx-get=&quot;?handler=List&amp;q=@Model.Query&amp;page=@(Model.Page - 1)&amp;pageSize=@Model.PageSize&quot;
-                           hx-target=&quot;#task-list&quot;
-                           hx-swap=&quot;outerHTML&quot;
-                           hx-push-url=&quot;true&quot;
-                           @(Model.HasPreviousPage ? &quot;&quot; : &quot;tabindex=\&quot;-1\&quot; aria-disabled=\&quot;true\&quot;&quot;)&gt;
-                            Previous
-                        &lt;/a&gt;
-                    &lt;/li&gt;
+            &lt;div class=&quot;card-footer d-flex justify-content-between align-items-center bg-transparent border-top-0 pt-4&quot;&gt;
+                &lt;div class=&quot;small text-muted&quot;&gt;
+                    Showing &lt;strong&gt;@((Model.Page - 1) * Model.PageSize + 1)&lt;/strong&gt; to
+                    &lt;strong&gt;@(Math.Min(Model.Page * Model.PageSize, Model.Total))&lt;/strong&gt; of
+                    &lt;strong&gt;@Model.Total&lt;/strong&gt; tasks
+                &lt;/div&gt;
 
-                    @* Page numbers *@
-                    @for (var p = 1; p &lt;= Model.TotalPages; p++)
-                    {
-                        var isActive = p == Model.Page;
-                        &lt;li class=&quot;page-item @(isActive ? &quot;active&quot; : &quot;&quot;)&quot;&gt;
-                            &lt;a class=&quot;page-link&quot;
-                               hx-get=&quot;?handler=List&amp;q=@Model.Query&amp;page=@p&amp;pageSize=@Model.PageSize&quot;
+                &lt;nav aria-label=&quot;Task list pagination&quot;&gt;
+                    &lt;ul class=&quot;pagination pagination-sm mb-0&quot;&gt;
+                        @* Previous Page *@
+                        &lt;li class=&quot;page-item @(!Model.HasPreviousPage ? &quot;disabled&quot; : &quot;&quot;)&quot;&gt;
+                            &lt;a hx-get=&quot;?Q=@(Model.Query ?? &quot;&quot;)&amp;PageNum=@(Model.Page - 1)&amp;Size=@Model.PageSize&quot;
                                hx-target=&quot;#task-list&quot;
                                hx-swap=&quot;outerHTML&quot;
                                hx-push-url=&quot;true&quot;
-                               @(isActive ? &quot;aria-current=\&quot;page\&quot;&quot; : &quot;&quot;)&gt;
-                                @p
+                               class=&quot;page-link&quot;
+                               style=&quot;cursor: pointer;&quot;
+                               aria-label=&quot;Previous&quot;&gt;
+                                &lt;span aria-hidden=&quot;true&quot;&gt;&amp;laquo;&lt;/span&gt;
                             &lt;/a&gt;
                         &lt;/li&gt;
-                    }
 
-                    @* Next button *@
-                    &lt;li class=&quot;page-item @(Model.HasNextPage ? &quot;&quot; : &quot;disabled&quot;)&quot;&gt;
-                        &lt;a class=&quot;page-link&quot;
-                           hx-get=&quot;?handler=List&amp;q=@Model.Query&amp;page=@(Model.Page + 1)&amp;pageSize=@Model.PageSize&quot;
-                           hx-target=&quot;#task-list&quot;
-                           hx-swap=&quot;outerHTML&quot;
-                           hx-push-url=&quot;true&quot;
-                           @(Model.HasNextPage ? &quot;&quot; : &quot;tabindex=\&quot;-1\&quot; aria-disabled=\&quot;true\&quot;&quot;)&gt;
-                            Next
-                        &lt;/a&gt;
-                    &lt;/li&gt;
-                &lt;/ul&gt;
-            &lt;/nav&gt;
+                        @* Page Numbers *@
+                        @for (int i = 1; i &lt;= Model.TotalPages; i++)
+                        {
+                            &lt;li class=&quot;page-item @(i == Model.Page ? &quot;active&quot; : &quot;&quot;)&quot; @(i == Model.Page ? &quot;aria-current='page'&quot; : &quot;&quot;)&gt;
+                                &lt;a class=&quot;page-link&quot;
+                                   style=&quot;cursor: pointer;&quot;
+                                   hx-get=&quot;?Q=@(Model.Query ?? &quot;&quot;)&amp;PageNum=@i&amp;Size=@Model.PageSize&quot;
+                                   hx-target=&quot;#task-list&quot;
+                                   hx-swap=&quot;outerHTML&quot;
+                                   hx-push-url=&quot;true&quot;&gt;
+                                    @i
+                                &lt;/a&gt;
+                            &lt;/li&gt;
+                        }
 
-            &lt;div class=&quot;text-center text-muted small mt-2&quot;&gt;
-                Showing @((Model.Page - 1) * Model.PageSize + 1)–@(Math.Min(Model.Page * Model.PageSize, Model.Total)) of @Model.Total tasks
+                        @* Next Page *@
+                        &lt;li class=&quot;page-item @(!Model.HasNextPage ? &quot;disabled&quot; : &quot;&quot;)&quot;&gt;
+                            &lt;a class=&quot;page-link&quot;
+                               style=&quot;cursor: pointer;&quot;
+                               hx-get=&quot;?Q=@(Model.Query ?? &quot;&quot;)&amp;PageNum=@(Model.Page + 1)&amp;Size=@Model.PageSize&quot;
+                               hx-target=&quot;#task-list&quot;
+                               hx-swap=&quot;outerHTML&quot;
+                               hx-push-url=&quot;true&quot;
+                               aria-label=&quot;Next&quot;&gt;
+                                &lt;span aria-hidden=&quot;true&quot;&gt;&amp;raquo;&lt;/span&gt;
+                            &lt;/a&gt;
+                        &lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;/nav&gt;
             &lt;/div&gt;
         }
     }
 &lt;/div&gt;</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="42-understanding-the-pagination-pattern">
+<doc-anchor-target id="82-understanding-key-patterns">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#42-understanding-the-pagination-pattern">#</doc-anchor-trigger>
-        <span>4.2 Understanding the Pagination Pattern</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#82-understanding-key-patterns">#</doc-anchor-trigger>
+        <span>8.2 Understanding Key Patterns</span>
     </h3>
 </doc-anchor-target>
-<p>Each pagination link includes:</p>
+<doc-anchor-target id="details-button">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#details-button">#</doc-anchor-trigger>
+        <span>Details Button</span>
+    </h4>
+</doc-anchor-target>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;a hx-get=&quot;?handler=List&amp;q=@Model.Query&amp;page=@p&amp;pageSize=@Model.PageSize&quot;
-   hx-target=&quot;#task-list&quot;
-   hx-swap=&quot;outerHTML&quot;
-   hx-push-url=&quot;true&quot;&gt;</code></pre>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;button hx-get=&quot;?handler=Details&amp;id=@task.Id&quot;
+        hx-target=&quot;#task-modal-container&quot;
+        hx-indicator=&quot;#task-loading&quot;&gt;</code></pre>
 </doc-codeblock></div>
-<p><strong>URL State Preservation:</strong></p>
-<ul>
-<li><code v-pre>q=@Model.Query</code> preserves the current filter</li>
-<li><code v-pre>page=@p</code> sets the new page</li>
-<li><code v-pre>pageSize=@Model.PageSize</code> maintains page size</li>
-<li><code v-pre>hx-push-url=&quot;true&quot;</code> updates the browser URL</li>
-</ul>
-<p><strong>Result:</strong></p>
-<ul>
-<li>URL becomes <code v-pre>/Tasks?handler=List&amp;q=buy&amp;page=2&amp;pageSize=5</code></li>
-<li>User can bookmark this exact view</li>
-<li>Back/forward navigates through filter/page history</li>
-</ul>
-<doc-anchor-target id="43-update-the-page-to-use-the-view-model">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#43-update-the-page-to-use-the-view-model">#</doc-anchor-trigger>
-        <span>4.3 Update the Page to Use the View Model</span>
-    </h3>
-</doc-anchor-target>
-<p>Update the list partial call in <code v-pre>Index.cshtml</code> to handle both the simple model (for form submissions) and the view model (for filtered/paginated views).</p>
-<p>Since <code v-pre>OnPostCreate</code> still returns the simple list, you&#x27;ll need to update it:</p>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code> (update OnPostCreate success path)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// Success path in OnPostCreate
-InMemoryTaskStore.Add(Input.Title);
-
-if (IsHtmx())
-{
-    FlashMessage = &quot;Task added successfully!&quot;;
-    Response.Headers[&quot;HX-Trigger&quot;] = &quot;showMessage,clearForm&quot;;
-
-    // Return a view model with default pagination
-    var all = InMemoryTaskStore.All();
-    var vm = new TaskListVm
-    {
-        Items = all.Take(5).ToList(),
-        Page = 1,
-        PageSize = 5,
-        Total = all.Count,
-        Query = null
-    };
-
-    return Fragment(&quot;Partials/_TaskList&quot;, vm);
-}</code></pre>
-</doc-codeblock></div>
-<hr>
-<doc-anchor-target id="pattern-5-smooth-transitions-57-minutes">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-5-smooth-transitions-57-minutes">#</doc-anchor-trigger>
-        <span>Pattern 5: Smooth Transitions (5–7 minutes)</span>
-    </h2>
-</doc-anchor-target>
-<p>Add CSS transitions to make swaps feel polished rather than jarring.</p>
-<doc-anchor-target id="51-understanding-htmx-css-classes">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#51-understanding-htmx-css-classes">#</doc-anchor-trigger>
-        <span>5.1 Understanding htmx CSS Classes</span>
-    </h3>
-</doc-anchor-target>
-<p>htmx adds these classes during the swap lifecycle:</p>
 <div class="table-wrapper scrollbar overflow-hidden">
 <table class="comfortable">
 <thead>
 <tr>
-<th>Class</th>
-<th>When Applied</th>
-<th>Duration</th>
+<th>Attribute</th>
+<th>Value</th>
+<th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code v-pre>htmx-request</code></td>
-<td>Request is in flight</td>
-<td>Until response</td>
+<td><code v-pre>hx-get</code></td>
+<td><code v-pre>&quot;?handler=Details&amp;id=...&quot;</code></td>
+<td>Fetch task details</td>
 </tr>
 <tr>
-<td><code v-pre>htmx-swapping</code></td>
-<td>Old content being removed</td>
-<td>Brief</td>
+<td><code v-pre>hx-target</code></td>
+<td><code v-pre>&quot;#task-modal-container&quot;</code></td>
+<td>Inject modal into container</td>
 </tr>
 <tr>
-<td><code v-pre>htmx-settling</code></td>
-<td>New content settling in</td>
-<td>Brief</td>
-</tr>
-<tr>
-<td><code v-pre>htmx-added</code></td>
-<td>New elements just added</td>
-<td>Brief</td>
+<td><code v-pre>hx-indicator</code></td>
+<td><code v-pre>&quot;#task-loading&quot;</code></td>
+<td>Show loading spinner</td>
 </tr>
 </tbody>
 </table>
 </div>
-<doc-anchor-target id="52-add-transition-styles">
+<doc-anchor-target id="delete-button">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#delete-button">#</doc-anchor-trigger>
+        <span>Delete Button</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;button hx-post=&quot;?handler=Delete&quot;
+        hx-vals='{&quot;id&quot;: @task.Id, &quot;Q&quot;: &quot;...&quot;, &quot;PageNum&quot;: @Model.Page, &quot;Size&quot;: @Model.PageSize}'
+        hx-confirm=&quot;Delete this task? This cannot be undone.&quot;
+        hx-target=&quot;#task-list&quot;
+        hx-swap=&quot;outerHTML&quot;&gt;</code></pre>
+</doc-codeblock></div>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>hx-post</code></td>
+<td><code v-pre>&quot;?handler=Delete&quot;</code></td>
+<td>POST to delete handler</td>
+</tr>
+<tr>
+<td><code v-pre>hx-vals</code></td>
+<td><code v-pre>'{&quot;id&quot;: ..., &quot;Q&quot;: ..., ...}'</code></td>
+<td>Pass ID + preserve state</td>
+</tr>
+<tr>
+<td><code v-pre>hx-confirm</code></td>
+<td><code v-pre>&quot;Delete this task?...&quot;</code></td>
+<td>Browser confirmation</td>
+</tr>
+<tr>
+<td><code v-pre>hx-target</code></td>
+<td><code v-pre>&quot;#task-list&quot;</code></td>
+<td>Update the list</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Why <code v-pre>hx-vals</code> includes Q, PageNum, Size:</strong></p>
+<p>These ensure the delete handler can return a list with the same filter/pagination state. Without them, the list would reset to page 1 with no filter.</p>
+<doc-anchor-target id="pagination-links">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#pagination-links">#</doc-anchor-trigger>
+        <span>Pagination Links</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;a hx-get=&quot;?Q=@(Model.Query ?? &quot;&quot;)&amp;PageNum=@i&amp;Size=@Model.PageSize&quot;
+   hx-target=&quot;#task-list&quot;
+   hx-swap=&quot;outerHTML&quot;
+   hx-push-url=&quot;true&quot;&gt;</code></pre>
+</doc-codeblock></div>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>hx-get</code></td>
+<td><code v-pre>&quot;?Q=...&amp;PageNum=...&amp;Size=...&quot;</code></td>
+<td>Fetch specific page</td>
+</tr>
+<tr>
+<td><code v-pre>hx-push-url</code></td>
+<td><code v-pre>&quot;true&quot;</code></td>
+<td>Update browser URL</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>URL State Preservation:</strong></p>
+<ul>
+<li><code v-pre>Q=@(Model.Query ?? &quot;&quot;)</code> preserves the current filter</li>
+<li><code v-pre>PageNum=@i</code> sets the new page</li>
+<li><code v-pre>Size=@Model.PageSize</code> maintains page size</li>
+</ul>
+<hr>
+<doc-anchor-target id="step-9-update-the-main-page-for-filtering-and-modal-1215-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-9-update-the-main-page-for-filtering-and-modal-1215-minutes">#</doc-anchor-trigger>
+        <span>Step 9: Update the Main Page for Filtering and Modal (12–15 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="91-update-indexcshtml">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#52-add-transition-styles">#</doc-anchor-trigger>
-        <span>5.2 Add Transition Styles</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#91-update-indexcshtml">#</doc-anchor-trigger>
+        <span>9.1 Update Index.cshtml</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml</code> (update the list section)</strong></p>
+<p>Find the section where the task list is rendered and update it to:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@page
+@model RazorPagesHtmxWorkshop.Pages.Tasks.IndexModel
+@using RazorPagesHtmxWorkshop.Models
+@{
+    ViewData[&quot;Title&quot;] = &quot;Tasks • htmx Razor Pages Workshop&quot;;
+
+    // Build the initial view model for the task list
+    var initialVm = new TaskListVm
+    {
+        Items = Model.Tasks,
+        Page = Model.CurrentPage,
+        PageSize = Model.PageSize,
+        Total = Model.TotalTasks,
+        Query = Model.Query
+    };
+}
+
+&lt;div class=&quot;d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-2 mb-3&quot;&gt;
+    &lt;div&gt;
+        &lt;h1 class=&quot;mb-1&quot;&gt;Tasks&lt;/h1&gt;
+        &lt;p class=&quot;text-muted mb-0&quot;&gt;Lab 4: Modals, confirm, history, and pagination.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;d-flex align-items-center gap-2&quot;&gt;
+        @* Loading indicator - shown during htmx requests *@
+        &lt;span id=&quot;task-loading&quot; class=&quot;htmx-indicator&quot;&gt;
+            &lt;span class=&quot;spinner-border spinner-border-sm text-secondary&quot; role=&quot;status&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;visually-hidden&quot;&gt;Loading...&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;form method=&quot;post&quot; asp-page-handler=&quot;Reset&quot; class=&quot;m-0&quot;&gt;
+            &lt;button class=&quot;btn btn-sm btn-outline-secondary&quot; type=&quot;submit&quot;&gt;Reset&lt;/button&gt;
+        &lt;/form&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;partial name=&quot;Partials/_Messages&quot; model=&quot;Model.FlashMessage&quot; /&gt;
+
+&lt;div class=&quot;row g-3 g-md-4&quot;&gt;
+    &lt;div class=&quot;col-lg-5&quot;&gt;
+        &lt;div class=&quot;card workshop-card h-100&quot;&gt;
+            &lt;div class=&quot;card-body&quot;&gt;
+                &lt;div class=&quot;workshop-kicker&quot;&gt;Fragment boundary&lt;/div&gt;
+                &lt;h2 class=&quot;h5&quot;&gt;Create&lt;/h2&gt;
+                &lt;partial name=&quot;Partials/_TaskForm&quot; model=&quot;Model&quot; /&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;col-lg-7&quot;&gt;
+        &lt;div class=&quot;card workshop-card h-100&quot;&gt;
+            &lt;div class=&quot;card-body&quot;&gt;
+                &lt;div class=&quot;workshop-kicker&quot;&gt;Fragment boundary&lt;/div&gt;
+                &lt;h2 class=&quot;h5 mb-3&quot;&gt;List&lt;/h2&gt;
+
+                @*
+                    Filter Input
+                    ============
+
+                    Filters the task list as user types (debounced).
+                    Updates URL via hx-push-url for bookmarkability.
+                *@
+                &lt;div class=&quot;mb-3&quot;&gt;
+                    &lt;div class=&quot;input-group&quot;&gt;
+                        &lt;span class=&quot;input-group-text&quot;&gt;
+                            &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; fill=&quot;currentColor&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+                                &lt;path d=&quot;M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z&quot;/&gt;
+                            &lt;/svg&gt;
+                        &lt;/span&gt;
+                        &lt;input type=&quot;text&quot;
+                               class=&quot;form-control&quot;
+                               name=&quot;Q&quot;
+                               placeholder=&quot;Filter tasks...&quot;
+                               value=&quot;@Model.Query&quot;
+                               hx-get=&quot;?&quot;
+                               hx-trigger=&quot;keyup changed delay:400ms&quot;
+                               hx-target=&quot;#task-list&quot;
+                               hx-swap=&quot;outerHTML&quot;
+                               hx-push-url=&quot;true&quot;
+                               hx-indicator=&quot;#task-loading&quot; /&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+
+                &lt;partial name=&quot;Partials/_TaskList&quot; model=&quot;initialVm&quot; /&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+@*
+    Details Modal Placeholder
+    =========================
+
+    Target ID: #task-modal-container
+    Purpose: Hosts the dynamic modal content
+*@
+&lt;div id=&quot;task-modal-container&quot;&gt;&lt;/div&gt;
+
+@* Listener: Refresh messages when showMessage event fires *@
+&lt;div hx-get=&quot;?handler=Messages&quot;
+     hx-trigger=&quot;showMessage from:body&quot;
+     hx-target=&quot;#messages&quot;
+     hx-swap=&quot;outerHTML&quot;&gt;
+&lt;/div&gt;
+
+@* Listener: Reset form when clearForm event fires *@
+&lt;div hx-get=&quot;?handler=EmptyForm&quot;
+     hx-trigger=&quot;clearForm from:body&quot;
+     hx-target=&quot;#task-form&quot;
+     hx-swap=&quot;outerHTML&quot;&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    document.addEventListener('htmx:afterOnLoad', function (evt) {
+        if (evt.detail.target.id === 'task-modal-container') {
+            const modalEl = document.getElementById('task-modal');
+            if (modalEl) {
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            }
+        }
+    });
+&lt;/script&gt;
+
+@section Scripts {
+    &lt;partial name=&quot;_ValidationScriptsPartial&quot; /&gt;
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="92-understanding-key-elements">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#92-understanding-key-elements">#</doc-anchor-trigger>
+        <span>9.2 Understanding Key Elements</span>
+    </h3>
+</doc-anchor-target>
+<doc-anchor-target id="filter-input">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#filter-input">#</doc-anchor-trigger>
+        <span>Filter Input</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;input name=&quot;Q&quot;
+       hx-get=&quot;?&quot;
+       hx-trigger=&quot;keyup changed delay:400ms&quot;
+       hx-push-url=&quot;true&quot; /&gt;</code></pre>
+</doc-codeblock></div>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>name</code></td>
+<td><code v-pre>&quot;Q&quot;</code></td>
+<td>Parameter name for binding</td>
+</tr>
+<tr>
+<td><code v-pre>hx-get</code></td>
+<td><code v-pre>&quot;?&quot;</code></td>
+<td>GET to current page (calls OnGet)</td>
+</tr>
+<tr>
+<td><code v-pre>hx-trigger</code></td>
+<td><code v-pre>&quot;keyup changed delay:400ms&quot;</code></td>
+<td>Debounced keystroke</td>
+</tr>
+<tr>
+<td><code v-pre>hx-push-url</code></td>
+<td><code v-pre>&quot;true&quot;</code></td>
+<td>Update browser URL</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Why <code v-pre>hx-get=&quot;?&quot;</code> instead of <code v-pre>?handler=List</code>:</strong></p>
+<p>Using <code v-pre>?</code> calls the default <code v-pre>OnGet</code> handler, which checks <code v-pre>IsHtmx()</code> and returns a fragment. This is simpler and more consistent.</p>
+<doc-anchor-target id="modal-container">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#modal-container">#</doc-anchor-trigger>
+        <span>Modal Container</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;div id=&quot;task-modal-container&quot;&gt;&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p>This empty div serves as the injection point for the modal. The modal is dynamically loaded and removed.</p>
+<doc-anchor-target id="modal-show-script">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#modal-show-script">#</doc-anchor-trigger>
+        <span>Modal Show Script</span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-javascript"><code v-pre class="language-javascript">document.addEventListener('htmx:afterOnLoad', function (evt) {
+    if (evt.detail.target.id === 'task-modal-container') {
+        const modalEl = document.getElementById('task-modal');
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+    }
+});</code></pre>
+</doc-codeblock></div>
+<p><strong>How it works:</strong></p>
+<ol>
+<li>htmx fires <code v-pre>htmx:afterOnLoad</code> after swapping content</li>
+<li>Script checks if the target was <code v-pre>#task-modal-container</code></li>
+<li>If yes, finds the <code v-pre>#task-modal</code> element (now in the DOM)</li>
+<li>Creates a Bootstrap Modal instance and shows it</li>
+</ol>
+<hr>
+<doc-anchor-target id="step-10-add-css-transitions-optional-57-minutes">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#step-10-add-css-transitions-optional-57-minutes">#</doc-anchor-trigger>
+        <span>Step 10: Add CSS Transitions (Optional, 5–7 minutes)</span>
+    </h2>
+</doc-anchor-target>
+<p>Add visual polish with CSS transitions.</p>
+<doc-anchor-target id="101-add-transition-styles">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#101-add-transition-styles">#</doc-anchor-trigger>
+        <span>10.1 Add Transition Styles</span>
     </h3>
 </doc-anchor-target>
 <p><strong>File: <code v-pre>wwwroot/css/site.css</code> (add these styles)</strong></p>
@@ -1508,21 +1491,6 @@ if (IsHtmx())
 }
 
 /*
- * Fade transition for details panel
- */
-#task-details {
-    transition: opacity 150ms ease-in-out;
-}
-
-#task-details.htmx-swapping {
-    opacity: 0;
-}
-
-#task-details.htmx-settling {
-    opacity: 1;
-}
-
-/*
  * Subtle highlight for newly added items
  */
 .list-group-item.htmx-added {
@@ -1547,172 +1515,46 @@ button.htmx-request {
     pointer-events: none;
 }</code></pre>
 </doc-codeblock></div>
-<doc-anchor-target id="53-add-a-loading-spinner">
+<doc-anchor-target id="102-understanding-htmx-css-classes">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#53-add-a-loading-spinner">#</doc-anchor-trigger>
-        <span>5.3 Add a Loading Spinner</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#102-understanding-htmx-css-classes">#</doc-anchor-trigger>
+        <span>10.2 Understanding htmx CSS Classes</span>
     </h3>
 </doc-anchor-target>
-<p>Update the form and buttons to show a loading indicator:</p>
-<p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml</code> (add near the toolbar)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-cshtml"><code v-pre class="language-cshtml">@* Loading indicator - shown during htmx requests *@
-&lt;span id=&quot;task-loading&quot; class=&quot;htmx-indicator&quot;&gt;
-    &lt;span class=&quot;spinner-border spinner-border-sm&quot; role=&quot;status&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
-    &lt;span class=&quot;visually-hidden&quot;&gt;Loading...&lt;/span&gt;
-&lt;/span&gt;</code></pre>
-</doc-codeblock></div>
-<p>Update elements to reference the indicator:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- On the filter input --&gt;
-&lt;input ... hx-indicator=&quot;#task-loading&quot; /&gt;
-
-&lt;!-- On the form --&gt;
-&lt;form ... hx-indicator=&quot;#task-loading&quot;&gt;</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="54-swap-timing-modifiers-optional">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#54-swap-timing-modifiers-optional">#</doc-anchor-trigger>
-        <span>5.4 Swap Timing Modifiers (Optional)</span>
-    </h3>
-</doc-anchor-target>
-<p>You can fine-tune swap timing with modifiers:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">hx-swap=&quot;outerHTML swap:100ms settle:200ms&quot;</code></pre>
-</doc-codeblock></div>
+<p>htmx adds these classes during the swap lifecycle:</p>
 <div class="table-wrapper scrollbar overflow-hidden">
 <table class="comfortable">
 <thead>
 <tr>
-<th>Modifier</th>
-<th>Default</th>
-<th>Purpose</th>
+<th>Class</th>
+<th>When Applied</th>
+<th>Duration</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code v-pre>swap:</code></td>
-<td>0ms</td>
-<td>Delay before removing old content</td>
+<td><code v-pre>htmx-request</code></td>
+<td>Request is in flight</td>
+<td>Until response</td>
 </tr>
 <tr>
-<td><code v-pre>settle:</code></td>
-<td>20ms</td>
-<td>Delay before settling classes are removed</td>
+<td><code v-pre>htmx-swapping</code></td>
+<td>Old content being removed</td>
+<td>Brief</td>
+</tr>
+<tr>
+<td><code v-pre>htmx-settling</code></td>
+<td>New content settling in</td>
+<td>Brief</td>
+</tr>
+<tr>
+<td><code v-pre>htmx-added</code></td>
+<td>New elements just added</td>
+<td>Brief</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><strong>Example: Slower, More Visible Transition</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;button hx-get=&quot;?handler=Details&amp;id=@task.Id&quot;
-        hx-target=&quot;#task-details&quot;
-        hx-swap=&quot;outerHTML swap:50ms settle:150ms&quot;&gt;
-    Details
-&lt;/button&gt;</code></pre>
-</doc-codeblock></div>
-<hr>
-<doc-anchor-target id="pattern-6-swap-strategy-guide-reference">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#pattern-6-swap-strategy-guide-reference">#</doc-anchor-trigger>
-        <span>Pattern 6: Swap Strategy Guide (Reference)</span>
-    </h2>
-</doc-anchor-target>
-<p>Choose the right swap strategy for each use case:</p>
-<doc-anchor-target id="61-swap-strategy-reference">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#61-swap-strategy-reference">#</doc-anchor-trigger>
-        <span>6.1 Swap Strategy Reference</span>
-    </h3>
-</doc-anchor-target>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Strategy</th>
-<th>What It Does</th>
-<th>Use When</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code v-pre>innerHTML</code></td>
-<td>Replace target&#x27;s children</td>
-<td>Filling a container (modal body)</td>
-</tr>
-<tr>
-<td><code v-pre>outerHTML</code></td>
-<td>Replace entire target</td>
-<td>Replacing a fragment with wrapper</td>
-</tr>
-<tr>
-<td><code v-pre>beforebegin</code></td>
-<td>Insert before target</td>
-<td>Adding to a list (prepend sibling)</td>
-</tr>
-<tr>
-<td><code v-pre>afterbegin</code></td>
-<td>Insert as first child</td>
-<td>Adding to a list (prepend child)</td>
-</tr>
-<tr>
-<td><code v-pre>beforeend</code></td>
-<td>Insert as last child</td>
-<td>Adding to a list (append child)</td>
-</tr>
-<tr>
-<td><code v-pre>afterend</code></td>
-<td>Insert after target</td>
-<td>Adding to a list (append sibling)</td>
-</tr>
-<tr>
-<td><code v-pre>delete</code></td>
-<td>Remove target</td>
-<td>Removing an element</td>
-</tr>
-<tr>
-<td><code v-pre>none</code></td>
-<td>Don&#x27;t swap</td>
-<td>Side effects only (e.g., trigger events)</td>
-</tr>
-</tbody>
-</table>
-</div>
-<doc-anchor-target id="62-when-to-use-each">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#62-when-to-use-each">#</doc-anchor-trigger>
-        <span>6.2 When to Use Each</span>
-    </h3>
-</doc-anchor-target>
-<p><strong><code v-pre>outerHTML</code> (Most Common)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Fragment includes wrapper with ID --&gt;
-&lt;div id=&quot;task-list&quot;&gt;...&lt;/div&gt;
-
-&lt;!-- Use outerHTML to replace it --&gt;
-hx-swap=&quot;outerHTML&quot;</code></pre>
-</doc-codeblock></div>
-<p><strong><code v-pre>innerHTML</code></strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Container stays, content changes --&gt;
-&lt;div class=&quot;modal-body&quot; id=&quot;details-modal-body&quot;&gt;
-    &lt;!-- This content gets replaced --&gt;
-&lt;/div&gt;
-
-&lt;!-- Use innerHTML to fill it --&gt;
-hx-swap=&quot;innerHTML&quot;</code></pre>
-</doc-codeblock></div>
-<p><strong><code v-pre>beforeend</code> (Adding Items)</strong></p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Add new item to end of list --&gt;
-&lt;ul id=&quot;task-items&quot;&gt;
-    &lt;li&gt;Existing item&lt;/li&gt;
-    &lt;!-- New items go here --&gt;
-&lt;/ul&gt;
-
-hx-swap=&quot;beforeend&quot;
-hx-target=&quot;#task-items&quot;</code></pre>
-</doc-codeblock></div>
 <hr>
 <doc-anchor-target id="complete-code-reference">
     <h2>
@@ -1720,10 +1562,10 @@ hx-target=&quot;#task-items&quot;</code></pre>
         <span>Complete Code Reference</span>
     </h2>
 </doc-anchor-target>
-<doc-anchor-target id="indexcshtmlcs-complete">
+<doc-anchor-target id="indexcshtmlcs-complete-pagemodel">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#indexcshtmlcs-complete">#</doc-anchor-trigger>
-        <span>Index.cshtml.cs (Complete)</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#indexcshtmlcs-complete-pagemodel">#</doc-anchor-trigger>
+        <span>Index.cshtml.cs (Complete PageModel)</span>
     </h3>
 </doc-anchor-target>
 <p><strong>File: <code v-pre>Pages/Tasks/Index.cshtml.cs</code></strong></p>
@@ -1732,10 +1574,10 @@ hx-target=&quot;#task-items&quot;</code></pre>
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using RazorHtmxWorkshop.Data;
-using RazorHtmxWorkshop.Models;
+using RazorPagesHtmxWorkshop.Data;
+using RazorPagesHtmxWorkshop.Models;
 
-namespace RazorHtmxWorkshop.Pages.Tasks;
+namespace RazorPagesHtmxWorkshop.Pages.Tasks;
 
 public class IndexModel : PageModel
 {
@@ -1747,7 +1589,15 @@ public class IndexModel : PageModel
     [TempData]
     public string? FlashMessage { get; set; }
 
-    // Filter/pagination state for initial render
+    [BindProperty(SupportsGet = true)]
+    public string? Q { get; set; }
+
+    [BindProperty(SupportsGet = true)]
+    public int PageNum { get; set; } = 1;
+
+    [BindProperty(SupportsGet = true)]
+    public int Size { get; set; } = 5;
+
     public string? Query { get; set; }
     public int CurrentPage { get; set; } = 1;
     public int PageSize { get; set; } = 5;
@@ -1762,25 +1612,25 @@ public class IndexModel : PageModel
         new()
         {
             ViewName = partialName,
-            ViewData = new ViewDataDictionary(ViewData) { Model = model }
+            ViewData = new ViewDataDictionary(MetadataProvider, ModelState) { Model = model }
         };
 
     #endregion
 
     #region Page Handlers
 
-    public void OnGet(string? q, int page = 1, int pageSize = 5)
+    public IActionResult OnGet()
     {
-        Query = q;
-        CurrentPage = Math.Max(1, page);
-        PageSize = Math.Clamp(pageSize, 1, 50);
+        Query = Q;
+        CurrentPage = Math.Max(1, PageNum);
+        PageSize = Math.Clamp(Size, 1, 50);
 
         var all = InMemoryTaskStore.All();
 
-        if (!string.IsNullOrWhiteSpace(q))
+        if (!string.IsNullOrWhiteSpace(Q))
         {
             all = all
-                .Where(t =&gt; t.Title.Contains(q, StringComparison.OrdinalIgnoreCase))
+                .Where(t =&gt; t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
@@ -1789,35 +1639,50 @@ public class IndexModel : PageModel
             .Skip((CurrentPage - 1) * PageSize)
             .Take(PageSize)
             .ToList();
+
+        if (IsHtmx())
+        {
+            var vm = new TaskListVm
+            {
+                Items = Tasks,
+                Page = CurrentPage,
+                PageSize = PageSize,
+                Total = TotalTasks,
+                Query = Query
+            };
+            return Fragment(&quot;Partials/_TaskList&quot;, vm);
+        }
+
+        return Page();
     }
 
-    public IActionResult OnGetList(string? q, int page = 1, int pageSize = 5)
+    public IActionResult OnGetList()
     {
-        page = Math.Max(1, page);
-        pageSize = Math.Clamp(pageSize, 1, 50);
+        CurrentPage = Math.Max(1, PageNum);
+        PageSize = Math.Clamp(Size, 1, 50);
 
         var all = InMemoryTaskStore.All();
 
-        if (!string.IsNullOrWhiteSpace(q))
+        if (!string.IsNullOrWhiteSpace(Q))
         {
             all = all
-                .Where(t =&gt; t.Title.Contains(q, StringComparison.OrdinalIgnoreCase))
+                .Where(t =&gt; t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
         var total = all.Count;
         var items = all
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
+            .Skip((CurrentPage - 1) * PageSize)
+            .Take(PageSize)
             .ToList();
 
         var vm = new TaskListVm
         {
             Items = items,
-            Page = page,
-            PageSize = pageSize,
+            Page = CurrentPage,
+            PageSize = PageSize,
             Total = total,
-            Query = q
+            Query = Q
         };
 
         return Fragment(&quot;Partials/_TaskList&quot;, vm);
@@ -1900,14 +1765,31 @@ public class IndexModel : PageModel
             FlashMessage = &quot;Task added successfully!&quot;;
             Response.Headers[&quot;HX-Trigger&quot;] = &quot;showMessage,clearForm&quot;;
 
+            CurrentPage = Math.Max(1, PageNum);
+            PageSize = Math.Clamp(Size, 1, 50);
+
             var all = InMemoryTaskStore.All();
+
+            if (!string.IsNullOrWhiteSpace(Q))
+            {
+                all = all
+                    .Where(t =&gt; t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            var total = all.Count;
+            var items = all
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+
             var vm = new TaskListVm
             {
-                Items = all.Take(5).ToList(),
-                Page = 1,
-                PageSize = 5,
-                Total = all.Count,
-                Query = null
+                Items = items,
+                Page = CurrentPage,
+                PageSize = PageSize,
+                Total = total,
+                Query = Q
             };
 
             return Fragment(&quot;Partials/_TaskList&quot;, vm);
@@ -1934,20 +1816,52 @@ public class IndexModel : PageModel
             FlashMessage = &quot;Task deleted.&quot;;
             Response.Headers[&quot;HX-Trigger&quot;] = &quot;showMessage&quot;;
 
+            CurrentPage = Math.Max(1, PageNum);
+            PageSize = Math.Clamp(Size, 1, 50);
+
             var all = InMemoryTaskStore.All();
+
+            if (!string.IsNullOrWhiteSpace(Q))
+            {
+                all = all
+                    .Where(t =&gt; t.Title.Contains(Q, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            var total = all.Count;
+
+            // Adjust page number if it becomes invalid after deletion
+            var totalPages = (int)Math.Ceiling(total / (double)PageSize);
+            if (CurrentPage &gt; totalPages &amp;&amp; totalPages &gt; 0)
+            {
+                CurrentPage = totalPages;
+            }
+
+            var items = all
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+
             var vm = new TaskListVm
             {
-                Items = all.Take(5).ToList(),
-                Page = 1,
-                PageSize = 5,
-                Total = all.Count,
-                Query = null
+                Items = items,
+                Page = CurrentPage,
+                PageSize = PageSize,
+                Total = total,
+                Query = Q
             };
 
             return Fragment(&quot;Partials/_TaskList&quot;, vm);
         }
 
         FlashMessage = removed ? &quot;Task deleted.&quot; : &quot;Task not found.&quot;;
+        return RedirectToPage();
+    }
+
+    public IActionResult OnPostReset()
+    {
+        InMemoryTaskStore.Reset();
+        FlashMessage = &quot;Tasks reset.&quot;;
         return RedirectToPage();
     }
 
@@ -1973,19 +1887,21 @@ public class IndexModel : PageModel
 </doc-anchor-target>
 <p><strong>File: <code v-pre>Data/InMemoryTaskStore.cs</code></strong></p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using RazorHtmxWorkshop.Models;
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">using RazorPagesHtmxWorkshop.Models;
 
-namespace RazorHtmxWorkshop.Data;
+namespace RazorPagesHtmxWorkshop.Data;
 
 public static class InMemoryTaskStore
 {
     private static int _nextId = 1;
     private static readonly List&lt;TaskItem&gt; _tasks = new();
 
-    public static IReadOnlyList&lt;TaskItem&gt; All() =&gt; _tasks
-        .OrderByDescending(t =&gt; t.CreatedUtc)
-        .ToList();
+    public static IReadOnlyList&lt;TaskItem&gt; All() =&gt;
+        _tasks.OrderByDescending(t =&gt; t.CreatedUtc).ToList();
 
+    /// &lt;summary&gt;
+    /// Finds a task by ID.
+    /// &lt;/summary&gt;
     public static TaskItem? Find(int id) =&gt;
         _tasks.FirstOrDefault(t =&gt; t.Id == id);
 
@@ -2003,6 +1919,10 @@ public static class InMemoryTaskStore
         return item;
     }
 
+    /// &lt;summary&gt;
+    /// Deletes a task by ID.
+    /// Returns true if found and deleted, false if not found.
+    /// &lt;/summary&gt;
     public static bool Delete(int id)
     {
         var task = _tasks.FirstOrDefault(t =&gt; t.Id == id);
@@ -2010,6 +1930,15 @@ public static class InMemoryTaskStore
 
         _tasks.Remove(task);
         return true;
+    }
+
+    /// &lt;summary&gt;
+    /// Useful for workshops / resetting between labs
+    /// &lt;/summary&gt;
+    public static void Reset()
+    {
+        _tasks.Clear();
+        _nextId = 1;
     }
 }</code></pre>
 </doc-codeblock></div>
@@ -2028,9 +1957,10 @@ public static class InMemoryTaskStore
     </h3>
 </doc-anchor-target>
 <ul class="contains-task-list">
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Clicking &quot;Details&quot; loads task info into panel/modal</li>
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Details content updates without page reload</li>
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Not-found case shows appropriate message</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Clicking &quot;Details&quot; opens a Bootstrap modal</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Modal displays task information correctly</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Closing modal works (X button or backdrop click)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Modal shows &quot;Task not found&quot; for invalid IDs</li>
 </ul>
 <doc-anchor-target id="delete-pattern">
     <h3>
@@ -2043,6 +1973,7 @@ public static class InMemoryTaskStore
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Confirming deletes task and updates list</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Canceling keeps task in list</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Success message appears after delete</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> List refreshes with correct pagination after delete</li>
 </ul>
 <doc-anchor-target id="filtering">
     <h3>
@@ -2053,8 +1984,9 @@ public static class InMemoryTaskStore
 <ul class="contains-task-list">
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Typing in filter updates list after 400ms</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Filter is applied (shows matching tasks only)</li>
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> URL updates with query parameter (<code v-pre>?handler=List&amp;q=...</code>)</li>
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> &quot;Clear filter&quot; link removes filter</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> URL updates with Q parameter (<code v-pre>?Q=test</code>)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> &quot;Clear filter&quot; link removes filter and resets URL</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Filter persists when navigating pages</li>
 </ul>
 <doc-anchor-target id="pagination">
     <h3>
@@ -2063,10 +1995,22 @@ public static class InMemoryTaskStore
     </h3>
 </doc-anchor-target>
 <ul class="contains-task-list">
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Pagination controls appear when tasks &gt; page size</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Pagination controls appear when tasks &gt; page size (5)</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Clicking page number updates list</li>
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> URL updates with page parameter</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> URL updates with PageNum parameter</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Browser back/forward navigates through history</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Filter is preserved when changing pages</li>
+</ul>
+<doc-anchor-target id="state-preservation">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#state-preservation">#</doc-anchor-trigger>
+        <span>State Preservation</span>
+    </h3>
+</doc-anchor-target>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Deleting a task preserves filter and pagination</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Adding a task preserves filter and pagination</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Refreshing the page loads with correct filter/pagination</li>
 </ul>
 <doc-anchor-target id="transitions">
     <h3>
@@ -2075,7 +2019,7 @@ public static class InMemoryTaskStore
     </h3>
 </doc-anchor-target>
 <ul class="contains-task-list">
-<li class="task-list-item"><input disabled="disabled" type="checkbox" /> List fades during swap</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> List fades during swap (if CSS added)</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Loading indicator appears during requests</li>
 <li class="task-list-item"><input disabled="disabled" type="checkbox" /> Buttons are disabled during their request</li>
 </ul>
@@ -2103,9 +2047,9 @@ public static class InMemoryTaskStore
 </thead>
 <tbody>
 <tr>
-<td><strong>Details</strong></td>
-<td><code v-pre>hx-get</code>, <code v-pre>hx-target</code></td>
-<td>Load content into panel/modal</td>
+<td><strong>Details Modal</strong></td>
+<td><code v-pre>hx-get</code>, <code v-pre>hx-target=&quot;#task-modal-container&quot;</code></td>
+<td>Load content into modal</td>
 </tr>
 <tr>
 <td><strong>Delete</strong></td>
@@ -2114,7 +2058,7 @@ public static class InMemoryTaskStore
 </tr>
 <tr>
 <td><strong>Filter</strong></td>
-<td><code v-pre>hx-trigger</code>, <code v-pre>hx-push-url</code></td>
+<td><code v-pre>hx-get=&quot;?&quot;</code>, <code v-pre>hx-push-url</code></td>
 <td>Live search with URL state</td>
 </tr>
 <tr>
@@ -2138,51 +2082,63 @@ public static class InMemoryTaskStore
 </doc-anchor-target>
 <p>The key insight of this lab is that <strong>URLs should reflect application state</strong>:</p>
 <ul>
-<li>Filter query → <code v-pre>?q=buy</code></li>
-<li>Current page → <code v-pre>?page=2</code></li>
-<li>Page size → <code v-pre>?pageSize=10</code></li>
+<li>Filter query → <code v-pre>?Q=test</code></li>
+<li>Current page → <code v-pre>?PageNum=2</code></li>
+<li>Page size → <code v-pre>?Size=10</code></li>
 </ul>
 <p>This enables:</p>
 <ul>
 <li><strong>Bookmarking</strong>: Users save filtered/paginated views</li>
 <li><strong>Sharing</strong>: Send a link to a specific view</li>
 <li><strong>History</strong>: Back/forward buttons work correctly</li>
-<li><strong>SEO</strong>: Search engines can index different views</li>
+<li><strong>Progressive enhancement</strong>: Non-JS users get the same functionality</li>
 </ul>
-<doc-anchor-target id="swap-strategy-selection">
+<doc-anchor-target id="model-binding-with-bindproperty">
     <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#swap-strategy-selection">#</doc-anchor-trigger>
-        <span>Swap Strategy Selection</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#model-binding-with-bindproperty">#</doc-anchor-trigger>
+        <span>Model Binding with BindProperty</span>
     </h3>
 </doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">[BindProperty(SupportsGet = true)]
+public string? Q { get; set; }</code></pre>
+</doc-codeblock></div>
+<p>This is a cleaner alternative to manually reading query parameters:</p>
 <div class="table-wrapper scrollbar overflow-hidden">
 <table class="comfortable">
 <thead>
 <tr>
-<th>If your response...</th>
-<th>Use swap strategy...</th>
+<th>Without BindProperty</th>
+<th>With BindProperty</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Includes wrapper element with ID</td>
-<td><code v-pre>outerHTML</code></td>
+<td><code v-pre>Request.Query[&quot;q&quot;]</code></td>
+<td><code v-pre>Q</code> property</td>
 </tr>
 <tr>
-<td>Is content for a container</td>
-<td><code v-pre>innerHTML</code></td>
+<td>Manual parsing</td>
+<td>Automatic binding</td>
 </tr>
 <tr>
-<td>Is a new item to add to a list</td>
-<td><code v-pre>beforeend</code> or <code v-pre>afterbegin</code></td>
-</tr>
-<tr>
-<td>Triggers events only (no content)</td>
-<td><code v-pre>none</code></td>
+<td>Easy to forget</td>
+<td>Declarative</td>
 </tr>
 </tbody>
 </table>
 </div>
+<doc-anchor-target id="state-preservation-pattern">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#state-preservation-pattern">#</doc-anchor-trigger>
+        <span>State Preservation Pattern</span>
+    </h3>
+</doc-anchor-target>
+<p>When an action might change the list (create, delete), preserve the current state:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">hx-vals='{&quot;id&quot;: @task.Id, &quot;Q&quot;: &quot;@(Model.Query ?? &quot;&quot;)&quot;, &quot;PageNum&quot;: @Model.Page, &quot;Size&quot;: @Model.PageSize}'</code></pre>
+</doc-codeblock></div>
+<p>This ensures users don&#x27;t lose their place when performing actions.</p>
 <hr>
 <doc-anchor-target id="troubleshooting">
     <h2>
@@ -2208,13 +2164,13 @@ public static class InMemoryTaskStore
 <tbody>
 <tr>
 <td>Modal doesn&#x27;t open</td>
-<td>Missing Bootstrap JS</td>
-<td>Ensure Bootstrap JS is loaded</td>
+<td>Missing Bootstrap JS or script</td>
+<td>Check Bootstrap is loaded, verify script</td>
 </tr>
 <tr>
-<td>Modal opens but content is stale</td>
-<td>Wrong swap strategy</td>
-<td>Use <code v-pre>innerHTML</code> for modal body</td>
+<td>Modal doesn&#x27;t close</td>
+<td>Missing data-bs-dismiss</td>
+<td>Add <code v-pre>data-bs-dismiss=&quot;modal&quot;</code> to close button</td>
 </tr>
 <tr>
 <td>URL doesn&#x27;t update</td>
@@ -2223,18 +2179,18 @@ public static class InMemoryTaskStore
 </tr>
 <tr>
 <td>Back button doesn&#x27;t work</td>
-<td>Initial page doesn&#x27;t handle params</td>
-<td>Ensure <code v-pre>OnGet</code> reads query params</td>
+<td>OnGet doesn&#x27;t handle params</td>
+<td>Ensure OnGet uses Q, PageNum, Size</td>
 </tr>
 <tr>
-<td>Filter doesn&#x27;t preserve on pagination</td>
-<td>Missing <code v-pre>q=@Model.Query</code></td>
-<td>Include query in pagination links</td>
+<td>Filter resets on delete</td>
+<td>Missing Q in hx-vals</td>
+<td>Include Q in delete button&#x27;s hx-vals</td>
 </tr>
 <tr>
-<td>Delete fails silently</td>
-<td>Missing <code v-pre>hx-confirm</code> handling</td>
-<td>Check browser console for errors</td>
+<td>Page shows wrong items</td>
+<td>Binding case mismatch</td>
+<td>Use exact names: Q, PageNum, Size</td>
 </tr>
 </tbody>
 </table>
@@ -2247,10 +2203,11 @@ public static class InMemoryTaskStore
 </doc-anchor-target>
 <ol>
 <li><strong>Check Network tab</strong>: Verify request URL includes all parameters</li>
-<li><strong>Check Response</strong>: Confirm fragment structure matches swap strategy</li>
+<li><strong>Check Response</strong>: Confirm fragment structure is correct</li>
 <li><strong>Check URL bar</strong>: Verify <code v-pre>hx-push-url</code> is updating the URL</li>
-<li><strong>Check Console</strong>: Look for htmx errors or warnings</li>
+<li><strong>Check Console</strong>: Look for htmx or Bootstrap errors</li>
 <li><strong>Test back/forward</strong>: Ensure page loads with correct state</li>
+<li><strong>Inspect htmx:afterOnLoad</strong>: Verify modal script is firing</li>
 </ol>
 <hr>
 <doc-anchor-target id="what-comes-next">
