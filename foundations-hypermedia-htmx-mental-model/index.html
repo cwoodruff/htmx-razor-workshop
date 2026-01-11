@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/cwoodruff/htmx-razor-workshop">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821469499218">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.11.0.821470105745">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.11.0">
@@ -15,6 +15,7 @@
     <!-- Primary Meta Tags -->
     <title>Foundations: Hypermedia + htmx Mental Model</title>
     <meta name="title" content="Foundations: Hypermedia + htmx Mental Model">
+    <meta name="description" content="Goal: Establish the \"server-driven UI\" mindset and give attendees just enough htmx vocabulary to be productive in labs.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://github.com/cwoodruff/htmx-razor-workshop/foundations-hypermedia-htmx-mental-model/">
@@ -23,20 +24,23 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://github.com/cwoodruff/htmx-razor-workshop/foundations-hypermedia-htmx-mental-model/">
     <meta property="og:title" content="Foundations: Hypermedia + htmx Mental Model">
+    <meta property="og:description" content="Goal: Establish the \"server-driven UI\" mindset and give attendees just enough htmx vocabulary to be productive in labs.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://github.com/cwoodruff/htmx-razor-workshop/foundations-hypermedia-htmx-mental-model/">
     <meta property="twitter:title" content="Foundations: Hypermedia + htmx Mental Model">
+    <meta property="twitter:description" content="Goal: Establish the \"server-driven UI\" mindset and give attendees just enough htmx vocabulary to be productive in labs.">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
     <link href="../images/favicon.png" rel="icon">
-    <link href="../resources/css/retype.css?v=3.11.0.821469499218" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.11.0.821470105745" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821469499218" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.11.0.821470105745" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.11.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821469499218" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.11.0.821470105745" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.11.0.821470105745" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -229,6 +233,909 @@
         <span>Foundations: Hypermedia + htmx Mental Model</span>
     </h1>
 </doc-anchor-target>
+<blockquote>
+<p><strong>Goal:</strong> Establish the &quot;server-driven UI&quot; mindset and give attendees just enough htmx vocabulary to be productive in labs.</p>
+</blockquote>
+<hr>
+<doc-anchor-target id="1-what-hypermedia-means-in-web-apps">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#1-what-hypermedia-means-in-web-apps">#</doc-anchor-trigger>
+        <span>1. What &quot;Hypermedia&quot; Means in Web Apps</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="the-original-web-architecture">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-original-web-architecture">#</doc-anchor-trigger>
+        <span>The Original Web Architecture</span>
+    </h3>
+</doc-anchor-target>
+<p>The web was born as a hypermedia system. Tim Berners-Lee didn&#x27;t build a &quot;JSON API transport layer&quot;—he built a document network where the server sends self-describing, interactive content.</p>
+<p><strong>Hypermedia</strong> = data + controls (links and forms) bundled together in a single response.</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- This IS hypermedia: data AND controls together --&gt;
+&lt;article&gt;
+  &lt;h1&gt;Order #1234&lt;/h1&gt;
+  &lt;p&gt;Status: Pending&lt;/p&gt;
+
+  &lt;!-- The server tells the client what actions are possible --&gt;
+  &lt;a href=&quot;/orders/1234/cancel&quot;&gt;Cancel Order&lt;/a&gt;
+  &lt;form action=&quot;/orders/1234/ship&quot; method=&quot;post&quot;&gt;
+    &lt;button&gt;Ship Now&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/article&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="html-as-the-contract">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#html-as-the-contract">#</doc-anchor-trigger>
+        <span>HTML as the Contract</span>
+    </h3>
+</doc-anchor-target>
+<p>In a hypermedia architecture, <strong>HTML is the API contract</strong>. The server doesn&#x27;t return abstract data that the client must interpret—it returns ready-to-render UI with embedded affordances.</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>JSON API Approach</th>
+<th>Hypermedia Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Server returns <code v-pre>{ &quot;status&quot;: &quot;pending&quot;, &quot;canCancel&quot;: true }</code></td>
+<td>Server returns <code v-pre>&lt;a href=&quot;/cancel&quot;&gt;Cancel&lt;/a&gt;</code></td>
+</tr>
+<tr>
+<td>Client must know business rules</td>
+<td>Server encodes business rules in the response</td>
+</tr>
+<tr>
+<td>Client builds UI from data</td>
+<td>Server sends ready UI</td>
+</tr>
+<tr>
+<td>Tight coupling via shared schema</td>
+<td>Loose coupling via HTML semantics</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="state-transitions-via-links-and-forms">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#state-transitions-via-links-and-forms">#</doc-anchor-trigger>
+        <span>State Transitions via Links and Forms</span>
+    </h3>
+</doc-anchor-target>
+<p>In REST&#x27;s original formulation (Fielding&#x27;s dissertation), <strong>hypermedia controls drive application state</strong>. This is HATEOAS—Hypermedia As The Engine Of Application State.</p>
+<p>Think of it like a choose-your-own-adventure book:</p>
+<ul>
+<li>You&#x27;re on page 47 (current state)</li>
+<li>The page shows you options: &quot;Turn to page 62&quot; or &quot;Turn to page 78&quot;</li>
+<li>You don&#x27;t need to know the whole book&#x27;s structure—just follow the links</li>
+</ul>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">┌─────────────────┐     GET /cart      ┌─────────────────┐
+│   Product Page  │ ─────────────────► │   Cart Page     │
+│                 │                    │                 │
+│  [Add to Cart]  │                    │  [Checkout]     │
+└─────────────────┘                    │  [Continue]     │
+                                       └─────────────────┘
+                                              │
+                                    POST /checkout
+                                              │
+                                              ▼
+                                       ┌─────────────────┐
+                                       │ Checkout Page   │
+                                       │                 │
+                                       │ [Place Order]   │
+                                       │ [Back to Cart]  │
+                                       └─────────────────┘</code></pre>
+</doc-codeblock></div>
+<p><strong>Key insight:</strong> The server controls the workflow. The client just follows links.</p>
+<doc-anchor-target id="the-spa-deviation">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-spa-deviation">#</doc-anchor-trigger>
+        <span>The SPA Deviation</span>
+    </h3>
+</doc-anchor-target>
+<p>Single-Page Applications (SPAs) broke from this model:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">Traditional Web (Hypermedia)          SPA Architecture
+────────────────────────────          ─────────────────
+Browser ◄──── HTML ──── Server        Browser ◄──── JSON ──── Server
+                                            │
+                                      [Fat JS Client]
+                                            │
+                                      Interprets data,
+                                      builds UI,
+                                      manages state</code></pre>
+</doc-codeblock></div>
+<p>SPAs moved the &quot;application&quot; to the browser. The server became a dumb data pipe. This created:</p>
+<ul>
+<li>Duplicated business logic (server validates, client validates)</li>
+<li>Complex client-side state management</li>
+<li>Hundreds of kilobytes of JavaScript</li>
+<li>SEO and accessibility challenges</li>
+</ul>
+<hr>
+<doc-anchor-target id="2-why-htmx-exists">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#2-why-htmx-exists">#</doc-anchor-trigger>
+        <span>2. Why htmx Exists</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="the-problem-htmx-solves">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-problem-htmx-solves">#</doc-anchor-trigger>
+        <span>The Problem htmx Solves</span>
+    </h3>
+</doc-anchor-target>
+<p>Modern web development often looks like this:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-javascript"><code v-pre class="language-javascript">// 1. Fetch JSON data
+const response = await fetch('/api/users/123');
+const user = await response.json();
+
+// 2. Transform data to UI
+const html = `
+  &lt;div class=&quot;user-card&quot;&gt;
+    &lt;h2&gt;${escapeHtml(user.name)}&lt;/h2&gt;
+    &lt;p&gt;${escapeHtml(user.email)}&lt;/p&gt;
+    ${user.isAdmin ? '&lt;span class=&quot;badge&quot;&gt;Admin&lt;/span&gt;' : ''}
+  &lt;/div&gt;
+`;
+
+// 3. Find the right place in the DOM
+const container = document.getElementById('user-container');
+
+// 4. Swap it in
+container.innerHTML = html;
+
+// 5. Re-attach event listeners (the ones you just destroyed)
+container.querySelector('.edit-btn')?.addEventListener('click', handleEdit);</code></pre>
+</doc-codeblock></div>
+<p><strong>htmx asks:</strong> What if the browser could do this natively for any element, not just <code v-pre>&lt;a&gt;</code> and <code v-pre>&lt;form&gt;</code>?</p>
+<doc-anchor-target id="html-over-the-wire">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#html-over-the-wire">#</doc-anchor-trigger>
+        <span>HTML Over the Wire</span>
+    </h3>
+</doc-anchor-target>
+<p>htmx extends HTML so any element can make HTTP requests and swap the response into the DOM:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Before: Requires JavaScript --&gt;
+&lt;button onclick=&quot;loadUsers()&quot;&gt;Load Users&lt;/button&gt;
+
+&lt;!-- After: Pure HTML + htmx --&gt;
+&lt;button hx-get=&quot;/users&quot; hx-target=&quot;#user-list&quot;&gt;
+  Load Users
+&lt;/button&gt;</code></pre>
+</doc-codeblock></div>
+<p>The server returns HTML fragments, not JSON:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Server response (a partial, not a full page) --&gt;
+&lt;ul id=&quot;user-list&quot;&gt;
+  &lt;li&gt;Alice&lt;/li&gt;
+  &lt;li&gt;Bob&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="progressive-enhancement">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#progressive-enhancement">#</doc-anchor-trigger>
+        <span>Progressive Enhancement</span>
+    </h3>
+</doc-anchor-target>
+<p>htmx builds on progressive enhancement—the idea that your app should work without JavaScript, then get better with it.</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Works without JavaScript (full page reload) --&gt;
+&lt;form action=&quot;/search&quot; method=&quot;get&quot;&gt;
+  &lt;input name=&quot;q&quot; type=&quot;text&quot;&gt;
+  &lt;button&gt;Search&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Enhanced with htmx (inline update) --&gt;
+&lt;form action=&quot;/search&quot; method=&quot;get&quot;
+      hx-get=&quot;/search&quot;
+      hx-target=&quot;#results&quot;
+      hx-trigger=&quot;submit, input changed delay:300ms&quot;&gt;
+  &lt;input name=&quot;q&quot; type=&quot;text&quot;&gt;
+  &lt;button&gt;Search&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+</doc-codeblock></div>
+<p>Both versions work. The htmx version is just smoother.</p>
+<doc-anchor-target id="less-javascript-surface-area">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#less-javascript-surface-area">#</doc-anchor-trigger>
+        <span>Less JavaScript Surface Area</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Metric</th>
+<th>Typical SPA</th>
+<th>htmx Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JS bundle size</td>
+<td>200-500+ KB</td>
+<td>~14 KB (htmx)</td>
+</tr>
+<tr>
+<td>Client-side state</td>
+<td>Redux/Zustand/etc.</td>
+<td>None (server owns state)</td>
+</tr>
+<tr>
+<td>Build tooling</td>
+<td>Webpack, Vite, etc.</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Learning curve</td>
+<td>Framework + ecosystem</td>
+<td>HTML attributes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>htmx&#x27;s philosophy:</strong> The server already knows how to build HTML. Let it.</p>
+<hr>
+<doc-anchor-target id="3-core-htmx-concepts">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#3-core-htmx-concepts">#</doc-anchor-trigger>
+        <span>3. Core htmx Concepts</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="31-requests-hx-get--hx-post--hx-put--hx-patch--hx-delete">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#31-requests-hx-get--hx-post--hx-put--hx-patch--hx-delete">#</doc-anchor-trigger>
+        <span>3.1 Requests: <code v-pre>hx-get</code> / <code v-pre>hx-post</code> / <code v-pre>hx-put</code> / <code v-pre>hx-patch</code> / <code v-pre>hx-delete</code></span>
+    </h3>
+</doc-anchor-target>
+<p>These attributes issue AJAX requests when triggered:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- GET request --&gt;
+&lt;button hx-get=&quot;/api/status&quot;&gt;Check Status&lt;/button&gt;
+
+&lt;!-- POST request --&gt;
+&lt;button hx-post=&quot;/api/orders&quot; hx-vals='{&quot;item&quot;: &quot;widget&quot;}'&gt;
+  Place Order
+&lt;/button&gt;
+
+&lt;!-- DELETE request --&gt;
+&lt;button hx-delete=&quot;/api/orders/123&quot;&gt;Cancel Order&lt;/button&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Default behavior:</strong></p>
+<ul>
+<li>Triggered by: <code v-pre>click</code> (for most elements), <code v-pre>submit</code> (for forms), <code v-pre>change</code> (for inputs)</li>
+<li>Response swapped into: the element that made the request</li>
+<li>Swap strategy: <code v-pre>innerHTML</code></li>
+</ul>
+<doc-anchor-target id="32-targeting-hx-target">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#32-targeting-hx-target">#</doc-anchor-trigger>
+        <span>3.2 Targeting: <code v-pre>hx-target</code></span>
+    </h3>
+</doc-anchor-target>
+<p>By default, htmx swaps the response into the element that triggered the request. Use <code v-pre>hx-target</code> to swap somewhere else:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Swap into a different element --&gt;
+&lt;button hx-get=&quot;/users&quot; hx-target=&quot;#user-list&quot;&gt;
+  Load Users
+&lt;/button&gt;
+&lt;div id=&quot;user-list&quot;&gt;&lt;!-- Users appear here --&gt;&lt;/div&gt;
+
+&lt;!-- Target selectors --&gt;
+&lt;button hx-target=&quot;#specific-id&quot;&gt;By ID&lt;/button&gt;
+&lt;button hx-target=&quot;.some-class&quot;&gt;By class (first match)&lt;/button&gt;
+&lt;button hx-target=&quot;closest div&quot;&gt;Closest ancestor&lt;/button&gt;
+&lt;button hx-target=&quot;find .child&quot;&gt;First matching descendant&lt;/button&gt;
+&lt;button hx-target=&quot;next .sibling&quot;&gt;Next sibling matching&lt;/button&gt;
+&lt;button hx-target=&quot;previous .sibling&quot;&gt;Previous sibling matching&lt;/button&gt;
+&lt;button hx-target=&quot;this&quot;&gt;The triggering element itself&lt;/button&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="33-swapping-hx-swap">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#33-swapping-hx-swap">#</doc-anchor-trigger>
+        <span>3.3 Swapping: <code v-pre>hx-swap</code></span>
+    </h3>
+</doc-anchor-target>
+<p>Controls how the response content replaces target content:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- innerHTML (default): Replace target's children --&gt;
+&lt;div hx-get=&quot;/content&quot; hx-swap=&quot;innerHTML&quot;&gt;
+  &lt;!-- new content goes INSIDE here --&gt;
+&lt;/div&gt;
+
+&lt;!-- outerHTML: Replace the entire target element --&gt;
+&lt;div hx-get=&quot;/content&quot; hx-swap=&quot;outerHTML&quot;&gt;
+  &lt;!-- this entire div gets replaced --&gt;
+&lt;/div&gt;
+
+&lt;!-- beforebegin: Insert before the target --&gt;
+&lt;ul&gt;
+  &lt;li hx-get=&quot;/new-item&quot; hx-swap=&quot;beforebegin&quot;&gt;
+    &lt;!-- new content appears ABOVE this li --&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- afterend: Insert after the target --&gt;
+&lt;li hx-get=&quot;/new-item&quot; hx-swap=&quot;afterend&quot;&gt;
+  &lt;!-- new content appears BELOW this li --&gt;
+&lt;/li&gt;
+
+&lt;!-- beforeend: Append inside target (great for infinite scroll) --&gt;
+&lt;ul hx-get=&quot;/more-items&quot; hx-swap=&quot;beforeend&quot;&gt;
+  &lt;li&gt;Item 1&lt;/li&gt;
+  &lt;li&gt;Item 2&lt;/li&gt;
+  &lt;!-- new items append here --&gt;
+&lt;/ul&gt;
+
+&lt;!-- afterbegin: Prepend inside target --&gt;
+&lt;ul hx-get=&quot;/latest&quot; hx-swap=&quot;afterbegin&quot;&gt;
+  &lt;!-- new items appear first --&gt;
+  &lt;li&gt;Old Item&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- delete: Remove the target (no response body needed) --&gt;
+&lt;button hx-delete=&quot;/items/1&quot; hx-target=&quot;closest li&quot; hx-swap=&quot;delete&quot;&gt;
+  Remove
+&lt;/button&gt;
+
+&lt;!-- none: Make request but don't swap anything --&gt;
+&lt;button hx-post=&quot;/track-click&quot; hx-swap=&quot;none&quot;&gt;
+  Track Me
+&lt;/button&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Swap modifiers</strong> (combine with any strategy):</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Add transition timing --&gt;
+&lt;div hx-get=&quot;/content&quot; hx-swap=&quot;innerHTML swap:500ms&quot;&gt;
+  &lt;!-- Waits 500ms before swapping --&gt;
+&lt;/div&gt;
+
+&lt;!-- Settle time for CSS transitions --&gt;
+&lt;div hx-get=&quot;/content&quot; hx-swap=&quot;innerHTML settle:300ms&quot;&gt;
+  &lt;!-- Allows 300ms for CSS transitions after swap --&gt;
+&lt;/div&gt;
+
+&lt;!-- Scroll behavior --&gt;
+&lt;div hx-get=&quot;/content&quot; hx-swap=&quot;innerHTML scroll:top&quot;&gt;
+  &lt;!-- Scrolls to top of target after swap --&gt;
+&lt;/div&gt;
+
+&lt;!-- Focus behavior --&gt;
+&lt;div hx-get=&quot;/form&quot; hx-swap=&quot;innerHTML focus-scroll:true&quot;&gt;
+  &lt;!-- Scrolls to focused element --&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="34-triggers-hx-trigger">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#34-triggers-hx-trigger">#</doc-anchor-trigger>
+        <span>3.4 Triggers: <code v-pre>hx-trigger</code></span>
+    </h3>
+</doc-anchor-target>
+<p>Controls when requests fire:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Standard events --&gt;
+&lt;button hx-get=&quot;/data&quot; hx-trigger=&quot;click&quot;&gt;Click me&lt;/button&gt;
+&lt;input hx-get=&quot;/search&quot; hx-trigger=&quot;keyup&quot;&gt;
+&lt;form hx-post=&quot;/submit&quot; hx-trigger=&quot;submit&quot;&gt;
+
+&lt;!-- Multiple triggers --&gt;
+&lt;input hx-get=&quot;/search&quot; hx-trigger=&quot;keyup, change&quot;&gt;
+
+&lt;!-- Modifiers --&gt;
+&lt;input hx-get=&quot;/search&quot; hx-trigger=&quot;keyup changed delay:500ms&quot;&gt;
+&lt;!--
+  - changed: only if value changed
+  - delay:500ms: debounce (wait 500ms after last event)
+--&gt;
+
+&lt;!-- Throttle (max once per interval) --&gt;
+&lt;div hx-get=&quot;/status&quot; hx-trigger=&quot;every 2s&quot;&gt;
+  &lt;!-- Polls every 2 seconds --&gt;
+&lt;/div&gt;
+
+&lt;!-- Trigger once --&gt;
+&lt;img hx-get=&quot;/load-image&quot; hx-trigger=&quot;revealed once&quot;&gt;
+&lt;!--
+  - revealed: when element scrolls into viewport
+  - once: only trigger one time
+--&gt;
+
+&lt;!-- From another element --&gt;
+&lt;input id=&quot;search&quot; name=&quot;q&quot;&gt;
+&lt;div hx-get=&quot;/results&quot; hx-trigger=&quot;keyup from:#search delay:300ms&quot;&gt;
+  &lt;!-- Triggered by keyup on the input --&gt;
+&lt;/div&gt;
+
+&lt;!-- Load trigger (fires on page load) --&gt;
+&lt;div hx-get=&quot;/initial-data&quot; hx-trigger=&quot;load&quot;&gt;
+  Loading...
+&lt;/div&gt;
+
+&lt;!-- Intersection observer --&gt;
+&lt;div hx-get=&quot;/more&quot; hx-trigger=&quot;intersect threshold:0.5&quot;&gt;
+  &lt;!-- Fires when 50% visible --&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Common trigger patterns:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Live search --&gt;
+&lt;input type=&quot;search&quot; name=&quot;q&quot;
+       hx-get=&quot;/search&quot;
+       hx-trigger=&quot;input changed delay:300ms&quot;
+       hx-target=&quot;#results&quot;&gt;
+
+&lt;!-- Infinite scroll --&gt;
+&lt;div hx-get=&quot;/page/2&quot;
+     hx-trigger=&quot;revealed&quot;
+     hx-swap=&quot;afterend&quot;&gt;
+  Loading more...
+&lt;/div&gt;
+
+&lt;!-- Auto-save --&gt;
+&lt;form hx-post=&quot;/autosave&quot;
+      hx-trigger=&quot;change delay:1s&quot;
+      hx-swap=&quot;none&quot;&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="35-indicators-hx-indicator">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#35-indicators-hx-indicator">#</doc-anchor-trigger>
+        <span>3.5 Indicators: <code v-pre>hx-indicator</code></span>
+    </h3>
+</doc-anchor-target>
+<p>Shows loading states during requests:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;style&gt;
+  /* htmx adds htmx-request class during requests */
+  .htmx-indicator {
+    display: none;
+  }
+  .htmx-request .htmx-indicator {
+    display: inline;
+  }
+  .htmx-request.htmx-indicator {
+    display: inline;
+  }
+&lt;/style&gt;
+
+&lt;!-- Indicator inside the triggering element --&gt;
+&lt;button hx-get=&quot;/slow-operation&quot;&gt;
+  Submit
+  &lt;span class=&quot;htmx-indicator&quot;&gt;Loading...&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Indicator elsewhere --&gt;
+&lt;button hx-get=&quot;/data&quot; hx-indicator=&quot;#spinner&quot;&gt;Load&lt;/button&gt;
+&lt;div id=&quot;spinner&quot; class=&quot;htmx-indicator&quot;&gt;
+  &lt;img src=&quot;/spinner.gif&quot; alt=&quot;Loading&quot;&gt;
+&lt;/div&gt;
+
+&lt;!-- Disable button during request --&gt;
+&lt;button hx-get=&quot;/data&quot; hx-disabled-elt=&quot;this&quot;&gt;
+  Click Me
+&lt;/button&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="36-history-hx-push-url">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#36-history-hx-push-url">#</doc-anchor-trigger>
+        <span>3.6 History: <code v-pre>hx-push-url</code></span>
+    </h3>
+</doc-anchor-target>
+<p>Updates browser history and URL:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Push new URL to history --&gt;
+&lt;a hx-get=&quot;/products/123&quot;
+   hx-target=&quot;#main&quot;
+   hx-push-url=&quot;true&quot;&gt;
+  View Product
+&lt;/a&gt;
+
+&lt;!-- Push custom URL --&gt;
+&lt;button hx-get=&quot;/search?q=widgets&quot;
+        hx-target=&quot;#results&quot;
+        hx-push-url=&quot;/search/widgets&quot;&gt;
+  Search Widgets
+&lt;/button&gt;
+
+&lt;!-- Replace current history entry (no back button) --&gt;
+&lt;form hx-post=&quot;/step2&quot;
+      hx-target=&quot;#wizard&quot;
+      hx-replace-url=&quot;true&quot;&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>History restoration:</strong> When users hit back/forward, htmx automatically restores the previous page state via AJAX (using the saved URL).</p>
+<doc-anchor-target id="37-out-of-band-swaps-hx-swap-oob">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#37-out-of-band-swaps-hx-swap-oob">#</doc-anchor-trigger>
+        <span>3.7 Out-of-Band Swaps: <code v-pre>hx-swap-oob</code></span>
+    </h3>
+</doc-anchor-target>
+<p>Update multiple parts of the page from a single response:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- In your response HTML: --&gt;
+&lt;div id=&quot;main-content&quot;&gt;
+  &lt;!-- This goes to the normal target --&gt;
+  &lt;h1&gt;Product Details&lt;/h1&gt;
+  ...
+&lt;/div&gt;
+
+&lt;!-- These swap themselves by ID, regardless of target --&gt;
+&lt;div id=&quot;cart-count&quot; hx-swap-oob=&quot;true&quot;&gt;3 items&lt;/div&gt;
+&lt;div id=&quot;notifications&quot; hx-swap-oob=&quot;innerHTML&quot;&gt;
+  &lt;span class=&quot;badge&quot;&gt;New message!&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>OOB with different swap strategies:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Append to a list --&gt;
+&lt;li id=&quot;todo-list&quot; hx-swap-oob=&quot;beforeend&quot;&gt;
+  &lt;span&gt;New todo item&lt;/span&gt;
+&lt;/li&gt;
+
+&lt;!-- Replace specific element --&gt;
+&lt;tr id=&quot;row-123&quot; hx-swap-oob=&quot;outerHTML&quot;&gt;
+  &lt;td&gt;Updated data&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;!-- Delete an element --&gt;
+&lt;div id=&quot;flash-message&quot; hx-swap-oob=&quot;delete&quot;&gt;&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Update shopping cart count after adding item</li>
+<li>Show toast notifications</li>
+<li>Update multiple related data (edit user → update user list AND user count)</li>
+<li>Refresh CSRF tokens</li>
+</ul>
+<hr>
+<doc-anchor-target id="4-razor-pages-fit">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#4-razor-pages-fit">#</doc-anchor-trigger>
+        <span>4. Razor Pages Fit</span>
+    </h2>
+</doc-anchor-target>
+<p>htmx and Razor Pages are a natural pairing. Razor Pages already returns HTML. htmx just asks for smaller pieces of it.</p>
+<doc-anchor-target id="41-handlers-as-endpoints">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#41-handlers-as-endpoints">#</doc-anchor-trigger>
+        <span>4.1 Handlers as Endpoints</span>
+    </h3>
+</doc-anchor-target>
+<p>Razor Pages handlers become htmx endpoints:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">// Pages/Products/Index.cshtml.cs
+public class IndexModel : PageModel
+{
+    // Standard page load: GET /Products
+    public void OnGet() { }
+
+    // htmx endpoint: GET /Products?handler=Search&amp;q=widget
+    public IActionResult OnGetSearch(string q)
+    {
+        var results = _db.Products.Where(p =&gt; p.Name.Contains(q));
+        return Partial(&quot;_ProductList&quot;, results);
+    }
+
+    // htmx endpoint: POST /Products?handler=AddToCart
+    public IActionResult OnPostAddToCart(int productId)
+    {
+        _cart.Add(productId);
+        return Partial(&quot;_CartSummary&quot;, _cart);
+    }
+
+    // htmx endpoint: DELETE /Products?handler=Remove&amp;id=123
+    public IActionResult OnDeleteRemove(int id)
+    {
+        _db.Products.Remove(id);
+        return Content(&quot;&quot;); // Empty response for hx-swap=&quot;delete&quot;
+    }
+}</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Pages/Products/Index.cshtml --&gt;
+&lt;input type=&quot;search&quot; name=&quot;q&quot;
+       hx-get=&quot;?handler=Search&quot;
+       hx-trigger=&quot;input changed delay:300ms&quot;
+       hx-target=&quot;#product-list&quot;&gt;
+
+&lt;div id=&quot;product-list&quot;&gt;
+    &lt;partial name=&quot;_ProductList&quot; model=&quot;Model.Products&quot; /&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="42-partials-for-fragments">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#42-partials-for-fragments">#</doc-anchor-trigger>
+        <span>4.2 Partials for Fragments</span>
+    </h3>
+</doc-anchor-target>
+<p>Create partial views that render just the fragment htmx needs:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">Pages/
+├── Products/
+│   ├── Index.cshtml           # Full page
+│   ├── Index.cshtml.cs        # Page model with handlers
+│   └── _ProductList.cshtml    # Partial for htmx responses
+│   └── _ProductCard.cshtml    # Smaller partial
+│   └── _CartSummary.cshtml    # Another partial</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Pages/Products/_ProductList.cshtml --&gt;
+@model IEnumerable&lt;Product&gt;
+
+@foreach (var product in Model)
+{
+    &lt;partial name=&quot;_ProductCard&quot; model=&quot;product&quot; /&gt;
+}
+
+@if (!Model.Any())
+{
+    &lt;p class=&quot;text-muted&quot;&gt;No products found.&lt;/p&gt;
+}</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Pages/Products/_ProductCard.cshtml --&gt;
+@model Product
+
+&lt;div class=&quot;product-card&quot; id=&quot;product-@Model.Id&quot;&gt;
+    &lt;h3&gt;@Model.Name&lt;/h3&gt;
+    &lt;p&gt;@Model.Price.ToString(&quot;C&quot;)&lt;/p&gt;
+    &lt;button hx-post=&quot;?handler=AddToCart&quot;
+            hx-vals='{&quot;productId&quot;: @Model.Id}'
+            hx-target=&quot;#cart-summary&quot;&gt;
+        Add to Cart
+    &lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="43-validation--antiforgery">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#43-validation--antiforgery">#</doc-anchor-trigger>
+        <span>4.3 Validation + Antiforgery</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Antiforgery tokens:</strong> Required for POST/PUT/PATCH/DELETE requests:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Option 1: Include token in form --&gt;
+&lt;form hx-post=&quot;?handler=Create&quot;&gt;
+    @Html.AntiForgeryToken()
+    &lt;!-- form fields --&gt;
+&lt;/form&gt;
+
+&lt;!-- Option 2: Configure htmx to include token in all requests --&gt;
+&lt;script&gt;
+    document.body.addEventListener('htmx:configRequest', (e) =&gt; {
+        e.detail.headers['RequestVerificationToken'] =
+            document.querySelector('input[name=&quot;__RequestVerificationToken&quot;]').value;
+    });
+&lt;/script&gt;
+
+&lt;!-- Place a token somewhere on the page --&gt;
+@Html.AntiForgeryToken()</code></pre>
+</doc-codeblock></div>
+<p><strong>Server-side validation with htmx:</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public IActionResult OnPostCreate()
+{
+    if (!ModelState.IsValid)
+    {
+        // Return the form partial with validation errors
+        Response.Headers[&quot;HX-Retarget&quot;] = &quot;#create-form&quot;;
+        Response.Headers[&quot;HX-Reswap&quot;] = &quot;outerHTML&quot;;
+        return Partial(&quot;_CreateForm&quot;, Input);
+    }
+
+    // Success: return updated list
+    return Partial(&quot;_ProductList&quot;, _db.Products.ToList());
+}</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- _CreateForm.cshtml --&gt;
+@model CreateProductInput
+
+&lt;form id=&quot;create-form&quot; hx-post=&quot;?handler=Create&quot; hx-target=&quot;#product-list&quot;&gt;
+    @Html.AntiForgeryToken()
+
+    &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label asp-for=&quot;Name&quot;&gt;&lt;/label&gt;
+        &lt;input asp-for=&quot;Name&quot; class=&quot;form-control&quot; /&gt;
+        &lt;span asp-validation-for=&quot;Name&quot; class=&quot;text-danger&quot;&gt;&lt;/span&gt;
+    &lt;/div&gt;
+
+    &lt;button type=&quot;submit&quot;&gt;Create&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+</doc-codeblock></div>
+<p><strong>Client-side validation (optional enhancement):</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-markup"><code v-pre class="language-markup">&lt;!-- Inline validation as user types --&gt;
+&lt;input asp-for=&quot;Email&quot;
+       hx-get=&quot;?handler=ValidateEmail&quot;
+       hx-trigger=&quot;blur changed&quot;
+       hx-target=&quot;next .validation-message&quot;&gt;
+&lt;span class=&quot;validation-message&quot;&gt;&lt;/span&gt;</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-csharp"><code v-pre class="language-csharp">public IActionResult OnGetValidateEmail(string email)
+{
+    if (string.IsNullOrEmpty(email))
+        return Content(&quot;&lt;span class='text-danger'&gt;Email is required&lt;/span&gt;&quot;);
+
+    if (!IsValidEmail(email))
+        return Content(&quot;&lt;span class='text-danger'&gt;Invalid email format&lt;/span&gt;&quot;);
+
+    if (_db.Users.Any(u =&gt; u.Email == email))
+        return Content(&quot;&lt;span class='text-danger'&gt;Email already in use&lt;/span&gt;&quot;);
+
+    return Content(&quot;&lt;span class='text-success'&gt;✓&lt;/span&gt;&quot;);
+}</code></pre>
+</doc-codeblock></div>
+<hr>
+<doc-anchor-target id="quick-reference-card">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#quick-reference-card">#</doc-anchor-trigger>
+        <span>Quick Reference Card</span>
+    </h2>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>htmx Attribute</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code v-pre>hx-get</code></td>
+<td>GET request</td>
+<td><code v-pre>hx-get=&quot;/api/data&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-post</code></td>
+<td>POST request</td>
+<td><code v-pre>hx-post=&quot;/api/submit&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-put</code></td>
+<td>PUT request</td>
+<td><code v-pre>hx-put=&quot;/api/update&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-patch</code></td>
+<td>PATCH request</td>
+<td><code v-pre>hx-patch=&quot;/api/modify&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-delete</code></td>
+<td>DELETE request</td>
+<td><code v-pre>hx-delete=&quot;/api/remove&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-target</code></td>
+<td>Where to swap response</td>
+<td><code v-pre>hx-target=&quot;#results&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-swap</code></td>
+<td>How to swap</td>
+<td><code v-pre>hx-swap=&quot;outerHTML&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-trigger</code></td>
+<td>When to trigger</td>
+<td><code v-pre>hx-trigger=&quot;click&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-indicator</code></td>
+<td>Loading indicator</td>
+<td><code v-pre>hx-indicator=&quot;#spinner&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-push-url</code></td>
+<td>Update browser URL</td>
+<td><code v-pre>hx-push-url=&quot;true&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-vals</code></td>
+<td>Extra values to send</td>
+<td><code v-pre>hx-vals='{&quot;id&quot;: 1}'</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-headers</code></td>
+<td>Extra headers</td>
+<td><code v-pre>hx-headers='{&quot;X-Custom&quot;: &quot;value&quot;}'</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-confirm</code></td>
+<td>Confirmation dialog</td>
+<td><code v-pre>hx-confirm=&quot;Are you sure?&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-disabled-elt</code></td>
+<td>Disable during request</td>
+<td><code v-pre>hx-disabled-elt=&quot;this&quot;</code></td>
+</tr>
+<tr>
+<td><code v-pre>hx-swap-oob</code></td>
+<td>Out-of-band swap</td>
+<td><code v-pre>hx-swap-oob=&quot;true&quot;</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<doc-anchor-target id="mental-model-summary">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#mental-model-summary">#</doc-anchor-trigger>
+        <span>Mental Model Summary</span>
+    </h2>
+</doc-anchor-target>
+<ol>
+<li><p><strong>Server owns the state.</strong> Your Razor Page model is the source of truth.</p>
+</li>
+<li><p><strong>Server renders the UI.</strong> Partials return ready-to-display HTML fragments.</p>
+</li>
+<li><p><strong>HTML is the contract.</strong> No JSON serialization, no client-side templates.</p>
+</li>
+<li><p><strong>Links and forms drive state.</strong> htmx just makes more elements behave like links and forms.</p>
+</li>
+<li><p><strong>Enhance progressively.</strong> Start with working forms, add htmx for smoothness.</p>
+</li>
+</ol>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre translate="no" class="language-none"><code v-pre class="language-none">┌───────────────────────────────────────────────────────────────────┐
+│                         BROWSER                                   │
+│                                                                   │
+│   ┌─────────────┐    click     ┌─────────────┐                    │
+│   │   Button    │ ───────────► │    htmx     │                    │
+│   │  hx-get     │              │   library   │                    │
+│   └─────────────┘              └──────┬──────┘                    │
+│                                       │                           │
+│                                  AJAX Request                     │
+│                                  GET /products?handler=Search     │
+└───────────────────────────────────────┼───────────────────────────┘
+                                        │
+                                        ▼
+┌───────────────────────────────────────────────────────────────────┐
+│                         SERVER                                    │
+│                                                                   │
+│   ┌──────────────────────────────────────────────────────────┐    │
+│   │  IndexModel.OnGetSearch(q)                               │    │
+│   │                                                          │    │
+│   │  var results = _db.Products.Where(...);                  │    │
+│   │  return Partial(&quot;_ProductList&quot;, results);                │    │
+│   └──────────────────────────────────────────────────────────┘    │
+│                           │                                       │
+│                           ▼                                       │
+│   ┌──────────────────────────────────────────────────────────┐    │
+│   │  _ProductList.cshtml                                     │    │
+│   │                                                          │    │
+│   │  @foreach (var p in Model)                               │    │
+│   │  {                                                       │    │
+│   │      &lt;div class=&quot;product&quot;&gt;@p.Name&lt;/div&gt;                  │    │
+│   │  }                                                       │    │
+│   └──────────────────────────────────────────────────────────┘    │
+│                           │                                       │
+│                      HTML Fragment                                │
+└───────────────────────────┼───────────────────────────────────────┘
+                            │
+                            ▼
+┌───────────────────────────────────────────────────────────────────┐
+│                         BROWSER                                   │
+│                                                                   │
+│   ┌─────────────┐              ┌─────────────────────────────┐    │
+│   │    htmx     │ ──────────►  │  &lt;div id=&quot;product-list&quot;&gt;    │    │
+│   │   library   │   swap       │    &lt;div&gt;Widget A&lt;/div&gt;      │    │
+│   └─────────────┘   innerHTML  │    &lt;div&gt;Widget B&lt;/div&gt;      │    │
+│                                │  &lt;/div&gt;                     │    │
+│                                └─────────────────────────────┘    │
+└───────────────────────────────────────────────────────────────────┘</code></pre>
+</doc-codeblock></div>
+<p><strong>You&#x27;re ready for the labs!</strong></p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -321,6 +1228,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Foundations: Hypermedia + htmx Mental Model", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Foundations: Hypermedia + htmx Mental Model", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>
