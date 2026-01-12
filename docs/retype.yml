@@ -2,7 +2,7 @@ input: ./
 output: .retype
 url: https://github.com/cwoodruff/htmx-razor-workshop
 branding:
-  title: htmx + ASP.NET Core Razor Pages Workshop
+  title: htmx Workshop
   label: v10
   logo: images/gear-earth.png
   logoDark: images/gear-earth-dark.png
