@@ -2,7 +2,7 @@
 order: 7
 icon: home
 ---
-# Workshop Home
+# htmx + ASP.NET Core Razor Pages Workshop Home
 
 For the source code for the workshop, visit the [htmx for Razor Pages Workshop](https://github.com/cwoodruff/htmx-razor-workshop) GitHub repo.
 
