@@ -607,13 +607,13 @@ Now we'll update the task list to use the view model and include pagination cont
 
                             @* Delete button with confirmation *@
                             <button type="button"
-                                    class="btn btn-outline-danger"
-                                    hx-post="?handler=Delete"
-                                    hx-vals='{"id": @task.Id, "Q": "@(Model.Query ?? "")", "PageNum": @Model.Page, "Size": @Model.PageSize}'
-                                    hx-confirm="Delete this task? This cannot be undone."
-                                    hx-target="#task-list"
-                                    hx-swap="outerHTML"
-                                    hx-indicator="#task-loading">
+                                class="btn btn-outline-danger"
+                                hx-post="?handler=Delete"
+                                hx-vals='{"id": @task.Id, "Q": "@(Model.Query ?? "")", "PageNum": @Model.Page, "Size": @Model.PageSize}'
+                                hx-confirm="Delete this task? This cannot be undone."
+                                hx-target="#task-list"
+                                hx-swap="outerHTML"
+                                hx-indicator="#task-loading">
                                 Delete
                             </button>
                         </div>
@@ -701,11 +701,16 @@ Now we'll update the task list to use the view model and include pagination cont
 #### Delete Button
 
 ```html
-<button hx-post="?handler=Delete"
-        hx-vals='{"id": @task.Id, "Q": "...", "PageNum": @Model.Page, "Size": @Model.PageSize}'
-        hx-confirm="Delete this task? This cannot be undone."
-        hx-target="#task-list"
-        hx-swap="outerHTML">
+<button type="button"
+    class="btn btn-outline-danger"
+    hx-post="?handler=Delete"
+    hx-vals='{"id": @task.Id, "Q": "@(Model.Query ?? "")", "PageNum": @Model.Page, "Size": @Model.PageSize}'
+    hx-confirm="Delete this task? This cannot be undone."
+    hx-target="#task-list"
+    hx-swap="outerHTML"
+    hx-indicator="#task-loading">
+    Delete
+</button>
 ```
 
 | Attribute    | Value                          | Purpose                  |
